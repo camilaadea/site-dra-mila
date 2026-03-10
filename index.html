@@ -51,9 +51,12 @@
   .btn-primary:hover { background: var(--gold-dark); }
   .btn-outline { background: transparent; color: var(--text); padding: 15px 36px; border: 1px solid var(--border); font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; cursor: pointer; transition: all .3s; text-decoration: none; display: inline-block; }
   .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* HERO STATS — credenciais */
   .hero-stats { display: flex; gap: 40px; margin-top: 64px; padding-top: 40px; border-top: 1px solid var(--border); }
   .hero-stat strong { display: block; font-family: 'Cormorant Garamond', serif; font-size: 38px; color: var(--gold); line-height: 1; }
   .hero-stat span { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-light); }
+
   .hero-right { position: relative; overflow: hidden; }
   .hero-right img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
   .hero-right::after {
@@ -124,11 +127,14 @@
   .frase blockquote { font-family: 'Cormorant Garamond', serif; font-size: clamp(24px, 3vw, 38px); line-height: 1.5; color: var(--text); font-style: italic; max-width: 760px; margin: 0 auto 24px; position: relative; z-index: 1; }
   .frase cite { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); font-style: normal; }
 
-  /* CTA */
+  /* CTA — uma foto só */
   .cta-section { background: var(--beige); padding: 120px 64px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-  .cta-img-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .cta-img-grid img { width: 100%; aspect-ratio: 3/4; object-fit: cover; object-position: center top; }
-  .cta-img-grid img:first-child { margin-top: 40px; }
+  .cta-img-single { position: relative; }
+  .cta-img-single img { width: 100%; aspect-ratio: 3/4; object-fit: cover; object-position: center top; display: block; }
+  .cta-img-single::after {
+    content: ''; position: absolute; bottom: -12px; left: -12px;
+    width: 60%; height: 60%; border: 1px solid var(--gold-light); z-index: 0; pointer-events: none;
+  }
   .cta-content .section-tag { text-align: left; }
   .cta-content h2 { font-size: 46px; line-height: 1.2; margin: 12px 0 24px; }
   .cta-content p { font-size: 15px; line-height: 1.9; color: var(--text-light); margin-bottom: 40px; }
@@ -153,6 +159,7 @@
     .hero { grid-template-columns: 1fr; }
     .hero-right { height: 60vw; }
     .hero-left { padding: 100px 28px 60px; }
+    .hero-stats { gap: 20px; }
     .atmosfera { grid-template-columns: repeat(2, 1fr); height: 320px; }
     .sobre { grid-template-columns: 1fr; padding: 80px 28px; gap: 48px; }
     .procedimentos { padding: 80px 28px; }
@@ -191,7 +198,7 @@
       <a href="#procedimentos" class="btn-outline">Ver Procedimentos</a>
     </div>
     <div class="hero-stats">
-      <div class="hero-stat"><strong>15K</strong><span>Seguidoras</span></div>
+      <div class="hero-stat"><strong>+1.000</strong><span>Pacientes atendidas</span></div>
       <div class="hero-stat"><strong>+10</strong><span>Anos de experiência</span></div>
       <div class="hero-stat"><strong>Nº1</strong><span>Em Sergipe</span></div>
     </div>
@@ -221,8 +228,8 @@
   <div class="sobre-content">
     <span class="section-tag">Sobre a Médica</span>
     <h2>Pioneira em cuidado íntimo feminino</h2>
-    <p>Ginecologista e obstetra com especialização em estética íntima e cirurgia ginecológica estética, a Dra. Mila Cintra é a primeira especialista da área em Aracaju-SE.</p>
-    <p>Com uma abordagem que combina técnica avançada e escuta genuína, ela acredita que cuidar da saúde íntima é um ato de amor próprio — não um luxo, mas uma necessidade.</p>
+    <p>Formada em Medicina pela Universidade Federal de Sergipe, com residência em Ginecologia e Obstetrícia em São Paulo, a Dra. Mila Cintra é a primeira especialista em Ginecologia Estética e Funcional de Sergipe.</p>
+    <p>Com três pós-graduações — Ginecologia Endócrina, Sexualidade e Climatério pela Unifesp; Laparoscopia e Histeroscopia pelo Instituto Crisp (MG); e Ginecologia Regenerativa, Estética e Funcional — ela une saber acadêmico de ponta à escuta genuína de cada mulher.</p>
     <ul class="sobre-list">
       <li>Pioneira em Estética Íntima em Sergipe</li>
       <li>Cirurgia Íntima · Laser CO2 · Harmonização</li>
@@ -322,11 +329,10 @@
   <cite>— Dra. Mila Cintra</cite>
 </section>
 
-<!-- CTA FINAL -->
+<!-- CTA FINAL — uma foto só -->
 <section class="cta-section">
-  <div class="cta-img-grid">
-    <img src="https://i.imgur.com/cIiWyzt.jpeg" alt="Dra. Mila">
-    <img src="https://i.imgur.com/cmOJsXF.jpeg" alt="Dra. Mila consultório">
+  <div class="cta-img-single">
+    <img src="https://i.imgur.com/cIiWyzt.jpeg" alt="Dra. Mila Cintra">
   </div>
   <div class="cta-content">
     <span class="section-tag">Próximo passo</span>
