@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dra. Mila Cintra | Ginecologia & Estética Íntima</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --gold: #C9A96E; --gold-light: #E8D5B0; --gold-dark: #A07840;
+    --beige: #F5F0E8; --beige-deep: #EDE5D8; --white: #FDFCFA;
+    --text: #2C2416; --text-light: #8C7B5E; --border: #E8DFC8;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Jost', sans-serif; background: var(--white); color: var(--text); font-weight: 300; }
+  h1,h2,h3,h4 { font-family: 'Cormorant Garamond', serif; font-weight: 400; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(253,252,250,0.96); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 48px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 500; letter-spacing: 3px; color: var(--text); text-decoration: none; }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-light); text-decoration: none; transition: color .3s; }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-cta { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 10px 26px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all .3s; text-decoration: none; }
+  .nav-cta:hover { background: var(--gold); color: var(--white); }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; position: relative; }
+  .hero-left {
+    background: linear-gradient(160deg, var(--beige) 0%, var(--white) 100%);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 140px 64px 80px 64px; position: relative;
+  }
+  .hero-left::after {
+    content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px;
+    background: linear-gradient(180deg, transparent, var(--gold-light), transparent);
+  }
+  .hero-tag { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); padding-bottom: 12px; border-bottom: 1px solid var(--gold-light); display: inline-block; margin-bottom: 36px; }
+  .hero h1 { font-size: clamp(40px, 5vw, 68px); line-height: 1.08; margin-bottom: 28px; }
+  .hero h1 em { color: var(--gold); font-style: italic; }
+  .hero-sub { font-size: 15px; line-height: 1.85; color: var(--text-light); max-width: 400px; margin-bottom: 52px; }
+  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary { background: var(--gold); color: var(--white); padding: 15px 36px; border: none; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; cursor: pointer; transition: all .3s; text-decoration: none; display: inline-block; }
+  .btn-primary:hover { background: var(--gold-dark); }
+  .btn-outline { background: transparent; color: var(--text); padding: 15px 36px; border: 1px solid var(--border); font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; cursor: pointer; transition: all .3s; text-decoration: none; display: inline-block; }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .hero-stats { display: flex; gap: 40px; margin-top: 64px; padding-top: 40px; border-top: 1px solid var(--border); }
+  .hero-stat strong { display: block; font-family: 'Cormorant Garamond', serif; font-size: 38px; color: var(--gold); line-height: 1; }
+  .hero-stat span { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-light); }
+  .hero-right { position: relative; overflow: hidden; }
+  .hero-right img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+  .hero-right::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to right, rgba(253,252,250,0.15) 0%, transparent 40%);
+  }
+
+  /* SECTION UTILS */
+  .section-tag { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 14px; }
+  .divider { display: flex; align-items: center; gap: 14px; width: 100px; margin: 0 auto 40px; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--gold-light); }
+  .divider-diamond { width: 5px; height: 5px; background: var(--gold); transform: rotate(45deg); flex-shrink: 0; }
+
+  /* GALERIA ATMOSFERA */
+  .atmosfera { padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); height: 380px; }
+  .atm-item { overflow: hidden; position: relative; }
+  .atm-item img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+  .atm-item:hover img { transform: scale(1.05); }
+  .atm-item::after { content: ''; position: absolute; inset: 0; background: rgba(44,36,22,0.08); transition: background .3s; }
+  .atm-item:hover::after { background: rgba(44,36,22,0.02); }
+
+  /* SOBRE */
+  .sobre { padding: 120px 64px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1200px; margin: 0 auto; }
+  .sobre-img-wrap { position: relative; }
+  .sobre-img-wrap img { width: 100%; aspect-ratio: 3/4; object-fit: cover; object-position: center top; display: block; }
+  .sobre-img-tag { position: absolute; bottom: -1px; right: -1px; background: var(--gold); color: var(--white); padding: 22px 28px; text-align: center; }
+  .sobre-img-tag strong { display: block; font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; }
+  .sobre-img-tag span { font-size: 10px; letter-spacing: 2px; opacity: .85; }
+  .sobre-content h2 { font-size: 44px; line-height: 1.15; margin-bottom: 28px; }
+  .sobre-content p { font-size: 15px; line-height: 1.9; color: var(--text-light); margin-bottom: 16px; }
+  .sobre-list { list-style: none; margin: 32px 0; }
+  .sobre-list li { display: flex; align-items: center; gap: 14px; font-size: 14px; color: var(--text); padding: 13px 0; border-bottom: 1px solid var(--border); }
+  .sobre-list li::before { content: '◆'; color: var(--gold); font-size: 7px; flex-shrink: 0; }
+
+  /* PROCEDIMENTOS */
+  .procedimentos { background: var(--beige); padding: 120px 64px; position: relative; }
+  .procedimentos::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-light), transparent); }
+  .section-header { text-align: center; margin-bottom: 72px; }
+  .section-header h2 { font-size: 50px; margin: 12px 0 8px; }
+  .section-header p { font-size: 15px; color: var(--text-light); max-width: 460px; margin: 16px auto 0; line-height: 1.85; }
+  .proc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; max-width: 1100px; margin: 0 auto; }
+  .proc-card { background: var(--white); padding: 48px 36px; border: 1px solid var(--border); transition: all .4s; position: relative; overflow: hidden; }
+  .proc-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--gold-light), var(--gold)); transform: scaleX(0); transition: transform .4s; transform-origin: left; }
+  .proc-card:hover { transform: translateY(-6px); box-shadow: 0 24px 64px rgba(201,169,110,0.12); z-index: 1; }
+  .proc-card:hover::after { transform: scaleX(1); }
+  .proc-num { font-family: 'Cormorant Garamond', serif; font-size: 48px; color: var(--gold-light); line-height: 1; margin-bottom: 16px; }
+  .proc-card h3 { font-size: 22px; margin-bottom: 12px; }
+  .proc-card p { font-size: 14px; line-height: 1.85; color: var(--text-light); margin-bottom: 28px; }
+  .proc-link { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); text-decoration: none; display: flex; align-items: center; gap: 10px; transition: gap .3s; }
+  .proc-card:hover .proc-link { gap: 16px; }
+
+  /* EXPERIÊNCIA */
+  .experiencia { padding: 0; display: grid; grid-template-columns: 1fr 1fr; min-height: 580px; }
+  .exp-img { overflow: hidden; }
+  .exp-img img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+  .exp-content { background: var(--text); padding: 80px 72px; display: flex; flex-direction: column; justify-content: center; }
+  .exp-content .section-tag { color: var(--gold-light); }
+  .exp-content h2 { font-size: 44px; color: var(--white); margin: 12px 0 28px; line-height: 1.2; }
+  .exp-items { display: flex; flex-direction: column; gap: 0; margin-bottom: 48px; }
+  .exp-item { display: flex; gap: 20px; padding: 22px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .exp-icon { color: var(--gold); font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .exp-item h4 { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--white); margin-bottom: 4px; }
+  .exp-item p { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.7; }
+
+  /* FRASE */
+  .frase { padding: 100px 64px; text-align: center; background: var(--white); position: relative; }
+  .frase::before { content: '"'; font-family: 'Cormorant Garamond', serif; font-size: 200px; color: var(--beige); position: absolute; top: -40px; left: 50%; transform: translateX(-50%); line-height: 1; pointer-events: none; }
+  .frase blockquote { font-family: 'Cormorant Garamond', serif; font-size: clamp(24px, 3vw, 38px); line-height: 1.5; color: var(--text); font-style: italic; max-width: 760px; margin: 0 auto 24px; position: relative; z-index: 1; }
+  .frase cite { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); font-style: normal; }
+
+  /* CTA */
+  .cta-section { background: var(--beige); padding: 120px 64px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .cta-img-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .cta-img-grid img { width: 100%; aspect-ratio: 3/4; object-fit: cover; object-position: center top; }
+  .cta-img-grid img:first-child { margin-top: 40px; }
+  .cta-content .section-tag { text-align: left; }
+  .cta-content h2 { font-size: 46px; line-height: 1.2; margin: 12px 0 24px; }
+  .cta-content p { font-size: 15px; line-height: 1.9; color: var(--text-light); margin-bottom: 40px; }
+
+  /* FOOTER */
+  footer { background: var(--text); padding: 56px 64px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--white); letter-spacing: 3px; }
+  .footer-logo span { color: var(--gold); }
+  footer p { font-size: 11px; color: rgba(255,255,255,0.35); letter-spacing: 1.5px; }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); text-decoration: none; transition: color .3s; }
+  .footer-links a:hover { color: var(--gold); }
+
+  /* FLOAT */
+  .wa-float { position: fixed; bottom: 32px; right: 32px; z-index: 999; width: 54px; height: 54px; border-radius: 50%; background: #25D366; color: white; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 24px; box-shadow: 0 8px 32px rgba(37,211,102,0.4); transition: transform .3s; }
+  .wa-float:hover { transform: scale(1.1); }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { height: 60vw; }
+    .hero-left { padding: 100px 28px 60px; }
+    .atmosfera { grid-template-columns: repeat(2, 1fr); height: 320px; }
+    .sobre { grid-template-columns: 1fr; padding: 80px 28px; gap: 48px; }
+    .procedimentos { padding: 80px 28px; }
+    .proc-grid { grid-template-columns: 1fr; }
+    .experiencia { grid-template-columns: 1fr; }
+    .exp-img { height: 300px; }
+    .exp-content { padding: 56px 28px; }
+    .frase { padding: 80px 28px; }
+    .cta-section { grid-template-columns: 1fr; padding: 80px 28px; gap: 48px; }
+    footer { padding: 40px 28px; flex-direction: column; text-align: center; }
+    .footer-links { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">DRA. MILA <span>CINTRA</span></a>
+  <ul class="nav-links">
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#procedimentos">Procedimentos</a></li>
+    <li><a href="#experiencia">A Clínica</a></li>
+  </ul>
+  <a href="https://wa.me/5579988162525" target="_blank" class="nav-cta">Agendar Consulta</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-left">
+    <span class="hero-tag">Primeira Especialista em Estética Íntima de Aracaju · SE</span>
+    <h1>Cuidado feminino <em>que transforma</em></h1>
+    <p class="hero-sub">Ginecologia, estética íntima e cirurgia com a delicadeza e precisão que cada mulher merece. Referência em saúde e bem-estar feminino em Sergipe.</p>
+    <div class="hero-btns">
+      <a href="https://wa.me/5579988162525" target="_blank" class="btn-primary">Agendar Consulta</a>
+      <a href="#procedimentos" class="btn-outline">Ver Procedimentos</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><strong>15K</strong><span>Seguidoras</span></div>
+      <div class="hero-stat"><strong>+10</strong><span>Anos de experiência</span></div>
+      <div class="hero-stat"><strong>Nº1</strong><span>Em Sergipe</span></div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img src="https://i.imgur.com/cmOJsXF.jpeg" alt="Dra. Mila Cintra">
+  </div>
+</section>
+
+<!-- GALERIA ATMOSFERA -->
+<div class="atmosfera">
+  <div class="atm-item"><img src="https://i.imgur.com/4l2CRjI.jpeg" alt="Clínica"></div>
+  <div class="atm-item"><img src="https://i.imgur.com/4mlr2ad.jpeg" alt="Café oferecido"></div>
+  <div class="atm-item"><img src="https://i.imgur.com/YC1sxVx.jpeg" alt="Chá"></div>
+  <div class="atm-item"><img src="https://i.imgur.com/vuw9w0E.jpeg" alt="Cuidado"></div>
+</div>
+
+<!-- SOBRE -->
+<section class="sobre" id="sobre">
+  <div class="sobre-img-wrap">
+    <img src="https://i.imgur.com/yum4Uf7.jpeg" alt="Dra. Mila Cintra">
+    <div class="sobre-img-tag">
+      <strong>Mila Cintra</strong>
+      <span>Ginecologista · CRM-SE</span>
+    </div>
+  </div>
+  <div class="sobre-content">
+    <span class="section-tag">Sobre a Médica</span>
+    <h2>Pioneira em cuidado íntimo feminino</h2>
+    <p>Ginecologista e obstetra com especialização em estética íntima e cirurgia ginecológica estética, a Dra. Mila Cintra é a primeira especialista da área em Aracaju-SE.</p>
+    <p>Com uma abordagem que combina técnica avançada e escuta genuína, ela acredita que cuidar da saúde íntima é um ato de amor próprio — não um luxo, mas uma necessidade.</p>
+    <ul class="sobre-list">
+      <li>Pioneira em Estética Íntima em Sergipe</li>
+      <li>Cirurgia Íntima · Laser CO2 · Harmonização</li>
+      <li>Implante Hormonal · Obstetrícia</li>
+      <li>Atendimento premium e completamente personalizado</li>
+    </ul>
+    <a href="https://wa.me/5579988162525" target="_blank" class="btn-primary">Falar com a Clínica</a>
+  </div>
+</section>
+
+<!-- PROCEDIMENTOS -->
+<section class="procedimentos" id="procedimentos">
+  <div class="section-header">
+    <div class="divider"><div class="divider-diamond"></div></div>
+    <span class="section-tag">Tratamentos</span>
+    <h2>Procedimentos</h2>
+    <p>Tecnologia de ponta aliada a uma abordagem humanizada para o cuidado íntimo feminino.</p>
+  </div>
+  <div class="proc-grid">
+    <div class="proc-card">
+      <div class="proc-num">01</div>
+      <h3>Cirurgia Íntima</h3>
+      <p>Ninfoplastia e labioplastia realizadas com precisão e sensibilidade. Procedimentos que devolvem conforto, estética e confiança plena.</p>
+      <a href="https://wa.me/5579988162525" class="proc-link" target="_blank">Saiba mais →</a>
+    </div>
+    <div class="proc-card">
+      <div class="proc-num">02</div>
+      <h3>Laser CO2 Vaginal</h3>
+      <p>Tecnologia de última geração para rejuvenescimento vaginal, ressecamento, incontinência e bem-estar íntimo duradouro.</p>
+      <a href="https://wa.me/5579988162525" class="proc-link" target="_blank">Saiba mais →</a>
+    </div>
+    <div class="proc-card">
+      <div class="proc-num">03</div>
+      <h3>Harmonização Íntima</h3>
+      <p>Preenchimento e remodelação da região íntima com resultado natural, elegante e que respeita a singularidade de cada mulher.</p>
+      <a href="https://wa.me/5579988162525" class="proc-link" target="_blank">Saiba mais →</a>
+    </div>
+    <div class="proc-card">
+      <div class="proc-num">04</div>
+      <h3>Implante Hormonal</h3>
+      <p>Reequilíbrio hormonal com Implanon para energia, libido e qualidade de vida. Uma virada de chave no bem-estar feminino.</p>
+      <a href="https://wa.me/5579988162525" class="proc-link" target="_blank">Saiba mais →</a>
+    </div>
+    <div class="proc-card">
+      <div class="proc-num">05</div>
+      <h3>Bleaching Íntimo</h3>
+      <p>Clareamento da região íntima com protocolos seguros e eficazes. Autoestima e bem-estar em cada detalhe do seu corpo.</p>
+      <a href="https://wa.me/5579988162525" class="proc-link" target="_blank">Saiba mais →</a>
+    </div>
+    <div class="proc-card">
+      <div class="proc-num">06</div>
+      <h3>Obstetrícia</h3>
+      <p>Acompanhamento gestacional com cuidado integral e humanizado, presente em cada etapa da sua maternidade.</p>
+      <a href="https://wa.me/5579988162525" class="proc-link" target="_blank">Saiba mais →</a>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIÊNCIA -->
+<section class="experiencia" id="experiencia">
+  <div class="exp-img">
+    <img src="https://i.imgur.com/XTwFZRw.jpeg" alt="Atmosfera da clínica">
+  </div>
+  <div class="exp-content">
+    <span class="section-tag">A Experiência</span>
+    <h2>Uma clínica pensada para você</h2>
+    <div class="exp-items">
+      <div class="exp-item">
+        <div class="exp-icon">◆</div>
+        <div>
+          <h4>Ambiente Exclusivo</h4>
+          <p>Espaço projetado para acolher, com privacidade, conforto e uma estética que reflete cuidado em cada detalhe.</p>
+        </div>
+      </div>
+      <div class="exp-item">
+        <div class="exp-icon">◆</div>
+        <div>
+          <h4>Atendimento Personalizado</h4>
+          <p>Cada consulta é única. A Dra. Mila dedica tempo real para ouvir, entender e cuidar da sua história.</p>
+        </div>
+      </div>
+      <div class="exp-item">
+        <div class="exp-icon">◆</div>
+        <div>
+          <h4>Tecnologia de Ponta</h4>
+          <p>Equipamentos e protocolos atualizados para resultados seguros, naturais e duradouros.</p>
+        </div>
+      </div>
+    </div>
+    <a href="https://wa.me/5579988162525" target="_blank" class="btn-primary">Agendar Minha Consulta</a>
+  </div>
+</section>
+
+<!-- FRASE -->
+<section class="frase">
+  <blockquote>Cuidar da sua saúde íntima não é luxo — é o respeito que você deve a si mesma.</blockquote>
+  <cite>— Dra. Mila Cintra</cite>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-section">
+  <div class="cta-img-grid">
+    <img src="https://i.imgur.com/cIiWyzt.jpeg" alt="Dra. Mila">
+    <img src="https://i.imgur.com/cmOJsXF.jpeg" alt="Dra. Mila consultório">
+  </div>
+  <div class="cta-content">
+    <span class="section-tag">Próximo passo</span>
+    <h2>Pronta para se cuidar com quem entende de você?</h2>
+    <p>Agende sua consulta e dê o primeiro passo para uma nova relação com o seu corpo, sua autoestima e sua saúde íntima.</p>
+    <a href="https://wa.me/5579988162525" target="_blank" class="btn-primary">Agendar pelo WhatsApp</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">DRA. MILA <span>CINTRA</span></div>
+  <div class="footer-links">
+    <a href="#sobre">Sobre</a>
+    <a href="#procedimentos">Procedimentos</a>
+    <a href="https://instagram.com/dramilacintra" target="_blank">Instagram</a>
+    <a href="https://wa.me/5579988162525" target="_blank">WhatsApp</a>
+  </div>
+  <p>© 2026 · Ginecologia & Estética Íntima · Aracaju-SE</p>
+</footer>
+
+<a href="https://wa.me/5579988162525" target="_blank" class="wa-float" title="Falar no WhatsApp">💬</a>
+
+</body>
+</html>
