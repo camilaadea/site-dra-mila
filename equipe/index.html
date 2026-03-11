@@ -146,7 +146,7 @@ function App(){
 
   useEffect(()=>sS("cal",calE),[calE]);
 
-  const gen=async()=>{sLd(true);sR("");sCp(false);const c=CTS.find(x=>x.id===ct);const t=cTo.trim()||topic;let msg=`${c.pr} sobre: "${t}".`;if(ct==="stories")msg+="\nSequência de telas com texto, formato e orientação visual.";if(ct==="legenda")msg+="\nTexto completo, CTA e 15-20 hashtags.";if(ct==="temas")msg+="\n5 temas com título, relevância e formato.";if(extra.trim())msg+=`\n\n${extra}`;try{const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:sysPr,messages:[{role:"user",content:msg}]})});const d=await r.json();sR(d.content?.map(b=>b.text||"").join("\n")||"Erro.");}catch{sR("Erro de conexão.");}sLd(false);};
+  const gen=async()=>{sLd(true);sR("");sCp(false);const c=CTS.find(x=>x.id===ct);const t=cTo.trim()||topic;let msg=`${c.pr} sobre: "${t}".`;if(ct==="stories")msg+="\nSequência de telas com texto, formato e orientação visual.";if(ct==="legenda")msg+="\nTexto completo, CTA e 15-20 hashtags.";if(ct==="temas")msg+="\n5 temas com título, relevância e formato.";if(extra.trim())msg+=`\n\n${extra}`;try{const r=await fetch("/api/generate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({,system:sysPr,messages:[{role:"user",content:msg}]})});const d=await r.json();sR(d.content?.map(b=>b.text||"").join("\n")||"Erro.");}catch{sR("Erro de conexão.");}sLd(false);};
 
   if(!logged)return <Login onOk={()=>setL(true)}/>;
   const tabs=[{id:"growth",l:"Estratégia"},{id:"plan",l:"Planejamento"},{id:"gen",l:"Conteúdo"},{id:"sv",l:"Salvos"},{id:"cal",l:"Agenda"}];
