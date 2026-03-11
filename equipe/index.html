@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>M|C — Painel Estratégico</title>
+<link rel="icon" href="android-chrome-512x512.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="robots" content="noindex,nofollow">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Jost',sans-serif;background:#F5F0E8;color:#2C2416;-webkit-font-smoothing:antialiased}
+:root{--bg:#F5F0E8;--gold:#C9A96E;--white:#FDFCFA;--brown:#2C2416;--gl:rgba(201,169,110,0.12);--gb:rgba(201,169,110,0.3)}
+input,select,textarea,button{font-family:inherit}
+#root{min-height:100vh}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const {useState,useRef,useEffect}=React;
+const C={bg:"#F5F0E8",gold:"#C9A96E",white:"#FDFCFA",brown:"#2C2416",gl:"rgba(201,169,110,0.12)",gb:"rgba(201,169,110,0.3)"};
+const MO=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const WD=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+const PW="mila2026";
+const CTS=[{id:"stories",label:"Stories",icon:"◎",pr:"Crie um roteiro de stories para Instagram"},{id:"legenda",label:"Legenda",icon:"¶",pr:"Crie uma legenda para post de feed no Instagram"},{id:"temas",label:"Temas",icon:"◇",pr:"Sugira 5 ideias de temas/pautas de conteúdo para Instagram"}];
+const TOPS=["Cirurgia Íntima","Laser CO2","Saúde da Mulher","Autoestima Feminina","Menopausa","Estética Íntima","Incontinência Urinária","Sexualidade Feminina","Pós-parto","Qualidade de Vida","Prevenção Ginecológica","Empoderamento Feminino","Desafio #LeveComDraMila","Hábitos Saudáveis","Maternidade","Implante Hormonal","Tirzepatida","DIU"];
+const sysPr=`Você é a redatora da Dra. Mila Cintra, ginecologista especialista em estética íntima e cirurgia íntima em Aracaju-SE. Tom: elegante, sofisticado, acolhedor. Nunca clínico frio ou vendas. Como amiga médica culta para mulheres premium 30-55 anos. Emojis com moderação. CRM-SE 4581, RQE 3556, UFS, residência SP, 3 pós-graduações, +1000 pacientes, @dramilacintra. Contexto março/2026: Dra. Mila está grávida da Nina (previsão final abril/início maio). Já é mãe do Walter (4 anos). Desafio #LeveComDraMila de 21 dias no Gymrats (02-22/março). Dia 22/03 café da manhã fitness. Serviços: ninfoplastia, laser CO2, implante hormonal, tirzepatida, betaglucona, inserção de DIU, consultas ginecológicas. Responda APENAS o conteúdo solicitado.`;
+
+const navBtn={background:C.white,border:`1px solid ${C.gb}`,borderRadius:8,width:36,height:36,cursor:"pointer",fontSize:16,color:C.brown,display:"flex",alignItems:"center",justifyContent:"center"};
+const lbl={display:"block",fontSize:12,fontWeight:500,color:C.gold,marginBottom:6,textTransform:"uppercase",letterSpacing:1};
+const inp={width:"100%",padding:"10px 14px",borderRadius:10,border:`1px solid ${C.gb}`,background:C.white,fontSize:14,color:C.brown,outline:"none",marginBottom:16,boxSizing:"border-box"};
+const btnP={padding:"12px 24px",borderRadius:10,border:"none",background:C.gold,color:C.white,fontSize:14,fontWeight:500,cursor:"pointer",letterSpacing:.5};
+const btnS={padding:"6px 14px",borderRadius:8,border:`1px solid ${C.gb}`,background:C.white,color:C.brown,fontSize:12,cursor:"pointer"};
+
+// Storage using localStorage for deployed version
+const sL=(k,fb)=>{try{const v=localStorage.getItem("mc_"+k);return v?JSON.parse(v):fb;}catch{return fb;}};
+const sS=(k,v)=>{try{localStorage.setItem("mc_"+k,JSON.stringify(v));}catch{}};
+
+/* Plan Data */
+const PD=[
+{mo:"Março",col:"#9B59B6",tp:"Comemorativa · Desafio · Pré-licença",cn:"#LeveComDraMila + Mês da Mulher",cc:"Desafio de 21 dias no Gymrats (02–22/03). Dia da Mulher com ação emocional — mãe da Dra. Mila, 4ª geração. Café fitness dia 22/03. Intensificação de agenda pré-afastamento.",obj:"Engajamento máximo, conversão de agenda, posicionamento pré-licença.",kp:["Volume de agenda acima da média","Adesão ao desafio","Presença no evento 22/03","Lançamento de pacotes"],aud:"Participantes do desafio, seguidoras engajadas, público Dia da Mulher",pal:{m:"Sofisticado, feminino, empoderado"},logo:"Identidade visual temporária integrando M|C ao desafio",act:["Conteúdo diário do desafio","Ação Dia da Mulher (08/03)","Evento presencial 22/03","Comunicação de urgência pré-afastamento","Lançamento de pacotes por linha de serviço"],wk:[{w:"Semana 2 (10–16) — atual",c:"Metade do desafio. Engajamento e depoimentos. CTA de agenda.",f:"Feed + stories diários + reels"},{w:"Semana 3 (17–22)",c:"Reta final. Expectativa para evento. Urgência de agenda.",f:"Stories intensivos + CTA"},{w:"Semana 4 (23–31)",c:"Pós-evento. Resultados. Último chamado antes do afastamento.",f:"Feed + reels + stories"}]},
+{mo:"Abril",col:"#E8967D",tp:"Transição · Procedimento · Pessoal",cn:"Preparação e Cuidado",cc:"Últimas semanas antes da chegada da Nina. Walter (4 anos) ganhando uma irmã. Narrativa de segunda maternidade. Agenda em capacidade máxima.",obj:"Maximizar faturamento. Consolidar lista de espera para retorno.",kp:["Agenda em capacidade máxima","Lista de espera com 30+ nomes","Pacotes antecipados vendidos"],aud:"Pacientes ativas, seguidoras fiéis",pal:{m:"Acolhedor, maternal, sofisticado"},logo:"M|C com elementos de transição",act:["Comunicação sobre afastamento","Conteúdo pessoal: Walter e a irmã","Venda antecipada de pacotes","Ativação de lista de espera","Fechamento de procedimentos pendentes"],wk:[{w:"Semana 1–2",c:"Agenda lotada. Conteúdo misto profissional e pessoal.",f:"Feed + stories + reels"},{w:"Semana 3–4",c:"Comunicado oficial. Despedida temporária.",f:"Feed + stories"}]},
+{mo:"Maio",col:"#F8C8DC",tp:"Licença · Manutenção",cn:"Bem-vinda, Nina",cc:"Período de afastamento. Walter ganha a irmã. Conteúdo reduzido e programado. Dia das Mães 11/05. Operação de serviços alternativos.",obj:"Manter engajamento e receita mínima durante afastamento.",kp:["Receita de serviços alternativos","Engajamento mantido em 80%","Crescimento da lista de espera"],aud:"Base fiel, mães, gestantes",pal:{m:"Delicado, maternal, premium"},logo:"Variação M|C para o período",act:["Comunicação do nascimento","Dia das Mães: Walter, Nina e Dra. Mila","Conteúdo pré-programado","Divulgação de serviços disponíveis","Manutenção de contratos de locação"],wk:[{w:"Semana 1–2",c:"Nascimento. Dia das Mães.",f:"1–2 posts + stories"},{w:"Semana 3–4",c:"Educativo programado. Serviços alternativos.",f:"1 post/semana"}]},
+{mo:"Junho",col:"#A8B5A2",tp:"Retorno · Sazonal",cn:"Retorno",cc:"Retorno ao atendimento meados de junho. Conversão da demanda represada. São João sergipano.",obj:"Reativar operação. Converter lista de espera.",kp:["Conversão de 80% da lista","Retomada de ritmo","Engajamento acima da média"],aud:"Lista de espera, pacientes que adiaram",pal:{m:"Renovação, frescor"},logo:"M|C com identidade de retorno",act:["Contagem regressiva","Ativação via WhatsApp","Conteúdo sobre maternidade","Temática São João","Reabertura de agenda"],wk:[{w:"Semana 1–2",c:"Teasers e retorno oficial.",f:"Feed + reels + stories"},{w:"Semana 3–4",c:"São João. Normalização.",f:"Feed + stories"}]},
+{mo:"Julho",col:"#7BA7BC",tp:"Sazonal · Procedimento",cn:"Verão Íntimo",cc:"Férias e calor nordestino. Foco em procedimentos e recuperação pós-afastamento.",obj:"Acelerar faturamento. Escalar base recorrente.",kp:["Volume de procedimentos elevado","Ampliação da base recorrente","Ticket médio via pacotes"],aud:"Férias, pós-parto, quem adiou",pal:{m:"Fresco, luminoso"},logo:"M|C sazonal",act:["Campanha Verão Íntimo","Pacotes por linha de serviço","Conteúdo educativo sazonal","Programa de indicação","Parcerias profissionais"],wk:[{w:"Semana 1–2",c:"Lançamento campanha. Pacotes.",f:"Reels + feed + stories"},{w:"Semana 3–4",c:"Conversão. Preparação agosto.",f:"Feed + stories"}]},
+{mo:"Agosto",col:"#8B6F8B",tp:"Institucional · Comemorativa · Social",cn:"Mila Plena",cc:"Aniversário da Dra. Mila (27/08). Agosto Lilás. Primeiro aniversário com dois filhos.",obj:"Fortalecimento de marca. Presença em mídia.",kp:["Maior engajamento do semestre","Presença em mídia","Operação escalada"],aud:"Público amplo, causas sociais",pal:{m:"Sofisticado, profundo"},logo:"Agosto Lilás + aniversário",act:["Série Agosto Lilás","Parcerias profissionais","Aniversário 27/08","Ação social","Mídia local"],wk:[{w:"Semana 1–2",c:"Agosto Lilás. Educativo.",f:"Feed + live + stories"},{w:"Semana 3–4",c:"Aniversário. Celebração.",f:"Feed + reels + stories"}]},
+{mo:"Setembro",col:"#E67E22",tp:"Educativa · Procedimento",cn:"Saúde Integral",cc:"Saúde integral feminina. Preparação para Outubro Rosa.",obj:"Referência em saúde feminina. Aquecimento outubro.",kp:["Alcance ampliado","Consultas crescentes","Audiência aquecida"],aud:"Cuidado integral",pal:{m:"Quente, acolhedor"},logo:"M|C identidade do mês",act:["Saúde íntima e emocional","Campanha implante hormonal","Climatério e menopausa","Aquecimento Outubro Rosa"],wk:[{w:"Semana 1–2",c:"Abertura temática.",f:"Feed + live + stories"},{w:"Semana 3–4",c:"Transição outubro.",f:"Feed + stories"}]},
+{mo:"Outubro",col:"#E91E8B",tp:"Campanha principal do ano",cn:"Outubro Rosa",cc:"Maior campanha. Dados de 2025: melhor desempenho. Replicar e ampliar.",obj:"Atingir meta de faturamento. Maior visibilidade.",kp:["Meta atingida","Volume máximo","Presença em mídia","Ação social"],aud:"Alcance máximo",pal:{m:"Impactante, vibrante, acolhedor"},logo:"Outubro Rosa integrado ao M|C",act:["Presença diária","Conteúdo educativo massivo","Ação social preventivos","Mídia local","Parceria mastologista","Todos serviços ativos"],wk:[{w:"Semana 1–2",c:"Abertura. Mudança visual. Educativo.",f:"Presença diária"},{w:"Semana 3–4",c:"Histórias reais. Mídia. Conversão.",f:"Presença diária"}]},
+{mo:"Novembro",col:"#2C2416",tp:"Comercial · Premium",cn:"Black Mila",cc:"Black Friday como experiência premium. Pacotes de alto valor. Maior potencial de faturamento.",obj:"Superar meta. Maior mês do ano.",kp:["Faturamento acima da meta","Volume de pacotes","Conversão de alto valor"],aud:"Base para upsell, novas, indicações",pal:{m:"Premium, exclusivo"},logo:"M|C dourado em fundo escuro",act:["Teaser antecipado","Lista VIP","Pacotes premium","Exclusividade e prazo","Novembro Azul: saúde do casal"],wk:[{w:"Semana 1–2",c:"Teaser. Lista VIP. Novembro Azul.",f:"Stories + feed"},{w:"Semana 3–4",c:"Abertura. Black Friday. Encerramento.",f:"Feed diário + stories"}]},
+{mo:"Dezembro",col:"#C0392B",tp:"Institucional · Encerramento",cn:"Retrospectiva e Gratidão",cc:"Encerramento do ano. Natal do Walter e da Nina. Retrospectiva transformadora. Preparação 2027.",obj:"Fidelizar. Fechar forte. Garantir agenda janeiro.",kp:["Pré-agendamentos janeiro","Gift cards vendidos","Retrospectiva engajada"],aud:"Base fiel",pal:{m:"Celebrativo, quente, gratidão"},logo:"M|C identidade natalina",act:["Retrospectiva carrossel","Natal com Walter e Nina","Gift cards","Agenda janeiro especial","Visão 2027"],wk:[{w:"Semana 1–2",c:"Retrospectiva. Gift cards.",f:"Carrossel + reels"},{w:"Semana 3–4",c:"Natal. Ano Novo. Pré-agendamento.",f:"Feed + stories"}]}
+];
+
+/* Growth Tab */
+function GrowthTab(){
+  const[op,setOp]=useState({road:true});
+  const tog=s=>setOp(p=>({...p,[s]:!p[s]}));
+  const Sec=({id,title,children})=>{const o=op[id]||false;return(<div style={{background:C.white,borderRadius:12,border:`1px solid ${C.gb}`,marginBottom:12,overflow:"hidden"}}><button onClick={()=>tog(id)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"16px 20px",background:"none",border:"none",cursor:"pointer"}}><span style={{fontSize:15,fontWeight:500,color:C.brown}}>{title}</span><span style={{color:C.gold,fontSize:16}}>{o?"−":"+"}</span></button>{o&&<div style={{padding:"0 20px 20px",fontSize:14,lineHeight:1.7,color:C.brown}}>{children}</div>}</div>)};
+  const phases=[
+    {phase:"Fase 1 — Pré-licença",period:"Março – Abril",goal:"Consolidar e maximizar",color:"#E8967D",items:["Otimização da agenda 5 dias/semana","Estruturação de pacotes por serviço","Ampliação da base recorrente","Campanha de urgência pré-afastamento","Captação de lista de espera qualificada"]},
+    {phase:"Fase 2 — Afastamento",period:"Maio – Junho",goal:"Manutenção de receita",color:"#F8C8DC",items:["Serviços independentes da titular","Gestão de contratos de locação","Conteúdo programado","Pré-venda de retorno"]},
+    {phase:"Fase 3 — Retorno",period:"Julho – Agosto",goal:"Recuperar e escalar",color:"#7BA7BC",items:["Conversão da demanda represada","Campanhas sazonais de conversão","Escalada de procedimentos","Consolidação da base recorrente"]},
+    {phase:"Fase 4 — Consolidação",period:"Setembro – Dezembro",goal:"Atingir e manter meta",color:"#E91E8B",items:["Mix de serviços equilibrado","Campanhas de alto impacto","Avaliação de novas receitas","Planejamento 2027"]},
+  ];
+  return(<div>
+    <div style={{textAlign:"center",marginBottom:24}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:26,color:C.brown,margin:"0 0 6px"}}>Direcionamento Estratégico</h2><p style={{color:C.gold,fontSize:13}}>Roadmap de crescimento — 2º semestre 2026</p></div>
+    <div style={{background:`linear-gradient(135deg,${C.brown},#3d3222)`,borderRadius:16,padding:28,marginBottom:20,color:C.white}}>
+      <div style={{display:"flex",justifyContent:"space-around",alignItems:"center",flexWrap:"wrap",gap:16}}>
+        <div style={{textAlign:"center"}}><p style={{fontSize:11,color:C.gold,margin:"0 0 4px",textTransform:"uppercase",letterSpacing:1}}>Baseline</p><p style={{fontSize:30,fontWeight:600,margin:0,fontFamily:"'Cormorant Garamond',Georgia,serif"}}>R$ 52.5k</p></div>
+        <div style={{fontSize:24,color:C.gold}}>→</div>
+        <div style={{textAlign:"center"}}><p style={{fontSize:11,color:C.gold,margin:"0 0 4px",textTransform:"uppercase",letterSpacing:1}}>Meta 2º semestre</p><p style={{fontSize:30,fontWeight:600,margin:0,fontFamily:"'Cormorant Garamond',Georgia,serif",color:C.gold}}>R$ 100k</p></div>
+      </div>
+      <div style={{marginTop:16,background:"rgba(255,255,255,0.1)",borderRadius:8,height:6,overflow:"hidden"}}><div style={{height:"100%",width:"52.5%",background:C.gold,borderRadius:8}}/></div>
+      <p style={{textAlign:"center",fontSize:11,color:"rgba(255,255,255,0.5)",marginTop:6}}>Progresso: 52,5%</p>
+    </div>
+    <Sec id="diag" title="Diagnóstico">
+      <p style={{marginBottom:12}}>Análise do relatório financeiro set/2025 – mar/2026.</p>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
+        {[{l:"Faturamento total",v:"R$ 367.659"},{l:"Média mensal",v:"R$ 52.500"},{l:"Melhor desempenho",v:"Outubro/2025"},{l:"Capacidade",v:"5 dias/semana"}].map((c,i)=>(<div key={i} style={{background:C.bg,borderRadius:10,padding:14,textAlign:"center"}}><p style={{fontSize:10,color:C.gold,margin:"0 0 2px",textTransform:"uppercase"}}>{c.l}</p><p style={{fontSize:16,fontWeight:600,color:C.brown,margin:0,fontFamily:"'Cormorant Garamond',Georgia,serif"}}>{c.v}</p></div>))}
+      </div>
+      <p style={{fontSize:13,color:"#666"}}>Portfólio com seis linhas de serviço. Gap de R$ 47.500 a ser fechado via otimização do mix, aumento de ticket médio e ampliação da base recorrente. Detalhamento sob consulta.</p>
+    </Sec>
+    <Sec id="lines" title="Linhas de Receita">
+      {[{name:"Cirurgia Íntima",pct:18,color:"#E91E8B"},{name:"Laser CO2",pct:25,color:"#9B59B6"},{name:"Implante Hormonal",pct:12,color:"#E67E22"},{name:"Tirzepatida",pct:20,color:"#2980B9"},{name:"DIU + Imunoestimulantes",pct:8,color:"#A8B5A2"},{name:"Consultas + demais",pct:12,color:C.gold},{name:"Locações",pct:5,color:"#8B6F8B"}].map((s,i)=>(<div key={i} style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:4}}><span>{s.name}</span><span style={{fontWeight:600,color:s.color}}>{s.pct}%</span></div><div style={{background:C.bg,borderRadius:4,height:5,overflow:"hidden"}}><div style={{height:"100%",width:`${s.pct}%`,background:s.color,borderRadius:4}}/></div></div>))}
+      <p style={{fontSize:12,color:"#999",marginTop:12,fontStyle:"italic"}}>Metas quantitativas por linha sob acompanhamento de consultoria.</p>
+    </Sec>
+    <Sec id="road" title="Roadmap de Execução">
+      {phases.map((r,i)=>(<div key={i} style={{background:`${r.color}08`,borderRadius:12,border:`1px solid ${r.color}30`,padding:20,marginBottom:12}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10,flexWrap:"wrap",gap:8}}><div><p style={{fontWeight:600,color:C.brown,margin:0,fontSize:15}}>{r.phase}</p><p style={{fontSize:12,color:C.gold,margin:0}}>{r.period}</p></div><span style={{background:r.color+"20",color:r.color,padding:"4px 12px",borderRadius:20,fontSize:11,fontWeight:600}}>{r.goal}</span></div>{r.items.map((it,j)=><div key={j} style={{display:"flex",gap:8,marginBottom:4,fontSize:13}}><span style={{color:r.color}}>—</span><span>{it}</span></div>)}</div>))}
+    </Sec>
+    <Sec id="cont" title="Direcionamento de Conteúdo">
+      {[{srv:"Cirurgia Íntima",freq:"Quinzenal",dir:"Desmistificação, processo, recuperação, depoimentos"},{srv:"Laser CO2",freq:"Semanal",dir:"Indicações, benefícios, pacotes, sazonalidade"},{srv:"Implante Hormonal",freq:"Semanal",dir:"Equilíbrio hormonal, qualidade de vida, climatério"},{srv:"Tirzepatida",freq:"2x semana",dir:"Acompanhamento médico, resultados, segurança"},{srv:"DIU",freq:"Quinzenal",dir:"Comparativo, praticidade, dúvidas frequentes"},{srv:"Betaglucona",freq:"Mensal",dir:"Imunidade feminina, prevenção, diferencial"}].map((s,i)=>(<div key={i} style={{display:"flex",gap:12,marginBottom:10,alignItems:"flex-start"}}><div style={{background:C.gl,borderRadius:8,padding:"6px 10px",flexShrink:0,minWidth:65,textAlign:"center"}}><p style={{fontSize:11,fontWeight:600,color:C.gold,margin:0}}>{s.srv}</p><p style={{fontSize:9,color:"#999",margin:0}}>{s.freq}</p></div><p style={{fontSize:13,margin:0}}>{s.dir}</p></div>))}
+    </Sec>
+  </div>);
+}
+
+/* Plan Tab */
+function PlanTab(){
+  const[sel,setSel]=useState(0);const[exp,setExp]=useState({crono:true});const m=PD[sel];
+  const tog=s=>setExp(p=>({...p,[s]:!p[s]}));
+  const Sec=({id,title,children})=>{const o=exp[id]||false;return(<div style={{background:C.white,borderRadius:12,border:`1px solid ${C.gb}`,marginBottom:12,overflow:"hidden"}}><button onClick={()=>tog(id)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 18px",background:"none",border:"none",cursor:"pointer"}}><span style={{fontSize:14,fontWeight:500,color:C.brown}}>{title}</span><span style={{color:C.gold}}>{o?"−":"+"}</span></button>{o&&<div style={{padding:"0 18px 18px",fontSize:13,lineHeight:1.7,color:C.brown}}>{children}</div>}</div>)};
+  return(<div>
+    <div style={{textAlign:"center",marginBottom:20}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:26,color:C.brown,margin:"0 0 6px"}}>Planejamento Mensal</h2><p style={{color:C.gold,fontSize:12}}>Março – Dezembro 2026</p></div>
+    <div style={{display:"flex",gap:5,overflowX:"auto",paddingBottom:8,marginBottom:16}}>{PD.map((p,i)=><button key={i} onClick={()=>{setSel(i);setExp({crono:true});}} style={{padding:"7px 12px",borderRadius:10,border:`1.5px solid ${sel===i?p.col:C.gb}`,background:sel===i?p.col+"18":"transparent",cursor:"pointer",whiteSpace:"nowrap",fontSize:11,fontWeight:sel===i?600:400,color:sel===i?p.col:C.brown,flexShrink:0}}>{"◆ "+p.mo.slice(0,3)}</button>)}</div>
+    <div style={{background:`linear-gradient(135deg,${m.col}12,${m.col}06)`,borderRadius:14,border:`1px solid ${m.col}30`,padding:22,marginBottom:16}}>
+      <p style={{fontSize:11,color:m.col,letterSpacing:2,textTransform:"uppercase",marginBottom:4}}>{m.mo} 2026 — {m.tp}</p>
+      <h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,color:C.brown,margin:"0 0 8px"}}>{m.cn}</h3>
+      <p style={{fontSize:13,lineHeight:1.6}}>{m.cc}</p>
+    </div>
+    <Sec id="obj" title="Objetivo e indicadores"><p style={{marginBottom:10}}><strong>Objetivo:</strong> {m.obj}</p>{m.kp.map((k,i)=><div key={i} style={{display:"flex",gap:8,marginBottom:4}}><span style={{color:m.col}}>—</span><span>{k}</span></div>)}<p style={{marginTop:10}}><strong>Público:</strong> {m.aud}</p></Sec>
+    <Sec id="vis" title="Identidade visual"><p><strong>Direção:</strong> {m.pal.m}</p><p><strong>Aplicação:</strong> {m.logo}</p></Sec>
+    <Sec id="act" title="Ações e entregas">{m.act.map((a,i)=><div key={i} style={{display:"flex",gap:8,marginBottom:4}}><span style={{color:m.col}}>—</span><span>{a}</span></div>)}</Sec>
+    <Sec id="crono" title="Cronograma">{m.wk.map((w,i)=><div key={i} style={{background:i%2===0?C.gl:"transparent",borderRadius:10,padding:14,marginBottom:6}}><p style={{fontWeight:600,color:m.col,fontSize:12,marginBottom:4}}>{w.w}</p><p style={{marginBottom:2}}>{w.c}</p><p style={{fontSize:11,color:C.gold}}>Formato: {w.f}</p></div>)}</Sec>
+  </div>);
+}
+
+/* Calendar */
+function Cal({month,year,entries,onDay,onMo}){
+  const fd=new Date(year,month,1).getDay(),dm=new Date(year,month+1,0).getDate(),ds=[];
+  for(let i=0;i<fd;i++)ds.push(null);for(let j=1;j<=dm;j++)ds.push(j);
+  return(<div><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}><button onClick={()=>month===0?onMo(11,year-1):onMo(month-1,year)} style={navBtn}>←</button><h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:20,color:C.brown,margin:0}}>{MO[month]} {year}</h3><button onClick={()=>month===11?onMo(0,year+1):onMo(month+1,year)} style={navBtn}>→</button></div><div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:4}}>{WD.map(d=><div key={d} style={{textAlign:"center",fontSize:10,color:C.gold,fontWeight:600,padding:"3px 0"}}>{d}</div>)}{ds.map((day,i)=>{const k=day?`${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`:null;const en=k?entries[k]:null;const td=day&&new Date().getDate()===day&&new Date().getMonth()===month&&new Date().getFullYear()===year;return(<div key={i} onClick={()=>day&&onDay(k)} style={{aspectRatio:"1",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",borderRadius:7,fontSize:12,background:en?C.gl:td?"rgba(201,169,110,0.06)":"transparent",border:td?`2px solid ${C.gold}`:en?`1px solid ${C.gb}`:"1px solid transparent",cursor:day?"pointer":"default",color:day?C.brown:"transparent"}}>{day||""}{en&&<div style={{width:4,height:4,borderRadius:"50%",background:C.gold,marginTop:1}}/>}</div>)})}</div></div>);
+}
+
+function EModal({dk,entry,onSave,onClose,onDel}){
+  const[t,sT]=useState(entry?.title||"");const[tp,sTp]=useState(entry?.type||"stories");const[n,sN]=useState(entry?.notes||"");const[y,m,d]=dk.split("-");
+  return(<div style={{position:"fixed",inset:0,background:"rgba(44,36,22,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000,padding:16}}><div style={{background:C.white,borderRadius:16,padding:28,maxWidth:400,width:"100%"}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:16}}><h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:18,color:C.brown,margin:0}}>{d}/{m}/{y}</h3><button onClick={onClose} style={{background:"none",border:"none",fontSize:18,cursor:"pointer"}}>×</button></div><label style={lbl}>Título</label><input value={t} onChange={e=>sT(e.target.value)} style={inp}/><label style={lbl}>Tipo</label><select value={tp} onChange={e=>sTp(e.target.value)} style={inp}>{CTS.map(t=><option key={t.id} value={t.id}>{t.label}</option>)}</select><label style={lbl}>Notas</label><textarea value={n} onChange={e=>sN(e.target.value)} rows={2} style={{...inp,resize:"vertical"}}/><div style={{display:"flex",gap:8}}><button onClick={()=>onSave({title:t,type:tp,notes:n})} style={{...btnP,flex:1}}>Salvar</button>{entry&&<button onClick={onDel} style={{...btnS,color:"#c44"}}>Excluir</button>}</div></div></div>);
+}
+
+/* Login */
+function Login({onOk}){
+  const[pw,sP]=useState("");const[er,sE]=useState(false);
+  const go=()=>{if(pw===PW)onOk();else{sE(true);setTimeout(()=>sE(false),2000);}};
+  return(<div style={{minHeight:"100vh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}><div style={{background:C.white,borderRadius:20,padding:"44px 32px",maxWidth:360,width:"100%",textAlign:"center",boxShadow:"0 20px 60px rgba(44,36,22,0.1)"}}><h1 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:34,fontWeight:600,color:C.brown,margin:"0 0 4px"}}>M<span style={{color:C.gold}}>|</span>C</h1><p style={{fontSize:10,color:C.gold,letterSpacing:3,textTransform:"uppercase",marginBottom:28}}>Painel Estratégico</p><input type="password" value={pw} onChange={e=>sP(e.target.value)} onKeyDown={e=>e.key==="Enter"&&go()} placeholder="Senha de acesso" style={{...inp,textAlign:"center",marginBottom:er?6:14}}/>{er&&<p style={{color:"#c44",fontSize:11,marginBottom:10}}>Acesso negado</p>}<button onClick={go} style={{...btnP,width:"100%"}}>Acessar</button></div></div>);
+}
+
+/* Main App */
+function App(){
+  const[logged,setL]=useState(false);const[tab,setTab]=useState("growth");
+  const[ct,sCt]=useState("stories");const[topic,sTo]=useState(TOPS[0]);const[cTo,sCTo]=useState("");const[extra,sEx]=useState("");
+  const[result,sR]=useState("");const[ld,sLd]=useState(false);const[cp,sCp]=useState(false);
+  const[calM,sCM2]=useState(2);const[calY,sCY]=useState(2026);
+  const[calE,sCE]=useState(()=>sL("cal",{}));const[edD,sED]=useState(null);
+  const[saved,sSv]=useState(()=>sL("sv",[]));const[sN2,sSN]=useState("");
+
+  useEffect(()=>sS("cal",calE),[calE]);
+
+  const gen=async()=>{sLd(true);sR("");sCp(false);const c=CTS.find(x=>x.id===ct);const t=cTo.trim()||topic;let msg=`${c.pr} sobre: "${t}".`;if(ct==="stories")msg+="\nSequência de telas com texto, formato e orientação visual.";if(ct==="legenda")msg+="\nTexto completo, CTA e 15-20 hashtags.";if(ct==="temas")msg+="\n5 temas com título, relevância e formato.";if(extra.trim())msg+=`\n\n${extra}`;try{const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:sysPr,messages:[{role:"user",content:msg}]})});const d=await r.json();sR(d.content?.map(b=>b.text||"").join("\n")||"Erro.");}catch{sR("Erro de conexão.");}sLd(false);};
+
+  if(!logged)return <Login onOk={()=>setL(true)}/>;
+  const tabs=[{id:"growth",l:"Estratégia"},{id:"plan",l:"Planejamento"},{id:"gen",l:"Conteúdo"},{id:"sv",l:"Salvos"},{id:"cal",l:"Agenda"}];
+
+  return(<div style={{minHeight:"100vh",background:C.bg}}>
+    <div style={{background:C.white,borderBottom:`1px solid ${C.gb}`,padding:"14px 16px"}}><div style={{maxWidth:840,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}><div><h1 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,fontWeight:600,color:C.brown,margin:0}}>M<span style={{color:C.gold}}>|</span>C</h1><p style={{fontSize:9,color:C.gold,margin:0,letterSpacing:2,textTransform:"uppercase"}}>Painel Estratégico</p></div><div style={{display:"flex",gap:2,background:C.bg,borderRadius:9,padding:2,flexWrap:"wrap"}}>{tabs.map(t=><button key={t.id} onClick={()=>setTab(t.id)} style={{padding:"6px 11px",borderRadius:7,border:"none",cursor:"pointer",fontSize:11,fontWeight:tab===t.id?600:400,background:tab===t.id?C.white:"transparent",color:tab===t.id?C.brown:C.gold}}>{t.l}</button>)}</div></div></div>
+    <div style={{maxWidth:840,margin:"0 auto",padding:"18px 14px"}}>
+      {tab==="growth"&&<GrowthTab/>}
+      {tab==="plan"&&<PlanTab/>}
+      {tab==="gen"&&(<div>
+        <div style={{textAlign:"center",marginBottom:20}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,color:C.brown}}>Gerador de Conteúdo</h2><p style={{color:C.gold,fontSize:12}}>Produção alinhada ao posicionamento da marca</p></div>
+        <label style={lbl}>Formato</label><div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}}>{CTS.map(c=><button key={c.id} onClick={()=>sCt(c.id)} style={{padding:"12px 6px",borderRadius:10,border:`1.5px solid ${ct===c.id?C.gold:C.gb}`,background:ct===c.id?C.gl:C.white,cursor:"pointer",textAlign:"center"}}><div style={{fontSize:14,marginBottom:2,color:C.gold}}>{c.icon}</div><div style={{fontSize:11,fontWeight:500,color:C.brown}}>{c.label}</div></button>)}</div>
+        <label style={lbl}>Tema</label><div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:8}}>{TOPS.map(t=><button key={t} onClick={()=>{sTo(t);sCTo("");}} style={{padding:"4px 10px",borderRadius:16,fontSize:10,border:`1px solid ${topic===t&&!cTo?C.gold:C.gb}`,background:topic===t&&!cTo?C.gl:C.white,color:C.brown,cursor:"pointer"}}>{t}</button>)}</div>
+        <input value={cTo} onChange={e=>sCTo(e.target.value)} placeholder="Ou insira um tema específico..." style={inp}/>
+        <label style={lbl}>Orientações adicionais</label><textarea value={extra} onChange={e=>sEx(e.target.value)} rows={2} placeholder="Contexto, direcionamento..." style={{...inp,resize:"vertical"}}/>
+        <button onClick={gen} disabled={ld} style={{...btnP,width:"100%",opacity:ld?.7:1}}>{ld?"Gerando...":"Gerar conteúdo"}</button>
+        {result&&(<div style={{marginTop:16,background:C.white,borderRadius:12,border:`1px solid ${C.gb}`,padding:18}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}><span style={{fontWeight:500,fontSize:13}}>Resultado</span><div style={{display:"flex",gap:4}}><button onClick={()=>{const c=CTS.find(x=>x.id===ct);const u=[{id:Date.now(),tl:c.label,tp:cTo.trim()||topic,tx:result,dt:new Date().toLocaleDateString("pt-BR")},...saved].slice(0,50);sSv(u);sS("sv",u);sSN("Salvo");setTimeout(()=>sSN(""),2000);}} style={btnS}>{sN2||"Salvar"}</button><button onClick={()=>{navigator.clipboard.writeText(result);sCp(true);setTimeout(()=>sCp(false),2000);}} style={btnS}>{cp?"Copiado":"Copiar"}</button></div></div><div style={{whiteSpace:"pre-wrap",fontSize:13,lineHeight:1.7}}>{result}</div></div>)}
+      </div>)}
+      {tab==="sv"&&(<div>
+        <div style={{textAlign:"center",marginBottom:20}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,color:C.brown}}>Conteúdos Salvos</h2></div>
+        {saved.length===0?<p style={{textAlign:"center",color:C.gold}}>Nenhum conteúdo salvo.</p>:saved.map(it=><div key={it.id} style={{background:C.white,borderRadius:10,border:`1px solid ${C.gb}`,padding:16,marginBottom:8}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:6,flexWrap:"wrap",gap:4}}><span style={{fontSize:12}}>{it.tl} · {it.tp} · {it.dt}</span><div style={{display:"flex",gap:4}}><button onClick={()=>navigator.clipboard.writeText(it.tx)} style={btnS}>Copiar</button><button onClick={()=>{const u=saved.filter(c=>c.id!==it.id);sSv(u);sS("sv",u);}} style={{...btnS,color:"#c44"}}>Remover</button></div></div><div style={{whiteSpace:"pre-wrap",fontSize:12,lineHeight:1.5,maxHeight:160,overflow:"auto"}}>{it.tx}</div></div>)}
+      </div>)}
+      {tab==="cal"&&(<div>
+        <div style={{textAlign:"center",marginBottom:20}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,color:C.brown}}>Calendário Editorial</h2></div>
+        <div style={{background:C.white,borderRadius:12,border:`1px solid ${C.gb}`,padding:18}}><Cal month={calM} year={calY} entries={calE} onDay={k=>sED(k)} onMo={(m,y)=>{sCM2(m);sCY(y);}}/></div>
+        {edD&&<EModal dk={edD} entry={calE[edD]||null} onSave={d=>{sCE(p=>({...p,[edD]:d}));sED(null);}} onClose={()=>sED(null)} onDel={()=>{sCE(p=>{const n={...p};delete n[edD];return n;});sED(null);}}/>}
+      </div>)}
+    </div>
+  </div>);
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
