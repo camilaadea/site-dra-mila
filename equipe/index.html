@@ -137,7 +137,7 @@ function Login({onOk}){
 
 /* Main App */
 function App(){
-  const[logged,setL]=useState(false);const[tab,setTab]=useState("growth");
+  const[logged,setL]=useState(false);const[tab,setTab]=useState("plan");const[stratUnlocked,setStrat]=useState(false);const[stratPw,setStratPw]=useState("");const[stratErr,setStratErr]=useState(false);const[showStratModal,setShowStratModal]=useState(false);
   const[ct,sCt]=useState("stories");const[topic,sTo]=useState(TOPS[0]);const[cTo,sCTo]=useState("");const[extra,sEx]=useState("");
   const[result,sR]=useState("");const[ld,sLd]=useState(false);const[cp,sCp]=useState(false);
   const[calM,sCM2]=useState(2);const[calY,sCY]=useState(2026);
@@ -148,11 +148,13 @@ function App(){
 
   const gen=async()=>{sLd(true);sR("");sCp(false);const c=CTS.find(x=>x.id===ct);const t=cTo.trim()||topic;let msg=`${c.pr} sobre: "${t}".`;if(ct==="stories")msg+="\nSequência de telas com texto, formato e orientação visual.";if(ct==="legenda")msg+="\nTexto completo, CTA e 15-20 hashtags.";if(ct==="temas")msg+="\n5 temas com título, relevância e formato.";if(extra.trim())msg+=`\n\n${extra}`;try{const r=await fetch("/api/generate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:sysPr,messages:[{role:"user",content:msg}]})});const d=await r.json();sR(d.content?.map(b=>b.text||"").join("\n")||"Erro.");}catch{sR("Erro de conexão.");}sLd(false);};
 
+  const handleTabClick=(id)=>{if(id==="growth"&&!stratUnlocked){setShowStratModal(true);return;}setTab(id);};
+
   if(!logged)return <Login onOk={()=>setL(true)}/>;
-  const tabs=[{id:"growth",l:"Estratégia"},{id:"plan",l:"Planejamento"},{id:"gen",l:"Conteúdo"},{id:"sv",l:"Salvos"},{id:"cal",l:"Agenda"}];
+  const tabs=[{id:"growth",l:"Estratégia",locked:true},{id:"plan",l:"Planejamento"},{id:"gen",l:"Conteúdo"},{id:"sv",l:"Salvos"},{id:"cal",l:"Agenda"}];
 
   return(<div style={{minHeight:"100vh",background:C.bg}}>
-    <div style={{background:C.white,borderBottom:`1px solid ${C.gb}`,padding:"14px 16px"}}><div style={{maxWidth:840,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}><div><h1 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,fontWeight:600,color:C.brown,margin:0}}>M<span style={{color:C.gold}}>|</span>C</h1><p style={{fontSize:9,color:C.gold,margin:0,letterSpacing:2,textTransform:"uppercase"}}>Painel Estratégico</p></div><div style={{display:"flex",gap:2,background:C.bg,borderRadius:9,padding:2,flexWrap:"wrap"}}>{tabs.map(t=><button key={t.id} onClick={()=>setTab(t.id)} style={{padding:"6px 11px",borderRadius:7,border:"none",cursor:"pointer",fontSize:11,fontWeight:tab===t.id?600:400,background:tab===t.id?C.white:"transparent",color:tab===t.id?C.brown:C.gold}}>{t.l}</button>)}</div></div></div>
+    <div style={{background:C.white,borderBottom:`1px solid ${C.gb}`,padding:"14px 16px"}}><div style={{maxWidth:840,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}><div><h1 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,fontWeight:600,color:C.brown,margin:0}}>M<span style={{color:C.gold}}>|</span>C</h1><p style={{fontSize:9,color:C.gold,margin:0,letterSpacing:2,textTransform:"uppercase"}}>Painel Estratégico</p></div><div style={{display:"flex",gap:2,background:C.bg,borderRadius:9,padding:2,flexWrap:"wrap"}}>{tabs.map(t=><button key={t.id} onClick={()=>handleTabClick(t.id)} style={{padding:"6px 11px",borderRadius:7,border:"none",cursor:"pointer",fontSize:11,fontWeight:tab===t.id?600:400,background:tab===t.id?C.white:"transparent",color:tab===t.id?C.brown:C.gold,position:"relative"}}>{t.l}{t.locked&&!stratUnlocked&&<span style={{marginLeft:4,fontSize:9,opacity:.5}}>◆</span>}</button>)}</div></div></div>
     <div style={{maxWidth:840,margin:"0 auto",padding:"18px 14px"}}>
       {tab==="growth"&&<GrowthTab/>}
       {tab==="plan"&&<PlanTab/>}
@@ -174,6 +176,8 @@ function App(){
         <div style={{background:C.white,borderRadius:12,border:`1px solid ${C.gb}`,padding:18}}><Cal month={calM} year={calY} entries={calE} onDay={k=>sED(k)} onMo={(m,y)=>{sCM2(m);sCY(y);}}/></div>
         {edD&&<EModal dk={edD} entry={calE[edD]||null} onSave={d=>{sCE(p=>({...p,[edD]:d}));sED(null);}} onClose={()=>sED(null)} onDel={()=>{sCE(p=>{const n={...p};delete n[edD];return n;});sED(null);}}/>}
       </div>)}
+
+      {showStratModal&&(<div style={{position:"fixed",inset:0,background:"rgba(44,36,22,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000,padding:16}}><div style={{background:C.white,borderRadius:16,padding:"36px 28px",maxWidth:360,width:"100%",textAlign:"center",boxShadow:"0 20px 60px rgba(44,36,22,0.15)"}}><h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,color:C.brown,margin:"0 0 6px"}}>Área restrita</h3><p style={{fontSize:13,color:C.gold,marginBottom:20}}>Acesso exclusivo da consultoria</p><input type="password" value={stratPw} onChange={e=>setStratPw(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"){if(stratPw==="atoz2026"){setStrat(true);setShowStratModal(false);setTab("growth");setStratPw("");}else{setStratErr(true);setTimeout(()=>setStratErr(false),2000);}}}} placeholder="Senha de acesso" style={{...inp,textAlign:"center",marginBottom:stratErr?6:14}}/>{stratErr&&<p style={{color:"#c44",fontSize:11,marginBottom:10}}>Acesso negado</p>}<div style={{display:"flex",gap:8}}><button onClick={()=>{setShowStratModal(false);setStratPw("");setStratErr(false);}} style={{...btnS,flex:1}}>Cancelar</button><button onClick={()=>{if(stratPw==="atoz2026"){setStrat(true);setShowStratModal(false);setTab("growth");setStratPw("");}else{setStratErr(true);setTimeout(()=>setStratErr(false),2000);}}} style={{...btnP,flex:1}}>Acessar</button></div></div></div>)}
     </div>
   </div>);
 }
