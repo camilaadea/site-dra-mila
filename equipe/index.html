@@ -92,9 +92,99 @@ return(<div>
 <Sec id="crono" title="Cronograma">{m.wk.map((w,i)=><div key={i} style={{background:i%2===0?C.gl:"transparent",borderRadius:10,padding:14,marginBottom:6}}><p style={{fontWeight:600,color:m.col,fontSize:12,marginBottom:4}}>{w.w}</p><p style={{marginBottom:2}}>{w.c}</p><p style={{fontSize:11,color:C.gold}}>Formato: {w.f}</p></div>)}</Sec>
 </div>)}
 
-function Cal({month,year,entries,onDay,onMo}){const fd=new Date(year,month,1).getDay(),dm=new Date(year,month+1,0).getDate(),ds=[];for(let i=0;i<fd;i++)ds.push(null);for(let j=1;j<=dm;j++)ds.push(j);return(<div><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}><button onClick={()=>month===0?onMo(11,year-1):onMo(month-1,year)} style={nb}>←</button><h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:20,color:C.brown,margin:0}}>{MO[month]} {year}</h3><button onClick={()=>month===11?onMo(0,year+1):onMo(month+1,year)} style={nb}>→</button></div><div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:4}}>{WD.map(d=><div key={d} style={{textAlign:"center",fontSize:10,color:C.gold,fontWeight:600,padding:"3px 0"}}>{d}</div>)}{ds.map((day,i)=>{const k=day?year+"-"+String(month+1).padStart(2,"0")+"-"+String(day).padStart(2,"0"):null;const en=k?entries[k]:null;const td=day&&new Date().getDate()===day&&new Date().getMonth()===month&&new Date().getFullYear()===year;return(<div key={i} onClick={()=>day&&onDay(k)} style={{aspectRatio:"1",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",borderRadius:7,fontSize:12,background:en?C.gl:td?"rgba(201,169,110,0.06)":"transparent",border:td?"2px solid "+C.gold:en?"1px solid "+C.gb:"1px solid transparent",cursor:day?"pointer":"default",color:day?C.brown:"transparent"}}>{day||""}{en&&<div style={{width:4,height:4,borderRadius:"50%",background:C.gold,marginTop:1}}/>}</div>)})}</div></div>)}
+const TYPES=[{id:"reels",label:"Reels",color:"#E91E8B"},{id:"stories",label:"Stories",color:"#9B59B6"},{id:"carrossel",label:"Carrossel",color:"#2980B9"},{id:"foto",label:"Foto/Post",color:"#E67E22"},{id:"live",label:"Live",color:"#A8B5A2"}];
+const STATUSES=[{id:"rascunho",label:"Rascunho",color:"#999"},{id:"roteirizado",label:"Roteirizado",color:C.gold},{id:"gravar",label:"A gravar",color:"#E67E22"},{id:"gravado",label:"Gravado",color:"#2980B9"},{id:"editado",label:"Editado",color:"#9B59B6"},{id:"postado",label:"Postado",color:"#27ae60"}];
 
-function EModal({dk,entry,onSave,onClose,onDel}){const[t,sT]=useState(entry?.title||"");const[tp,sTp]=useState(entry?.type||"stories");const[n,sN]=useState(entry?.notes||"");const p=dk.split("-");return(<div style={{position:"fixed",inset:0,background:"rgba(44,36,22,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000,padding:16}}><div style={{background:C.white,borderRadius:16,padding:28,maxWidth:400,width:"100%"}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:16}}><h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:18,color:C.brown,margin:0}}>{p[2]}/{p[1]}/{p[0]}</h3><button onClick={onClose} style={{background:"none",border:"none",fontSize:18,cursor:"pointer"}}>×</button></div><label style={lb}>Título</label><input value={t} onChange={e=>sT(e.target.value)} style={ip}/><label style={lb}>Tipo</label><select value={tp} onChange={e=>sTp(e.target.value)} style={ip}>{CTS.map(t=><option key={t.id} value={t.id}>{t.label}</option>)}</select><label style={lb}>Notas</label><textarea value={n} onChange={e=>sN(e.target.value)} rows={2} style={{...ip,resize:"vertical"}}/><div style={{display:"flex",gap:8}}><button onClick={()=>onSave({title:t,type:tp,notes:n})} style={{...bp,flex:1}}>Salvar</button>{entry&&<button onClick={onDel} style={{...bs,color:"#c44"}}>Excluir</button>}</div></div></div>)}
+function AgendaTab({isConsultora}){
+const[entries,setEntries]=useState(()=>sL("agenda",{}));
+const[view,setView]=useState("month");
+const[mo,setMo]=useState(new Date().getMonth());
+const[yr,setYr]=useState(new Date().getFullYear());
+const[selKey,setSelKey]=useState(null);
+const[selIdx,setSelIdx]=useState(null);
+const[showAdd,setShowAdd]=useState(false);
+const[addKey,setAddKey]=useState(null);
+useEffect(()=>sS("agenda",entries),[entries]);
+
+const getWeekDates=()=>{const today=new Date(yr,mo,new Date().getDate());const dow=today.getDay();const start=new Date(today);start.setDate(today.getDate()-dow);const days=[];for(let i=0;i<7;i++){const d=new Date(start);d.setDate(start.getDate()+i);days.push(d)}return days};
+const weekDates=getWeekDates();
+const fmtKey=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const fmtDay=d=>String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0");
+
+const addEntry=(key,entry)=>{setEntries(p=>{const cur=p[key]||[];return{...p,[key]:[...cur,{...entry,id:Date.now(),status:"roteirizado"}]}})};
+const updateEntry=(key,id,updates)=>{setEntries(p=>{const cur=(p[key]||[]).map(e=>e.id===id?{...e,...updates}:e);return{...p,[key]:cur}})};
+const deleteEntry=(key,id)=>{setEntries(p=>{const cur=(p[key]||[]).filter(e=>e.id!==id);const n={...p};if(cur.length)n[key]=cur;else delete n[key];return n})};
+
+const fd=new Date(yr,mo,1).getDay(),dm=new Date(yr,mo+1,0).getDate();
+const calDays=[];for(let i=0;i<fd;i++)calDays.push(null);for(let j=1;j<=dm;j++)calDays.push(j);
+
+const selEntries=selKey?entries[selKey]||[]:[];
+const selEntry=selIdx!==null?selEntries[selIdx]:null;
+
+const CardModal=({dk,entry,onClose})=>{
+const[t,sT]=useState(entry?.title||"");const[tp,sTp]=useState(entry?.type||"reels");const[rot,sRot]=useState(entry?.roteiro||"");
+const p=dk.split("-");const isNew=!entry;
+return(<div style={{position:"fixed",inset:0,background:"rgba(44,36,22,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000,padding:16}} onClick={onClose}><div style={{background:C.white,borderRadius:16,padding:28,maxWidth:560,width:"100%",maxHeight:"90vh",overflowY:"auto"}} onClick={e=>e.stopPropagation()}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+<h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:20,color:C.brown,margin:0}}>{p[2]}/{p[1]}/{p[0]}</h3>
+<button onClick={onClose} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",color:C.brown}}>×</button></div>
+{isConsultora?(<div>
+<label style={lb}>Título</label><input value={t} onChange={e=>sT(e.target.value)} placeholder="Ex: Reels sobre Laser CO2" style={ip}/>
+<label style={lb}>Tipo de conteúdo</label><div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:16}}>{TYPES.map(ty=><button key={ty.id} onClick={()=>sTp(ty.id)} style={{padding:"6px 14px",borderRadius:20,fontSize:11,border:"1.5px solid "+(tp===ty.id?ty.color:C.gb),background:tp===ty.id?ty.color+"15":"transparent",color:tp===ty.id?ty.color:C.brown,cursor:"pointer",fontWeight:tp===ty.id?600:400}}>{ty.label}</button>)}</div>
+<label style={lb}>Roteiro completo</label><textarea value={rot} onChange={e=>sRot(e.target.value)} rows={10} placeholder="Cole aqui o roteiro editado..." style={{...ip,resize:"vertical",fontSize:13,lineHeight:"1.7",minHeight:200}}/>
+<div style={{display:"flex",gap:8,marginTop:8}}>
+<button onClick={()=>{if(!t.trim())return;if(isNew)addEntry(dk,{title:t,type:tp,roteiro:rot});else updateEntry(dk,entry.id,{title:t,type:tp,roteiro:rot});onClose()}} style={{...bp,flex:1}}>{isNew?"Adicionar":"Salvar"}</button>
+{!isNew&&<button onClick={()=>{deleteEntry(dk,entry.id);onClose()}} style={{...bs,color:"#c44",padding:"12px 20px"}}>Excluir</button>}
+</div></div>):(<div>
+<div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
+<span style={{padding:"4px 12px",borderRadius:20,fontSize:11,fontWeight:600,background:(TYPES.find(ty=>ty.id===entry?.type)||TYPES[0]).color+"15",color:(TYPES.find(ty=>ty.id===entry?.type)||TYPES[0]).color}}>{(TYPES.find(ty=>ty.id===entry?.type)||TYPES[0]).label}</span>
+<span style={{fontSize:12,color:C.gold}}>{(STATUSES.find(s=>s.id===entry?.status)||STATUSES[0]).label}</span>
+</div>
+<h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,color:C.brown,margin:"0 0 20px"}}>{entry?.title}</h3>
+{entry?.roteiro?<div style={{background:C.gl,borderRadius:12,padding:20,fontSize:13,lineHeight:1.8,color:C.brown,whiteSpace:"pre-wrap"}}>{entry.roteiro}</div>:<p style={{color:"#999",fontStyle:"italic"}}>Roteiro ainda não adicionado.</p>}
+<div style={{marginTop:20}}><label style={lb}>Atualizar status</label><div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{STATUSES.map(s=><button key={s.id} onClick={()=>{updateEntry(dk,entry.id,{status:s.id})}} style={{padding:"6px 14px",borderRadius:20,fontSize:11,border:"1.5px solid "+(entry?.status===s.id?s.color:C.gb),background:entry?.status===s.id?s.color+"15":"transparent",color:entry?.status===s.id?s.color:C.brown,cursor:"pointer",fontWeight:entry?.status===s.id?600:400}}>{s.label}</button>)}</div></div>
+</div>)}
+</div></div>)};
+
+return(<div>
+<div style={{textAlign:"center",marginBottom:20}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,color:C.brown}}>Agenda Editorial</h2><p style={{color:C.gold,fontSize:12}}>Roteiros e calendário de conteúdo</p></div>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16,flexWrap:"wrap",gap:8}}>
+<div style={{display:"flex",gap:4,background:C.bg,borderRadius:8,padding:2}}><button onClick={()=>setView("month")} style={{padding:"6px 14px",borderRadius:6,border:"none",cursor:"pointer",fontSize:11,fontWeight:view==="month"?600:400,background:view==="month"?C.white:"transparent",color:view==="month"?C.brown:C.gold}}>Mês</button><button onClick={()=>setView("week")} style={{padding:"6px 14px",borderRadius:6,border:"none",cursor:"pointer",fontSize:11,fontWeight:view==="week"?600:400,background:view==="week"?C.white:"transparent",color:view==="week"?C.brown:C.gold}}>Semana</button></div>
+{isConsultora&&view==="week"&&<button onClick={()=>{setAddKey(fmtKey(new Date()));setShowAdd(true)}} style={{...bs,fontSize:11}}>+ Novo roteiro</button>}
+</div>
+
+{view==="month"&&(<div>
+<div style={{background:C.white,borderRadius:12,border:"1px solid "+C.gb,padding:18}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}><button onClick={()=>mo===0?((setMo(11)),setYr(yr-1)):setMo(mo-1)} style={nb}>←</button><h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:20,color:C.brown,margin:0}}>{MO[mo]} {yr}</h3><button onClick={()=>mo===11?((setMo(0)),setYr(yr+1)):setMo(mo+1)} style={nb}>→</button></div>
+<div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:3}}>
+{WD.map(d=><div key={d} style={{textAlign:"center",fontSize:10,color:C.gold,fontWeight:600,padding:"3px 0"}}>{d}</div>)}
+{calDays.map((day,i)=>{const k=day?yr+"-"+String(mo+1).padStart(2,"0")+"-"+String(day).padStart(2,"0"):null;const dayEntries=k?entries[k]||[]:[];const td=day&&new Date().getDate()===day&&new Date().getMonth()===mo&&new Date().getFullYear()===yr;
+return(<div key={i} onClick={()=>{if(day&&dayEntries.length){setSelKey(k);setSelIdx(0)}else if(day&&isConsultora){setAddKey(k);setShowAdd(true)}}} style={{minHeight:60,borderRadius:6,fontSize:11,padding:3,background:td?"rgba(201,169,110,0.08)":"transparent",border:td?"1.5px solid "+C.gold:dayEntries.length?"1px solid "+C.gb:"1px solid transparent",cursor:day?"pointer":"default",overflow:"hidden"}}>
+<div style={{color:day?C.brown:"transparent",fontSize:11,fontWeight:td?600:400,marginBottom:2}}>{day||""}</div>
+{dayEntries.slice(0,2).map((e,j)=>{const ty=TYPES.find(t=>t.id===e.type)||TYPES[0];const st=STATUSES.find(s=>s.id===e.status)||STATUSES[0];return(<div key={j} style={{background:ty.color+"12",borderLeft:"2px solid "+ty.color,borderRadius:3,padding:"2px 4px",marginBottom:2,fontSize:9,color:C.brown,lineHeight:1.3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{e.title}</div>)})}
+{dayEntries.length>2&&<div style={{fontSize:8,color:C.gold}}>+{dayEntries.length-2}</div>}
+</div>)})}
+</div></div>
+</div>)}
+
+{view==="week"&&(<div>
+<div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:8}}>
+{weekDates.map((d,i)=>{const k=fmtKey(d);const dayEntries=entries[k]||[];const td=d.toDateString()===new Date().toDateString();
+return(<div key={i} style={{background:C.white,borderRadius:10,border:td?"1.5px solid "+C.gold:"1px solid "+C.gb,padding:10,minHeight:200}}>
+<div style={{textAlign:"center",marginBottom:10}}><div style={{fontSize:10,color:C.gold,fontWeight:600}}>{WD[i]}</div><div style={{fontSize:16,fontWeight:td?700:400,color:C.brown}}>{d.getDate()}</div><div style={{fontSize:9,color:"#999"}}>{MO[d.getMonth()].slice(0,3)}</div></div>
+{dayEntries.map((e,j)=>{const ty=TYPES.find(t=>t.id===e.type)||TYPES[0];const st=STATUSES.find(s=>s.id===e.status)||STATUSES[0];
+return(<div key={j} onClick={()=>{setSelKey(k);setSelIdx(j)}} style={{background:ty.color+"10",borderLeft:"3px solid "+ty.color,borderRadius:6,padding:8,marginBottom:6,cursor:"pointer"}}>
+<div style={{fontSize:10,fontWeight:600,color:C.brown,marginBottom:3,lineHeight:1.3}}>{e.title}</div>
+<div style={{display:"flex",gap:4,alignItems:"center"}}><span style={{fontSize:8,color:ty.color,fontWeight:600}}>{ty.label}</span><span style={{fontSize:8,color:st.color}}>· {st.label}</span></div>
+</div>)})}
+{isConsultora&&<button onClick={()=>{setAddKey(k);setShowAdd(true)}} style={{width:"100%",padding:"6px",borderRadius:6,border:"1px dashed "+C.gb,background:"transparent",cursor:"pointer",fontSize:10,color:C.gold,marginTop:4}}>+</button>}
+</div>)})}
+</div>
+</div>)}
+
+{selKey&&selEntry&&<CardModal dk={selKey} entry={selEntry} onClose={()=>{setSelKey(null);setSelIdx(null)}}/>}
+{showAdd&&addKey&&<CardModal dk={addKey} entry={null} onClose={()=>{setShowAdd(false);setAddKey(null)}}/>}
+</div>)}
 
 function Login({onOk}){const[pw,sP]=useState("");const[er,sE]=useState(false);const go=()=>{if(pw===PW)onOk();else{sE(true);setTimeout(()=>sE(false),2000)}};return(<div style={{minHeight:"100vh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}><div style={{background:C.white,borderRadius:20,padding:"44px 32px",maxWidth:360,width:"100%",textAlign:"center",boxShadow:"0 20px 60px rgba(44,36,22,0.1)"}}><h1 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:34,fontWeight:600,color:C.brown,margin:"0 0 4px"}}>M<span style={{color:C.gold}}>|</span>C</h1><p style={{fontSize:10,color:C.gold,letterSpacing:3,textTransform:"uppercase",marginBottom:28}}>Painel Estratégico</p><input type="password" value={pw} onChange={e=>sP(e.target.value)} onKeyDown={e=>e.key==="Enter"&&go()} placeholder="Senha de acesso" style={{...ip,textAlign:"center",marginBottom:er?6:14}}/>{er&&<p style={{color:"#c44",fontSize:11,marginBottom:10}}>Acesso negado</p>}<button onClick={go} style={{...bp,width:"100%"}}>Acessar</button></div></div>)}
 
@@ -102,9 +192,7 @@ function App(){
 const[logged,setL]=useState(false);const[tab,setTab]=useState("plan");const[stratOk,setStrat]=useState(false);const[stratPw,setSPw]=useState("");const[stratErr,setSErr]=useState(false);const[showSM,setShowSM]=useState(false);
 const[ct,sCt]=useState("stories");const[topic,sTo]=useState(TOPS[0]);const[cTo,sCTo]=useState("");const[extra,sEx]=useState("");
 const[result,sR]=useState("");const[ld,sLd]=useState(false);const[cp,sCp]=useState(false);
-const[calM,sCM]=useState(2);const[calY,sCY]=useState(2026);const[calE,sCE]=useState(()=>sL("cal",{}));const[edD,sED]=useState(null);
 const[saved,sSv]=useState(()=>sL("sv",[]));const[sn,sSN]=useState("");
-useEffect(()=>sS("cal",calE),[calE]);
 const gen=async()=>{sLd(true);sR("");sCp(false);const c=CTS.find(x=>x.id===ct);const t=cTo.trim()||topic;let msg=c.pr+" sobre: \""+t+"\".";if(ct==="stories")msg+="\nSequência de telas com texto, formato e orientação visual.";if(ct==="legenda")msg+="\nTexto completo, CTA e 15-20 hashtags.";if(ct==="temas")msg+="\n5 temas com título, relevância e formato.";if(extra.trim())msg+="\n\n"+extra;try{const r=await fetch("/api/generate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:sysPr,messages:[{role:"user",content:msg}]})});const d=await r.json();sR(d.content?.map(b=>b.text||"").join("\n")||"Erro.")}catch{sR("Erro de conexão.")}sLd(false)};
 const handleTab=id=>{if(id==="growth"&&!stratOk){setShowSM(true);return}setTab(id)};
 const tryStrat=()=>{if(stratPw===STRATPW){setStrat(true);setShowSM(false);setTab("growth");setSPw("")}else{setSErr(true);setTimeout(()=>setSErr(false),2000)}};
@@ -128,11 +216,7 @@ return(<div style={{minHeight:"100vh",background:C.bg,fontFamily:"'Jost',sans-se
 <div style={{textAlign:"center",marginBottom:20}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,color:C.brown}}>Conteúdos Salvos</h2></div>
 {saved.length===0?<p style={{textAlign:"center",color:C.gold}}>Nenhum conteúdo salvo.</p>:saved.map(it=><div key={it.id} style={{background:C.white,borderRadius:10,border:"1px solid "+C.gb,padding:16,marginBottom:8}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:6,flexWrap:"wrap",gap:4}}><span style={{fontSize:12}}>{it.tl} · {it.tp} · {it.dt}</span><div style={{display:"flex",gap:4}}><button onClick={()=>navigator.clipboard.writeText(it.tx)} style={bs}>Copiar</button><button onClick={()=>{const u=saved.filter(c=>c.id!==it.id);sSv(u);sS("sv",u)}} style={{...bs,color:"#c44"}}>Remover</button></div></div><div style={{whiteSpace:"pre-wrap",fontSize:12,lineHeight:1.5,maxHeight:160,overflow:"auto"}}>{it.tx}</div></div>)}
 </div>)}
-{tab==="cal"&&(<div>
-<div style={{textAlign:"center",marginBottom:20}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,color:C.brown}}>Calendário Editorial</h2></div>
-<div style={{background:C.white,borderRadius:12,border:"1px solid "+C.gb,padding:18}}><Cal month={calM} year={calY} entries={calE} onDay={k=>sED(k)} onMo={(m,y)=>{sCM(m);sCY(y)}}/></div>
-{edD&&<EModal dk={edD} entry={calE[edD]||null} onSave={d=>{sCE(p=>({...p,[edD]:d}));sED(null)}} onClose={()=>sED(null)} onDel={()=>{sCE(p=>{const n={...p};delete n[edD];return n});sED(null)}}/>}
-</div>)}
+{tab==="cal"&&<AgendaTab isConsultora={stratOk}/>}
 {showSM&&(<div style={{position:"fixed",inset:0,background:"rgba(44,36,22,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000,padding:16}}><div style={{background:C.white,borderRadius:16,padding:"36px 28px",maxWidth:360,width:"100%",textAlign:"center"}}><h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,color:C.brown,margin:"0 0 6px"}}>Área restrita</h3><p style={{fontSize:13,color:C.gold,marginBottom:20}}>Acesso exclusivo da consultoria</p><input type="password" value={stratPw} onChange={e=>setSPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&tryStrat()} placeholder="Senha" style={{...ip,textAlign:"center",marginBottom:stratErr?6:14}}/>{stratErr&&<p style={{color:"#c44",fontSize:11,marginBottom:10}}>Acesso negado</p>}<div style={{display:"flex",gap:8}}><button onClick={()=>{setShowSM(false);setSPw("");setSErr(false)}} style={{...bs,flex:1}}>Cancelar</button><button onClick={tryStrat} style={{...bp,flex:1}}>Acessar</button></div></div></div>)}
 </div>
 </div>)}
