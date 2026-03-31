@@ -2,363 +2,226 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dra. Mila Cintra | Ginecologia & Estética Íntima</title>
-<link rel="icon" type="image/png" href="android-chrome-512x512.png">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>M|C — Painel Estratégico</title>
+<link rel="icon" href="../android-chrome-512x512.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="robots" content="noindex,nofollow">
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    --gold: #C9A96E; --gold-light: #E8D5B0; --gold-dark: #A07840;
-    --beige: #F5F0E8; --beige-deep: #EDE5D8; --white: #FDFCFA;
-    --text: #2C2416; --text-light: #8C7B5E; --border: #E8DFC8;
-  }
-  html { scroll-behavior: smooth; }
-  body { font-family: 'Jost', sans-serif; background: var(--white); color: var(--text); font-weight: 300; }
-  h1,h2,h3,h4 { font-family: 'Cormorant Garamond', serif; font-weight: 400; }
-
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    background: rgba(253,252,250,0.96); backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border);
-    padding: 18px 48px; display: flex; align-items: center; justify-content: space-between;
-  }
-  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 500; letter-spacing: 3px; color: var(--text); text-decoration: none; }
-  .nav-logo span { color: var(--gold); }
-  .nav-links { display: flex; gap: 36px; list-style: none; }
-  .nav-links a { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-light); text-decoration: none; transition: color .3s; }
-  .nav-links a:hover { color: var(--gold); }
-  .nav-cta { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 10px 26px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all .3s; text-decoration: none; }
-  .nav-cta:hover { background: var(--gold); color: var(--white); }
-
-  /* HERO */
-  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; position: relative; }
-  .hero-left {
-    background: linear-gradient(160deg, var(--beige) 0%, var(--white) 100%);
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 140px 64px 80px 64px; position: relative;
-  }
-  .hero-left::after {
-    content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px;
-    background: linear-gradient(180deg, transparent, var(--gold-light), transparent);
-  }
-  .hero-tag { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); padding-bottom: 12px; border-bottom: 1px solid var(--gold-light); display: inline-block; margin-bottom: 36px; }
-  .hero h1 { font-size: clamp(40px, 5vw, 68px); line-height: 1.08; margin-bottom: 28px; }
-  .hero h1 em { color: var(--gold); font-style: italic; }
-  .hero-sub { font-size: 15px; line-height: 1.85; color: var(--text-light); max-width: 400px; margin-bottom: 52px; }
-  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
-  .btn-primary { background: var(--gold); color: var(--white); padding: 15px 36px; border: none; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; cursor: pointer; transition: all .3s; text-decoration: none; display: inline-block; }
-  .btn-primary:hover { background: var(--gold-dark); }
-  .btn-outline { background: transparent; color: var(--text); padding: 15px 36px; border: 1px solid var(--border); font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; cursor: pointer; transition: all .3s; text-decoration: none; display: inline-block; }
-  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
-
-  /* HERO STATS — credenciais */
-  .hero-stats { display: flex; gap: 40px; margin-top: 64px; padding-top: 40px; border-top: 1px solid var(--border); }
-  .hero-stat strong { display: block; font-family: 'Cormorant Garamond', serif; font-size: 38px; color: var(--gold); line-height: 1; }
-  .hero-stat span { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-light); }
-
-  .hero-right { position: relative; overflow: hidden; }
-  .hero-right img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
-  .hero-right::after {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(to right, rgba(253,252,250,0.15) 0%, transparent 40%);
-  }
-
-  /* SECTION UTILS */
-  .section-tag { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 14px; }
-  .divider { display: flex; align-items: center; gap: 14px; width: 100px; margin: 0 auto 40px; }
-  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--gold-light); }
-  .divider-diamond { width: 5px; height: 5px; background: var(--gold); transform: rotate(45deg); flex-shrink: 0; }
-
-  /* GALERIA ATMOSFERA */
-  .atmosfera { padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); height: 380px; }
-  .atm-item { overflow: hidden; position: relative; }
-  .atm-item img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
-  .atm-item:hover img { transform: scale(1.05); }
-  .atm-item::after { content: ''; position: absolute; inset: 0; background: rgba(44,36,22,0.08); transition: background .3s; }
-  .atm-item:hover::after { background: rgba(44,36,22,0.02); }
-
-  /* SOBRE */
-  .sobre { padding: 120px 64px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1200px; margin: 0 auto; }
-  .sobre-img-wrap { position: relative; }
-  .sobre-img-wrap img { width: 100%; aspect-ratio: 3/4; object-fit: cover; object-position: center top; display: block; }
-  .sobre-img-tag { position: absolute; bottom: -1px; right: -1px; background: var(--gold); color: var(--white); padding: 22px 28px; text-align: center; }
-  .sobre-img-tag strong { display: block; font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; }
-  .sobre-img-tag span { font-size: 10px; letter-spacing: 2px; opacity: .85; }
-  .sobre-content h2 { font-size: 44px; line-height: 1.15; margin-bottom: 28px; }
-  .sobre-content p { font-size: 15px; line-height: 1.9; color: var(--text-light); margin-bottom: 16px; }
-  .sobre-list { list-style: none; margin: 32px 0; }
-  .sobre-list li { display: flex; align-items: center; gap: 14px; font-size: 14px; color: var(--text); padding: 13px 0; border-bottom: 1px solid var(--border); }
-  .sobre-list li::before { content: '◆'; color: var(--gold); font-size: 7px; flex-shrink: 0; }
-
-  /* PROCEDIMENTOS */
-  .procedimentos { background: var(--beige); padding: 120px 64px; position: relative; }
-  .procedimentos::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-light), transparent); }
-  .section-header { text-align: center; margin-bottom: 72px; }
-  .section-header h2 { font-size: 50px; margin: 12px 0 8px; }
-  .section-header p { font-size: 15px; color: var(--text-light); max-width: 460px; margin: 16px auto 0; line-height: 1.85; }
-  .proc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; max-width: 1100px; margin: 0 auto; }
-  .proc-card { background: var(--white); padding: 48px 36px; border: 1px solid var(--border); transition: all .4s; position: relative; overflow: hidden; }
-  .proc-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--gold-light), var(--gold)); transform: scaleX(0); transition: transform .4s; transform-origin: left; }
-  .proc-card:hover { transform: translateY(-6px); box-shadow: 0 24px 64px rgba(201,169,110,0.12); z-index: 1; }
-  .proc-card:hover::after { transform: scaleX(1); }
-  .proc-num { font-family: 'Cormorant Garamond', serif; font-size: 48px; color: var(--gold-light); line-height: 1; margin-bottom: 16px; }
-  .proc-card h3 { font-size: 22px; margin-bottom: 12px; }
-  .proc-card p { font-size: 14px; line-height: 1.85; color: var(--text-light); margin-bottom: 28px; }
-  .proc-link { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); text-decoration: none; display: flex; align-items: center; gap: 10px; transition: gap .3s; }
-  .proc-card:hover .proc-link { gap: 16px; }
-
-  /* EXPERIÊNCIA */
-  .experiencia { padding: 0; display: grid; grid-template-columns: 1fr 1fr; min-height: 580px; }
-  .exp-img { overflow: hidden; }
-  .exp-img img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
-  .exp-content { background: var(--text); padding: 80px 72px; display: flex; flex-direction: column; justify-content: center; }
-  .exp-content .section-tag { color: var(--gold-light); }
-  .exp-content h2 { font-size: 44px; color: var(--white); margin: 12px 0 28px; line-height: 1.2; }
-  .exp-items { display: flex; flex-direction: column; gap: 0; margin-bottom: 48px; }
-  .exp-item { display: flex; gap: 20px; padding: 22px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
-  .exp-icon { color: var(--gold); font-size: 18px; flex-shrink: 0; margin-top: 2px; }
-  .exp-item h4 { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--white); margin-bottom: 4px; }
-  .exp-item p { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.7; }
-
-  /* FRASE */
-  .frase { padding: 100px 64px; text-align: center; background: var(--white); position: relative; }
-  .frase::before { content: '"'; font-family: 'Cormorant Garamond', serif; font-size: 200px; color: var(--beige); position: absolute; top: -40px; left: 50%; transform: translateX(-50%); line-height: 1; pointer-events: none; }
-  .frase blockquote { font-family: 'Cormorant Garamond', serif; font-size: clamp(24px, 3vw, 38px); line-height: 1.5; color: var(--text); font-style: italic; max-width: 760px; margin: 0 auto 24px; position: relative; z-index: 1; }
-  .frase cite { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); font-style: normal; }
-
-  /* CTA — uma foto só */
-  .cta-section { background: var(--beige); padding: 120px 64px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-  .cta-img-single { position: relative; }
-  .cta-img-single img { width: 100%; aspect-ratio: 3/4; object-fit: cover; object-position: center top; display: block; }
-  .cta-img-single::after {
-    content: ''; position: absolute; bottom: -12px; left: -12px;
-    width: 60%; height: 60%; border: 1px solid var(--gold-light); z-index: 0; pointer-events: none;
-  }
-  .cta-content .section-tag { text-align: left; }
-  .cta-content h2 { font-size: 46px; line-height: 1.2; margin: 12px 0 24px; }
-  .cta-content p { font-size: 15px; line-height: 1.9; color: var(--text-light); margin-bottom: 40px; }
-
-  /* FOOTER */
-  footer { background: var(--text); padding: 56px 64px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; }
-  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--white); letter-spacing: 3px; }
-  .footer-logo span { color: var(--gold); }
-  footer p { font-size: 11px; color: rgba(255,255,255,0.35); letter-spacing: 1.5px; }
-  .footer-links { display: flex; gap: 28px; }
-  .footer-links a { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); text-decoration: none; transition: color .3s; }
-  .footer-links a:hover { color: var(--gold); }
-
-  /* FLOAT */
-  .wa-float { position: fixed; bottom: 32px; right: 32px; z-index: 999; width: 54px; height: 54px; border-radius: 50%; background: #25D366; color: white; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 24px; box-shadow: 0 8px 32px rgba(37,211,102,0.4); transition: transform .3s; }
-  .wa-float:hover { transform: scale(1.1); }
-
-  /* MOBILE */
-@media (max-width: 900px) {
-    nav { padding: 16px 24px; }
-    .nav-links { display: none; }
-    .hero { grid-template-columns: 1fr; min-height: auto; overflow: hidden; }
-    .hero-right { height: 80vw; overflow: hidden; }
-    .hero-left { padding: 100px 28px 60px; }
-    .hero-stats { gap: 20px; flex-wrap: wrap; }
-    .hero-stat strong { font-size: 28px; }
-    .atmosfera { display: grid; grid-template-columns: 1fr 1fr; height: auto; gap: 2px; margin-top: 20px; }
-    .atm-item { height: 44vw; overflow: hidden; position: relative; }
-    .atm-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .sobre { grid-template-columns: 1fr; padding: 80px 28px; gap: 48px; }
-    .procedimentos { padding: 80px 28px; }
-    .proc-grid { grid-template-columns: 1fr; }
-    .experiencia { grid-template-columns: 1fr; }
-    .exp-img { height: 300px; }
-    .exp-content { padding: 56px 28px; }
-    .frase { padding: 80px 28px; }
-    .cta-section { grid-template-columns: 1fr; padding: 80px 28px; gap: 48px; }
-    footer { padding: 40px 28px; flex-direction: column; text-align: center; }
-    .footer-links { justify-content: center; }
-  }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Jost',sans-serif;background:#F5F0E8;color:#2C2416;-webkit-font-smoothing:antialiased}
+input,select,textarea,button{font-family:inherit}
+#root{min-height:100vh}
 </style>
 </head>
 <body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const {useState,useRef,useEffect}=React;
+const C={bg:"#F5F0E8",gold:"#C9A96E",white:"#FDFCFA",brown:"#2C2416",gl:"rgba(201,169,110,0.12)",gb:"rgba(201,169,110,0.3)"};
+const MO=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const WD=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+const PW="mila2026";
+const STRATPW="atoz2026";
+const CTS=[{id:"stories",label:"Stories",pr:"Crie um roteiro de stories para Instagram"},{id:"legenda",label:"Legenda",pr:"Crie uma legenda para post de feed no Instagram"},{id:"temas",label:"Temas",pr:"Sugira 5 ideias de temas/pautas de conteúdo para Instagram"}];
+const TOPS=["Cirurgia Íntima","Laser CO2","Saúde da Mulher","Autoestima Feminina","Menopausa","Estética Íntima","Incontinência Urinária","Sexualidade Feminina","Pós-parto","Qualidade de Vida","Prevenção Ginecológica","Empoderamento Feminino","Desafio #LeveComDraMila","Hábitos Saudáveis","Maternidade","Implante Hormonal","Tirzepatida","DIU"];
+const sysPr="Você é a redatora da Dra. Mila Cintra, ginecologista especialista em estética íntima e cirurgia íntima em Aracaju-SE. Tom: elegante, sofisticado, acolhedor. Nunca clínico frio ou vendas. Como amiga médica culta para mulheres premium 30-55 anos. Emojis com moderação. CRM-SE 4581, RQE 3556, UFS, residência SP, 3 pós-graduações, +1000 pacientes, @dramilacintra. Contexto março/2026: Dra. Mila grávida da Nina (previsão final maio). Já é mãe do Walter (4 anos). Desafio #LeveComDraMila 21 dias Gymrats. Serviços: ninfoplastia, laser CO2, implante hormonal, tirzepatida, betaglucona, DIU, consultas. Responda APENAS o conteúdo solicitado.";
+const nb={background:C.white,border:"1px solid "+C.gb,borderRadius:8,width:36,height:36,cursor:"pointer",fontSize:16,color:C.brown,display:"flex",alignItems:"center",justifyContent:"center"};
+const lb={display:"block",fontSize:12,fontWeight:500,color:C.gold,marginBottom:6,textTransform:"uppercase",letterSpacing:1};
+const ip={width:"100%",padding:"10px 14px",borderRadius:10,border:"1px solid "+C.gb,background:C.white,fontSize:14,color:C.brown,outline:"none",marginBottom:16,boxSizing:"border-box"};
+const bp={padding:"12px 24px",borderRadius:10,border:"none",background:C.gold,color:C.white,fontSize:14,fontWeight:500,cursor:"pointer"};
+const bs={padding:"6px 14px",borderRadius:8,border:"1px solid "+C.gb,background:C.white,color:C.brown,fontSize:12,cursor:"pointer"};
+const sL=(k,f)=>{try{const v=localStorage.getItem("mc_"+k);return v?JSON.parse(v):f}catch{return f}};
+const sS=(k,v)=>{try{localStorage.setItem("mc_"+k,JSON.stringify(v))}catch{}};
 
-<!-- NAV -->
-<nav>
-  <a href="#" class="nav-logo">DRA. MILA <span>CINTRA</span></a>
-  <ul class="nav-links">
-    <li><a href="#sobre">Sobre</a></li>
-    <li><a href="#procedimentos">Procedimentos</a></li>
-    <li><a href="#experiencia">A Clínica</a></li>
-  </ul>
-  <a href="https://wa.me/5579988162525" target="_blank" class="nav-cta">Agendar Consulta</a>
-</nav>
+const PD=[
+{mo:"Março",col:"#9B59B6",tp:"Mês da Mulher — Foco: Reposição Hormonal",cn:"#LeveComDraMila + Mês da Mulher",cc:"Mês da Mulher (08/03). Aniversário de Aracaju (17/03). Desafio #LeveComDraMila 21 dias Gymrats (02–22/03). Café fitness 22/03. GRAVAR EM MARÇO: conteúdos de abril inteiro.",dates:"08/03 Dia Internacional da Mulher · 17/03 Aniversário de Aracaju · 22/03 Evento café fitness · 15/03 Dia do Consumidor",reels:["'Sinais de que seus hormônios estão desregulados' — educativo viral, sintomas comuns","'O que a reposição hormonal faz no corpo em 30 dias' — desmistificação","'Minha mãe carrega a 4ª geração da nossa família' — emocional Dia da Mulher","'3 hábitos que destroem seus hormônios' — formato tendência, gancho de scroll","'Aracaju: a cidade que cuida das suas mulheres' — conteúdo local, aniversário da cidade"],campaign:"#LeveComDraMila: desafio 21 dias. Encerramento com evento presencial. Urgência pré-licença.",obj:"Engajamento máximo, posicionamento hormônios, lotação agenda.",kp:["40+ consultas","50+ no desafio","Evento 22/03","Pacotes lançados"],aud:"Participantes desafio, seguidoras, mulheres 35+",pal:{m:"Sofisticado, feminino, empoderado"},logo:"#LeveComDraMila + M|C",act:["Conteúdo diário desafio","Ação Dia da Mulher 08/03","Post aniversário Aracaju 17/03","Evento 22/03","CTA urgência pré-licença","Pacotes reposição hormonal"],wk:[{w:"Semana 2 (10–16) — atual",c:"Desafio dias 8–14. Reposição hormonal. CTA agenda.",f:"Feed + stories + reels"},{w:"Semana 3 (17–22)",c:"Aniversário Aracaju. Reta final desafio. Evento 22/03. GRAVAR abril.",f:"Stories + evento + gravações"},{w:"Semana 4 (23–31)",c:"Pós-evento. Último chamado. Finalizar gravações abril.",f:"Feed + reels + stories"}]},
 
-<!-- HERO -->
-<section class="hero" id="inicio">
-  <div class="hero-left">
-    <span class="hero-tag">Primeira Especialista em Estética Íntima de Aracaju · SE</span>
-    <h1>Cuidado feminino <em>que transforma</em></h1>
-    <p class="hero-sub">Ginecologia, estética íntima e cirurgia com a delicadeza e precisão que cada mulher merece. Referência em saúde e bem-estar feminino em Sergipe.</p>
-    <div class="hero-btns">
-      <a href="https://wa.me/5579988162525" target="_blank" class="btn-primary">Agendar Consulta</a>
-      <a href="#procedimentos" class="btn-outline">Ver Procedimentos</a>
-    </div>
-    <div class="hero-stats">
-      <div class="hero-stat"><strong>+1.000</strong><span>Pacientes atendidas</span></div>
-      <div class="hero-stat"><strong>+10</strong><span>Anos de experiência</span></div>
-      <div class="hero-stat"><strong>Nº1</strong><span>Em Sergipe</span></div>
-    </div>
-  </div>
-  <div class="hero-right">
-    <img src="https://i.imgur.com/cmOJsXF.jpeg" alt="Dra. Mila Cintra">
-  </div>
-</section>
+{mo:"Abril",col:"#E8967D",tp:"Maternidade e Fertilidade — Foco: Fertilidade após os 35",cn:"Preparação, Fertilidade e Cuidado",cc:"Mês da maternidade. Dra. Mila grávida da Nina, Walter 4 anos. Últimas semanas de atendimento. GRAVAR EM ABRIL: conteúdos de maio + carta narrada Nina + Dia das Mães.",dates:"07/04 Dia Mundial da Saúde · 25/04 Dia da Gestante",reels:["'Fertilidade depois dos 35: o que ninguém te conta' — mitos e verdades","'Planejamento reprodutivo: quando começar a pensar?' — DIU, congelamento, consulta","'Grávida pela segunda vez: o que muda?' — pessoal, Walter e Nina","'5 exames que toda mulher que quer engravidar deve fazer' — prático, salvável","'A consulta pré-concepcional que pode mudar sua gestação' — autoridade, CTA"],campaign:"'Última Chamada': urgência de agenda. Lista de espera para retorno. Pré-venda de pacotes.",obj:"Maximizar faturamento. Lista espera 30+. Gravar todo conteúdo maio.",kp:["Agenda capacidade máxima","Lista espera 30+","Pacotes antecipados","Conteúdos maio gravados"],aud:"Mulheres planejando gestação, pacientes ativas",pal:{m:"Acolhedor, maternal, sofisticado"},logo:"M|C maternidade",act:["Série fertilidade após 35","Comunicado afastamento","Walter conhecendo a irmã","Gravação conteúdo maio + carta Nina + Dia das Mães","Venda antecipada pacotes","Ativação lista espera WhatsApp"],wk:[{w:"Semana 1 (01–06)",c:"Dia Mundial da Saúde. Série fertilidade. Agenda lotada.",f:"Feed + reels + stories"},{w:"Semana 2 (07–13)",c:"Conteúdo segunda gestação. CTA urgência.",f:"Reels + stories + CTA"},{w:"Semana 3 (14–20)",c:"Comunicado afastamento. GRAVAR maio + carta Nina + Dia das Mães.",f:"Feed + stories + gravações"},{w:"Semana 4 (21–30)",c:"Despedida temporária. Dia da Gestante 25/04.",f:"Feed + stories emocional"}]},
 
-<!-- GALERIA ATMOSFERA -->
-<div class="atmosfera">
-  <div class="atm-item"><img src="https://i.imgur.com/4l2CRjI.jpeg" alt="Clínica"></div>
-  <div class="atm-item"><img src="https://i.imgur.com/4mlr2ad.jpeg" alt="Café oferecido"></div>
-  <div class="atm-item"><img src="https://i.imgur.com/YC1sxVx.jpeg" alt="Chá"></div>
-  <div class="atm-item"><img src="https://i.imgur.com/vuw9w0E.jpeg" alt="Cuidado"></div>
+{mo:"Maio",col:"#F8C8DC",tp:"Dia das Mães — Maternidade e Saúde da Mulher (pré-gravado)",cn:"Bem-vinda, Nina",cc:"Nascimento Nina (previsão final maio). TODO CONTEÚDO PRÉ-GRAVADO EM ABRIL. Dia das Mães 11/05. Dia Internacional Saúde da Mulher 28/05. Carta narrada da Nina.",dates:"11/05 Dia das Mães · 28/05 Dia Internacional da Saúde da Mulher · 01/05 Dia do Trabalho",reels:["'O maior presente que posso dar às minhas pacientes é cuidar de mim' — Dia das Mães (PRÉ-GRAVADO)","'28 de maio: por que esse dia importa para TODA mulher' — Saúde da Mulher (PRÉ-GRAVADO)","'Walter vai ser irmão mais velho' — bastidores família (PRÉ-GRAVADO)","'5 cuidados que toda mãe esquece de ter consigo' — identificação (PRÉ-GRAVADO)","'Carta para Nina: o dia que você chegou' — narrado pós-nascimento, viral"],campaign:"Conteúdo programado + carta narrada Nina. Serviços alternativos: locações R$ 3.200/mês + tirzepatida + CO2.",obj:"Engajamento 80%. Receita alternativa R$ 15–20k.",kp:["Engajamento 80%","Locações mantidas","Tirzepatida R$ 8–10k","Lista espera crescendo"],aud:"Base fiel, mães, gestantes",pal:{m:"Delicado, maternal, premium"},logo:"M|C maternal",act:["Publicação pré-gravados 2x/semana","Dia das Mães 11/05","Dia Saúde Mulher 28/05","Carta narrada Nina pós-nascimento","Comunicação serviços disponíveis"],wk:[{w:"Semana 1–2",c:"Conteúdo pré-gravado. Dia das Mães 11/05.",f:"Posts programados + stories"},{w:"Semana 3–4",c:"Nascimento Nina. Anúncio. Carta. Dia Saúde Mulher 28/05.",f:"Post nascimento + programados"}]},
+
+{mo:"Junho",col:"#E74C6F",tp:"Amor e Intimidade — Foco: Saúde Sexual Feminina",cn:"Intimidade, Prazer e Autocuidado",cc:"Dia dos Namorados 12/06. Festas Juninas / Forró Caju. Retorno Dra. Mila ~final junho (1 mês após Nina). Temas: libido, dor na relação, autoestima íntima, lubrificação, laser, cirurgia íntima, reposição. GRAVAR EM JUNHO: conteúdos julho.",dates:"12/06 Dia dos Namorados · 13/06 Santo Antônio · 24/06 São João · Forró Caju (junho)",reels:["'Dor na relação NÃO é normal: o que pode estar acontecendo' — quebra tabu, viral","'Libido baixa? 5 causas que sua ginecologista investiga' — formato lista, gancho hormonal","'O que o Laser Íntimo faz e o que NÃO faz' — desmistificação procedimento","'Autoestima íntima: como se reconectar com seu corpo' — acolhedor, São João","'Reposição hormonal e libido: a relação que ninguém explicou' — autoridade, público 40+"],campaign:"Dia dos Namorados: 'O melhor presente é se sentir bem'. Foco autoestima íntima. Retorno Dra. Mila como evento.",obj:"Reativar agenda. Converter lista espera 80%. Referência saúde sexual.",kp:["Lista espera convertida 80%","Retomada operacional","Engajamento saúde sexual alto"],aud:"Lista espera, mulheres em relacionamento",pal:{m:"Sensual com elegância, acolhedor"},logo:"M|C Dia dos Namorados + retorno",act:["Conteúdo saúde sexual","Campanha Dia dos Namorados 12/06","Conteúdo Forró Caju / São João","Retorno Dra. Mila: contagem regressiva + post oficial","Ativação WhatsApp lista espera","GRAVAR conteúdos julho","Reabertura agenda CTA forte"],wk:[{w:"Semana 1 (01–08)",c:"Saúde sexual programado. Teasers retorno. São João.",f:"Feed + stories + reels"},{w:"Semana 2 (09–15)",c:"DIA DOS NAMORADOS 12/06. Campanha intimidade.",f:"Post especial + reels"},{w:"Semana 3 (16–22)",c:"Contagem regressiva retorno. São João 24/06.",f:"Stories + feed"},{w:"Semana 4 (23–30)",c:"RETORNO. Post oficial. Reels primeiro dia. GRAVAR julho.",f:"Feed + reels + gravações"}]},
+
+{mo:"Julho",col:"#7BA7BC",tp:"Férias e Bem-Estar — Foco: Autocuidado no Meio do Ano",cn:"Pausa para se Cuidar",cc:"Férias escolares. Meio do ano = reset. Foco procedimentos como autocuidado. Recuperação financeira. GRAVAR EM JULHO: conteúdos agosto.",dates:"26/07 Dia dos Avós",reels:["'Checklist de saúde que toda mulher deveria fazer no meio do ano' — prático, salvável","'Autocuidado não é luxo: 5 procedimentos que mudam qualidade de vida' — portfólio","'Férias por VOCÊ, não só pelas crianças' — identificação com mães","'Cirurgia íntima: tudo que você tem medo de perguntar' — FAQ, quebra tabus","'Implante hormonal: como funciona e para quem' — educativo, autoridade"],campaign:"'Pausa para Você': pacotes autocuidado meio de ano. Foco procedimentos alto valor.",obj:"Acelerar faturamento. Escalar tirzepatida para 18 pacientes.",kp:["Volume procedimentos elevado","Tirzepatida 18 pacientes","Pacotes vendidos","Conteúdos agosto gravados"],aud:"Férias, mães, quem adiou procedimentos",pal:{m:"Fresco, luminoso, renovador"},logo:"M|C sazonal",act:["Campanha 'Pausa para Você'","Pacotes autocuidado","Série checklist saúde","Conteúdo cirurgia íntima e implante","Programa indicação tirzepatida","GRAVAR conteúdos agosto","Parcerias profissionais locais"],wk:[{w:"Semana 1–2",c:"Lançamento campanha. Pacotes. Série autocuidado.",f:"Reels + feed + stories"},{w:"Semana 3–4",c:"Conversão. FAQ. GRAVAR agosto. Dia dos Avós 26/07.",f:"Feed + stories + gravações"}]},
+
+{mo:"Agosto",col:"#8B6F8B",tp:"Agosto Lilás — Aniversário Dra. Mila (27/08)",cn:"Mila Plena",cc:"Agosto Lilás (violência contra mulher). Aniversário Dra. Mila 27/08 — Walter e Nina. GRAVAR EM AGOSTO: conteúdos setembro (Setembro Amarelo + prevenção).",dates:"27/08 Aniversário Dra. Mila · 19/08 Dia Nacional Combate Violência contra Mulher · Agosto Lilás",reels:["'Violência não é só física: sinais que mulheres não reconhecem' — Agosto Lilás, impacto","'O que aprendi em X anos como mulher e médica' — aniversário, pessoal","'Saúde íntima e violência doméstica: a conexão' — posicionamento médico","'Mãe de dois, médica, mulher: bastidores reais' — humanização, Walter e Nina","'Por que escolhi a ginecologia: carta às pacientes' — storytelling, aniversário"],campaign:"Agosto Lilás + semana aniversário. Doação % procedimentos para instituição local.",obj:"Marca pessoal. Mídia local. Consolidar operação.",kp:["Maior engajamento semestre","1+ matéria mídia","Ação social realizada","Conteúdos setembro gravados"],aud:"Público amplo, causas sociais",pal:{m:"Lilás sofisticado, profundo"},logo:"Agosto Lilás + selo aniversário M|C",act:["Série Agosto Lilás","Post Dia Combate Violência 19/08","Parceria advogada/psicóloga","Semana aniversário 27/08","Ação social/beneficente","Mídia local","GRAVAR conteúdos setembro"],wk:[{w:"Semana 1–2",c:"Agosto Lilás. Educativo social. Dia Combate Violência 19/08.",f:"Feed + live + stories"},{w:"Semana 3 (18–24)",c:"Transição aniversário. GRAVAR setembro.",f:"Feed + stories + gravações"},{w:"Semana 4 (25–31)",c:"ANIVERSÁRIO 27/08. Walter e Nina. Gratidão.",f:"Feed + reels + stories"}]},
+
+{mo:"Setembro",col:"#E67E22",tp:"Autocuidado e Prevenção — Setembro Amarelo",cn:"Cuidar de Si é Saúde",cc:"Setembro Amarelo (saúde mental). Conexão saúde mental + hormonal + íntima. Aquecimento Outubro Rosa. GRAVAR EM SETEMBRO: TODO conteúdo outubro (campanha mais importante do ano).",dates:"Setembro Amarelo (mês inteiro) · 10/09 Dia Mundial Prevenção Suicídio · 21/09 Dia da Árvore",reels:["'Hormônios e saúde mental: o que sua ginecologista precisa te contar' — conecta os temas","'Menopausa e depressão: por que tantas sofrem em silêncio' — quebra tabu, empatia","'Autocuidado começa pelo básico: o check-up que salva vidas' — transição outubro","'Quando foi sua última consulta ginecológica?' — provocativo, CTA","'O que é Outubro Rosa e por que se importar agora' — aquecimento"],campaign:"'Cuidar de Si': saúde mental + hormonal. Aquecimento Outubro Rosa últimas semanas.",obj:"Referência saúde integral. Aquecer audiência para outubro.",kp:["Alcance +40%","Salvamentos alto","Audiência aquecida outubro","TODO conteúdo outubro gravado"],aud:"Mulheres cuidado integral, público Setembro Amarelo",pal:{m:"Dourado quente, acolhedor, esperançoso"},logo:"M|C Setembro Amarelo",act:["Série saúde mental + hormonal","Climatério e prevenção","Semana saúde integral","Aquecimento Outubro Rosa","GRAVAR TODO conteúdo outubro","Parcerias psicóloga/psiquiatra"],wk:[{w:"Semana 1–2",c:"Setembro Amarelo. Série saúde mental. GRAVAR outubro.",f:"Feed + reels + stories + gravações"},{w:"Semana 3–4",c:"Aquecimento Outubro Rosa. Finalizar gravações outubro.",f:"Feed + stories + gravações"}]},
+
+{mo:"Outubro",col:"#E91E8B",tp:"Outubro Rosa — Saúde Feminina e Prevenção (pré-gravado em setembro)",cn:"Prevenção é o Maior Ato de Amor",cc:"CAMPANHA PRINCIPAL DO ANO. Out/2025 = melhor mês (comprovado). Conteúdo gravado em setembro. 18/10 Dia do Médico. GRAVAR EM OUTUBRO: conteúdos novembro (libido + Black Friday).",dates:"Outubro Rosa (mês) · 18/10 Dia do Médico · 12/10 Dia das Crianças / N.S. Aparecida · 15/10 Dia do Professor",reels:["'O exame que salva vidas e muitas adiam' — Papanicolau, viral educativo","'Outubro Rosa não é só mamografia: checklist completo' — diferencial","'18/10: por que escolhi cuidar de mulheres' — Dia do Médico, pessoal","'A paciente que quase deixou para depois' — storytelling, emocional","'5 sinais que seu corpo dá e você ignora' — viral, alto salvamento"],campaign:"Outubro Rosa completo: mutirão preventivos valor social, parceria mastologista, mídia local. Meta: maior faturamento do ano.",obj:"Maior visibilidade e faturamento. Superar out/2025.",kp:["45+ consultas","30+ preventivos","2+ mídias","Conteúdos novembro gravados"],aud:"Alcance máximo",pal:{m:"Rosa vibrante, impactante, acolhedor"},logo:"Laço rosa M|C",act:["Presença diária","Mutirão preventivos","Parceria mastologista","Decoração rosa clínica","Mídia local","Post Dia do Médico 18/10","Post Dia das Crianças 12/10 (Walter e Nina)","GRAVAR conteúdos novembro + Black Mila"],wk:[{w:"Semana 1 (01–05)",c:"Abertura impactante. Mudança visual.",f:"Presença diária"},{w:"Semana 2 (06–12)",c:"Dia das Crianças 12/10. Educativo. Mutirão.",f:"Presença diária"},{w:"Semana 3 (13–19)",c:"Dia do Médico 18/10. Mídia. GRAVAR novembro.",f:"Presença diária + gravações"},{w:"Semana 4 (20–31)",c:"Encerramento forte. Dados impacto. Finalizar gravações.",f:"Presença diária"}]},
+
+{mo:"Novembro",col:"#2C2416",tp:"Libido e Qualidade de Vida — Black Friday Premium",cn:"Black Mila — Viva sua Melhor Versão",cc:"Libido, qualidade de vida, prazer feminino. Black Friday 28/11 premium. Novembro Azul. GRAVAR EM NOVEMBRO: conteúdos dezembro + retrospectiva + natal/ano novo.",dates:"Black Friday 28/11 · Novembro Azul (mês) · 20/11 Dia Consciência Negra",reels:["'Libido baixa depois dos 40: tem solução' — reposição + laser, CTA","'Qualidade de vida íntima: o que muda com acompanhamento' — portfólio","'Black Mila: por que decidimos fazer diferente' — bastidores, premium","'O parceiro também precisa de cuidado: Novembro Azul' — inclusivo","'A consulta que transformou minha vida' — depoimento narrado, conversão"],campaign:"Black Mila (semana 3–4): pacotes premium. Lista VIP. Zero linguagem desconto — condição especial exclusiva.",obj:"Maior faturamento do ano. Superar meta.",kp:["Faturamento acima da meta","25+ pacotes","Conversão alto valor","Conteúdos dezembro gravados"],aud:"Base para upsell, novas, indicações",pal:{m:"Preto premium, dourado luxuoso"},logo:"M|C dourado fundo escuro. Selo Black Mila 2026",act:["Série libido e qualidade de vida","Novembro Azul: saúde do casal","Teaser Black Mila 2 semanas antes","Captação lista VIP","Abertura geral Black Mila","Black Friday 28/11 encerramento elegante","Dia Consciência Negra 20/11","GRAVAR dezembro + retrospectiva + natal"],wk:[{w:"Semana 1 (01–09)",c:"Série libido. Novembro Azul. Teaser Black Mila.",f:"Feed + reels + stories"},{w:"Semana 2 (10–16)",c:"Revelação VIP. Conteúdo qualidade de vida.",f:"Stories + feed"},{w:"Semana 3 (17–23)",c:"Abertura geral. 1 pacote/dia. Dia Consciência Negra 20/11.",f:"Feed diário + stories"},{w:"Semana 4 (24–30)",c:"BLACK FRIDAY 28/11. Encerramento. GRAVAR dezembro.",f:"Feed diário + gravações"}]},
+
+{mo:"Dezembro",col:"#C0392B",tp:"Reflexão e Autocuidado — Especiais Natal e Ano Novo (pré-gravado)",cn:"Um Ano Extraordinário",cc:"Encerramento. Natal Walter e Nina juntos. Retrospectiva: desafio, Nina, retorno, crescimento. Gift cards. Pré-agendamento 2027. GRAVAR EM DEZEMBRO: conteúdos janeiro e fevereiro 2027.",dates:"25/12 Natal · 31/12 Ano Novo · 08/12 N.S. Conceição (feriado Aracaju)",reels:["'Retrospectiva 2026: o ano que mudou tudo' — timeline, marcos, emocional","'O primeiro Natal da Nina' — pessoal, Walter e Nina","'O presente que toda mulher merece dar a si mesma' — gift card, elegante","'Obrigada por cada uma de vocês: carta às pacientes' — gratidão, fidelização","'2027: o que vem por aí' — visão futuro, expectativa, CTA agendar janeiro"],campaign:"Gift cards Natal + pré-agendamento janeiro 2027. Retrospectiva como conteúdo âncora.",obj:"Fidelizar. Fechar forte. Pré-agendar 2027.",kp:["20+ pré-agendamentos janeiro","15+ gift cards","Retrospectiva viral","Conteúdos jan–fev gravados"],aud:"Base fiel",pal:{m:"Vermelho natalino, dourado, gratidão"},logo:"M|C estrela dourada",act:["Retrospectiva carrossel","Reels 'Ano que mudou tudo'","Natal 25/12 Walter e Nina","Gift cards","Pré-agendamento janeiro 2027","Ano Novo visão 2027","N.S. Conceição 08/12","GRAVAR janeiro e fevereiro 2027"],wk:[{w:"Semana 1 (01–07)",c:"Retrospectiva. Gift cards. N.S. Conceição 08/12.",f:"Carrossel + stories"},{w:"Semana 2 (08–14)",c:"Reels retrospectiva. Pré-agendamento.",f:"Reels + CTA"},{w:"Semana 3 (15–21)",c:"Semana natalina. GRAVAR jan–fev 2027.",f:"Feed + gravações"},{w:"Semana 4 (22–31)",c:"NATAL 25/12. ANO NOVO. Visão 2027.",f:"Posts especiais"}]},
+
+{mo:"Jan 27",col:"#C9A96E",tp:"Recomeço — Check-up e Planejamento de Saúde",cn:"Novo Ano, Nova Você",cc:"Início 2027. Aniversário clínica 16/01 (3 anos). Conteúdo pré-gravado em dezembro. Check-up início de ano. GRAVAR EM JANEIRO: conteúdos março 2027.",dates:"16/01 Aniversário Clínica (3 anos) · 01/01 Ano Novo · 30/01 Dia da Saudade",reels:["'Checklist saúde feminina 2027' — prático, salvável, portfólio como CTA","'3 anos de Clínica Mila Cintra: números que emocionam' — aniversário, autoridade","'Janeiro: mês perfeito para check-up ginecológico' — sazonal, CTA","'Resolução que realmente importa: cuidar da saúde' — tendência janeiro","'Antes e depois: 3 anos de Clínica Mila Cintra' — storytelling, crescimento"],campaign:"Aniversário 3 anos (16/01): ação especial. 'Check-up Ano Novo' com condição para janeiro.",obj:"Lotação agenda pós-festas. Celebrar 3 anos.",kp:["Agenda lotada","Evento aniversário","Conteúdos março gravados"],aud:"Pacientes retornando, novas de Ano Novo",pal:{m:"Dourado, luminoso, renovação"},logo:"Selo '3 Anos M|C'",act:["Campanha Check-up Ano Novo","Evento aniversário 16/01","Série planejamento saúde 2027","Gift cards sendo usados","GRAVAR março 2027"],wk:[{w:"Semana 1–2",c:"Abertura 2027. Aniversário clínica 16/01.",f:"Feed + reels + stories"},{w:"Semana 3–4",c:"Conversão. Check-ups. GRAVAR março.",f:"Feed + stories + gravações"}]},
+
+{mo:"Fev 27",col:"#D4A0A0",tp:"Amor-Próprio e Autoestima — Carnaval e Saúde",cn:"Carnaval do Autocuidado",cc:"Carnaval 2027. Conteúdo pré-gravado. Autoestima, corpo, cuidado íntimo pré-carnaval. Laser e procedimentos estéticos íntimos.",dates:"Carnaval 2027 · 14/02 Valentine's Day",reels:["'Preparação íntima para o carnaval: o que ginecologista recomenda' — sazonal, alto alcance","'Amor-próprio não tem estação: 5 formas de se cuidar' — atemporal, CTA","'Laser íntimo antes do carnaval: mito ou faz sentido?' — FAQ, educativo","'Autoestima íntima: por que tantas mulheres sofrem em silêncio' — emocional, quebra tabu","'O carnaval passa, o autocuidado fica' — posicionamento elegante, CTA"],campaign:"'Carnaval do Autocuidado': pacotes procedimentos estéticos íntimos. Laser + consulta combo.",obj:"Manter faturamento alto. Pacotes sazonais.",kp:["Pacotes carnaval vendidos","Laser volume alto","Engajamento carnaval"],aud:"Mulheres pré-carnaval, autoestima",pal:{m:"Rosa quente, empoderado, festivo elegante"},logo:"M|C pré-carnaval",act:["Campanha Carnaval do Autocuidado","Pacotes laser + consulta","Série autoestima íntima","Conteúdo pré-carnaval tom elegante"],wk:[{w:"Semana 1–2",c:"Série autoestima. Pacotes carnaval.",f:"Feed + reels + stories"},{w:"Semana 3–4",c:"Semana pré-carnaval. CTA.",f:"Feed + stories"}]}
+];
+
+function GrowthTab(){
+const[op,setOp]=useState({road:true});const tog=s=>setOp(p=>({...p,[s]:!p[s]}));
+const Sec=({id,title,children})=>{const o=op[id]||false;return(<div style={{background:C.white,borderRadius:12,border:"1px solid "+C.gb,marginBottom:12,overflow:"hidden"}}><button onClick={()=>tog(id)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"16px 20px",background:"none",border:"none",cursor:"pointer"}}><span style={{fontSize:15,fontWeight:500,color:C.brown}}>{title}</span><span style={{color:C.gold,fontSize:16}}>{o?"−":"+"}</span></button>{o&&<div style={{padding:"0 20px 20px",fontSize:14,lineHeight:1.7,color:C.brown}}>{children}</div>}</div>)};
+const ph=[{p:"Fase 1 — Pré-licença",t:"Mar–Abr",g:"Consolidar e maximizar",c:"#E8967D",items:["Otimização agenda 5 dias/semana","Pacotes por serviço","Ampliação base recorrente","Urgência pré-afastamento","Lista espera qualificada"]},{p:"Fase 2 — Afastamento",t:"Mai–Jun",g:"Manutenção receita",c:"#F8C8DC",items:["Serviços independentes","Gestão locações","Conteúdo programado","Pré-venda retorno"]},{p:"Fase 3 — Retorno",t:"Jul–Ago",g:"Recuperar e escalar",c:"#7BA7BC",items:["Conversão demanda represada","Campanhas sazonais","Escalada procedimentos","Consolidação base recorrente"]},{p:"Fase 4 — Consolidação",t:"Set–Dez",g:"Atingir e manter meta",c:"#E91E8B",items:["Mix serviços equilibrado","Campanhas alto impacto","Novas receitas","Planejamento 2027"]}];
+return(<div>
+<div style={{textAlign:"center",marginBottom:24}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:26,color:C.brown,margin:"0 0 6px"}}>Direcionamento Estratégico</h2><p style={{color:C.gold,fontSize:13}}>Roadmap de crescimento — 2º semestre 2026</p></div>
+<div style={{background:"linear-gradient(135deg,"+C.brown+",#3d3222)",borderRadius:16,padding:28,marginBottom:20,color:C.white}}><div style={{display:"flex",justifyContent:"space-around",alignItems:"center",flexWrap:"wrap",gap:16}}><div style={{textAlign:"center"}}><p style={{fontSize:11,color:C.gold,margin:"0 0 4px",textTransform:"uppercase"}}>Baseline</p><p style={{fontSize:30,fontWeight:600,margin:0,fontFamily:"'Cormorant Garamond',Georgia,serif"}}>R$ 52.5k</p></div><div style={{fontSize:24,color:C.gold}}>→</div><div style={{textAlign:"center"}}><p style={{fontSize:11,color:C.gold,margin:"0 0 4px",textTransform:"uppercase"}}>Meta 2º semestre</p><p style={{fontSize:30,fontWeight:600,margin:0,fontFamily:"'Cormorant Garamond',Georgia,serif",color:C.gold}}>R$ 100k</p></div></div><div style={{marginTop:16,background:"rgba(255,255,255,0.1)",borderRadius:8,height:6,overflow:"hidden"}}><div style={{height:"100%",width:"52.5%",background:C.gold,borderRadius:8}}/></div><p style={{textAlign:"center",fontSize:11,color:"rgba(255,255,255,0.5)",marginTop:6}}>Progresso: 52,5%</p></div>
+<Sec id="diag" title="Diagnóstico"><p style={{marginBottom:12}}>Análise do relatório financeiro set/2025 – mar/2026.</p><div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>{[{l:"Faturamento total",v:"R$ 367.659"},{l:"Média mensal",v:"R$ 52.500"},{l:"Melhor mês",v:"Outubro/2025"},{l:"Capacidade",v:"5 dias/semana"}].map((c,i)=>(<div key={i} style={{background:C.bg,borderRadius:10,padding:14,textAlign:"center"}}><p style={{fontSize:10,color:C.gold,margin:"0 0 2px",textTransform:"uppercase"}}>{c.l}</p><p style={{fontSize:16,fontWeight:600,color:C.brown,margin:0,fontFamily:"'Cormorant Garamond',Georgia,serif"}}>{c.v}</p></div>))}</div><p style={{fontSize:13,color:"#666"}}>Portfólio com seis linhas de serviço. Gap de R$ 47.500 via otimização do mix, ticket médio e base recorrente. Detalhamento sob consulta.</p></Sec>
+<Sec id="lines" title="Linhas de Receita">{[{n:"Cirurgia Íntima",p:18,c:"#E91E8B"},{n:"Laser CO2",p:25,c:"#9B59B6"},{n:"Implante Hormonal",p:12,c:"#E67E22"},{n:"Tirzepatida",p:20,c:"#2980B9"},{n:"DIU + Imunoestimulantes",p:8,c:"#A8B5A2"},{n:"Consultas + demais",p:12,c:C.gold},{n:"Locações",p:5,c:"#8B6F8B"}].map((s,i)=>(<div key={i} style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:4}}><span>{s.n}</span><span style={{fontWeight:600,color:s.c}}>{s.p}%</span></div><div style={{background:C.bg,borderRadius:4,height:5,overflow:"hidden"}}><div style={{height:"100%",width:s.p+"%",background:s.c,borderRadius:4}}/></div></div>))}<p style={{fontSize:12,color:"#999",marginTop:12,fontStyle:"italic"}}>Metas quantitativas sob acompanhamento de consultoria.</p></Sec>
+<Sec id="road" title="Roadmap">{ph.map((r,i)=>(<div key={i} style={{background:r.c+"08",borderRadius:12,border:"1px solid "+r.c+"30",padding:20,marginBottom:12}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10,flexWrap:"wrap",gap:8}}><div><p style={{fontWeight:600,color:C.brown,margin:0,fontSize:15}}>{r.p}</p><p style={{fontSize:12,color:C.gold,margin:0}}>{r.t}</p></div><span style={{background:r.c+"20",color:r.c,padding:"4px 12px",borderRadius:20,fontSize:11,fontWeight:600}}>{r.g}</span></div>{r.items.map((it,j)=><div key={j} style={{display:"flex",gap:8,marginBottom:4,fontSize:13}}><span style={{color:r.c}}>—</span><span>{it}</span></div>)}</div>))}</Sec>
+<Sec id="cont" title="Direcionamento de Conteúdo">{[{s:"Cirurgia Íntima",f:"Quinzenal",d:"Desmistificação, processo, recuperação, depoimentos"},{s:"Laser CO2",f:"Semanal",d:"Indicações, benefícios, pacotes, sazonalidade"},{s:"Implante Hormonal",f:"Semanal",d:"Equilíbrio hormonal, qualidade vida, climatério"},{s:"Tirzepatida",f:"2x semana",d:"Acompanhamento médico, resultados, segurança"},{s:"DIU",f:"Quinzenal",d:"Comparativo, praticidade, dúvidas"},{s:"Betaglucona",f:"Mensal",d:"Imunidade feminina, prevenção, diferencial"}].map((s,i)=>(<div key={i} style={{display:"flex",gap:12,marginBottom:10,alignItems:"flex-start"}}><div style={{background:C.gl,borderRadius:8,padding:"6px 10px",flexShrink:0,minWidth:65,textAlign:"center"}}><p style={{fontSize:11,fontWeight:600,color:C.gold,margin:0}}>{s.s}</p><p style={{fontSize:9,color:"#999",margin:0}}>{s.f}</p></div><p style={{fontSize:13,margin:0}}>{s.d}</p></div>))}</Sec>
+</div>)}
+
+function PlanTab(){
+const[sel,setSel]=useState(0);const[exp,setExp]=useState({crono:true});const m=PD[sel];const tog=s=>setExp(p=>({...p,[s]:!p[s]}));
+const Sec=({id,title,children})=>{const o=exp[id]||false;return(<div style={{background:C.white,borderRadius:12,border:"1px solid "+C.gb,marginBottom:12,overflow:"hidden"}}><button onClick={()=>tog(id)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 18px",background:"none",border:"none",cursor:"pointer"}}><span style={{fontSize:14,fontWeight:500,color:C.brown}}>{title}</span><span style={{color:C.gold}}>{o?"−":"+"}</span></button>{o&&<div style={{padding:"0 18px 18px",fontSize:13,lineHeight:1.7,color:C.brown}}>{children}</div>}</div>)};
+return(<div>
+<div style={{textAlign:"center",marginBottom:20}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:26,color:C.brown,margin:"0 0 6px"}}>Planejamento Mensal</h2><p style={{color:C.gold,fontSize:12}}>Março 2026 – Fevereiro 2027</p></div>
+<div style={{display:"flex",gap:5,overflowX:"auto",paddingBottom:8,marginBottom:16}}>{PD.map((p,i)=><button key={i} onClick={()=>{setSel(i);setExp({crono:true})}} style={{padding:"7px 12px",borderRadius:10,border:"1.5px solid "+(sel===i?p.col:C.gb),background:sel===i?p.col+"18":"transparent",cursor:"pointer",whiteSpace:"nowrap",fontSize:11,fontWeight:sel===i?600:400,color:sel===i?p.col:C.brown,flexShrink:0}}>{p.mo.length>3?p.mo:p.mo.slice(0,3)}</button>)}</div>
+<div style={{background:"linear-gradient(135deg,"+m.col+"12,"+m.col+"06)",borderRadius:14,border:"1px solid "+m.col+"30",padding:22,marginBottom:16}}><p style={{fontSize:11,color:m.col,letterSpacing:2,textTransform:"uppercase",marginBottom:4}}>{m.mo+(m.mo.length<=3?" 2026":"")+" — "+m.tp}</p><h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,color:C.brown,margin:"0 0 8px"}}>{m.cn}</h3><p style={{fontSize:13,lineHeight:1.6}}>{m.cc}</p></div>
+<Sec id="obj" title="Objetivo e indicadores"><p style={{marginBottom:10}}><strong>Objetivo:</strong> {m.obj}</p>{m.kp.map((k,i)=><div key={i} style={{display:"flex",gap:8,marginBottom:4}}><span style={{color:m.col}}>—</span><span>{k}</span></div>)}<p style={{marginTop:10}}><strong>Público:</strong> {m.aud}</p></Sec>
+{m.dates&&<Sec id="dates" title="Datas importantes"><div style={{background:C.gl,borderRadius:10,padding:14}}><p style={{fontSize:13,lineHeight:1.8}}>{m.dates}</p></div><p style={{marginTop:10,fontSize:12,color:C.gold,fontStyle:"italic"}}>Lembrete: gravar conteúdo do mês seguinte com antecedência.</p></Sec>}
+{m.reels&&<Sec id="reels" title="5 Reels — Ideias para gravar">{m.reels.map((r,i)=><div key={i} style={{background:i%2===0?C.gl:"transparent",borderRadius:10,padding:14,marginBottom:6}}><p style={{fontSize:13}}><strong style={{color:m.col}}>Reel {i+1}:</strong> {r}</p></div>)}</Sec>}
+{m.campaign&&<Sec id="campaign" title="Campanha do mês"><div style={{background:m.col+"08",borderRadius:10,padding:16,borderLeft:"3px solid "+m.col}}><p style={{fontSize:13,lineHeight:1.7}}>{m.campaign}</p></div></Sec>}
+<Sec id="vis" title="Identidade visual"><p><strong>Direção:</strong> {m.pal.m}</p><p><strong>Aplicação:</strong> {m.logo}</p></Sec>
+<Sec id="act" title="Ações e entregas">{m.act.map((a,i)=><div key={i} style={{display:"flex",gap:8,marginBottom:4}}><span style={{color:m.col}}>—</span><span>{a}</span></div>)}</Sec>
+<Sec id="crono" title="Cronograma">{m.wk.map((w,i)=><div key={i} style={{background:i%2===0?C.gl:"transparent",borderRadius:10,padding:14,marginBottom:6}}><p style={{fontWeight:600,color:m.col,fontSize:12,marginBottom:4}}>{w.w}</p><p style={{marginBottom:2}}>{w.c}</p><p style={{fontSize:11,color:C.gold}}>Formato: {w.f}</p></div>)}</Sec>
+</div>)}
+
+const TYPES=[{id:"reels",label:"Reels",color:"#E91E8B"},{id:"stories",label:"Stories",color:"#9B59B6"},{id:"carrossel",label:"Carrossel",color:"#2980B9"},{id:"foto",label:"Foto/Post",color:"#E67E22"},{id:"live",label:"Live",color:"#A8B5A2"}];
+const STATUSES=[{id:"rascunho",label:"Rascunho",color:"#999"},{id:"roteirizado",label:"Roteirizado",color:C.gold},{id:"gravar",label:"A gravar",color:"#E67E22"},{id:"gravado",label:"Gravado",color:"#2980B9"},{id:"editado",label:"Editado",color:"#9B59B6"},{id:"postado",label:"Postado",color:"#27ae60"}];
+
+function AgendaTab({isConsultora}){
+const[entries,setEntries]=useState(()=>sL("agenda",{}));
+const[view,setView]=useState("month");
+const[mo,setMo]=useState(new Date().getMonth());
+const[yr,setYr]=useState(new Date().getFullYear());
+const[selKey,setSelKey]=useState(null);
+const[selIdx,setSelIdx]=useState(null);
+const[showAdd,setShowAdd]=useState(false);
+const[addKey,setAddKey]=useState(null);
+useEffect(()=>sS("agenda",entries),[entries]);
+
+const getWeekDates=()=>{const today=new Date(yr,mo,new Date().getDate());const dow=today.getDay();const start=new Date(today);start.setDate(today.getDate()-dow);const days=[];for(let i=0;i<7;i++){const d=new Date(start);d.setDate(start.getDate()+i);days.push(d)}return days};
+const weekDates=getWeekDates();
+const fmtKey=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const fmtDay=d=>String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0");
+
+const addEntry=(key,entry)=>{setEntries(p=>{const cur=p[key]||[];return{...p,[key]:[...cur,{...entry,id:Date.now(),status:"roteirizado"}]}})};
+const updateEntry=(key,id,updates)=>{setEntries(p=>{const cur=(p[key]||[]).map(e=>e.id===id?{...e,...updates}:e);return{...p,[key]:cur}})};
+const deleteEntry=(key,id)=>{setEntries(p=>{const cur=(p[key]||[]).filter(e=>e.id!==id);const n={...p};if(cur.length)n[key]=cur;else delete n[key];return n})};
+
+const fd=new Date(yr,mo,1).getDay(),dm=new Date(yr,mo+1,0).getDate();
+const calDays=[];for(let i=0;i<fd;i++)calDays.push(null);for(let j=1;j<=dm;j++)calDays.push(j);
+
+const selEntries=selKey?entries[selKey]||[]:[];
+const selEntry=selIdx!==null?selEntries[selIdx]:null;
+
+const CardModal=({dk,entry,onClose})=>{
+const[t,sT]=useState(entry?.title||"");const[tp,sTp]=useState(entry?.type||"reels");const[rot,sRot]=useState(entry?.roteiro||"");
+const p=dk.split("-");const isNew=!entry;
+return(<div style={{position:"fixed",inset:0,background:"rgba(44,36,22,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000,padding:16}} onClick={onClose}><div style={{background:C.white,borderRadius:16,padding:28,maxWidth:560,width:"100%",maxHeight:"90vh",overflowY:"auto"}} onClick={e=>e.stopPropagation()}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+<h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:20,color:C.brown,margin:0}}>{p[2]}/{p[1]}/{p[0]}</h3>
+<button onClick={onClose} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",color:C.brown}}>×</button></div>
+{isConsultora?(<div>
+<label style={lb}>Título</label><input value={t} onChange={e=>sT(e.target.value)} placeholder="Ex: Reels sobre Laser CO2" style={ip}/>
+<label style={lb}>Tipo de conteúdo</label><div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:16}}>{TYPES.map(ty=><button key={ty.id} onClick={()=>sTp(ty.id)} style={{padding:"6px 14px",borderRadius:20,fontSize:11,border:"1.5px solid "+(tp===ty.id?ty.color:C.gb),background:tp===ty.id?ty.color+"15":"transparent",color:tp===ty.id?ty.color:C.brown,cursor:"pointer",fontWeight:tp===ty.id?600:400}}>{ty.label}</button>)}</div>
+<label style={lb}>Roteiro completo</label><textarea value={rot} onChange={e=>sRot(e.target.value)} rows={10} placeholder="Cole aqui o roteiro editado..." style={{...ip,resize:"vertical",fontSize:13,lineHeight:"1.7",minHeight:200}}/>
+<div style={{display:"flex",gap:8,marginTop:8}}>
+<button onClick={()=>{if(!t.trim())return;if(isNew)addEntry(dk,{title:t,type:tp,roteiro:rot});else updateEntry(dk,entry.id,{title:t,type:tp,roteiro:rot});onClose()}} style={{...bp,flex:1}}>{isNew?"Adicionar":"Salvar"}</button>
+{!isNew&&<button onClick={()=>{deleteEntry(dk,entry.id);onClose()}} style={{...bs,color:"#c44",padding:"12px 20px"}}>Excluir</button>}
+</div></div>):(<div>
+<div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
+<span style={{padding:"4px 12px",borderRadius:20,fontSize:11,fontWeight:600,background:(TYPES.find(ty=>ty.id===entry?.type)||TYPES[0]).color+"15",color:(TYPES.find(ty=>ty.id===entry?.type)||TYPES[0]).color}}>{(TYPES.find(ty=>ty.id===entry?.type)||TYPES[0]).label}</span>
+<span style={{fontSize:12,color:C.gold}}>{(STATUSES.find(s=>s.id===entry?.status)||STATUSES[0]).label}</span>
+</div>
+<h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,color:C.brown,margin:"0 0 20px"}}>{entry?.title}</h3>
+{entry?.roteiro?<div style={{background:C.gl,borderRadius:12,padding:20,fontSize:13,lineHeight:1.8,color:C.brown,whiteSpace:"pre-wrap"}}>{entry.roteiro}</div>:<p style={{color:"#999",fontStyle:"italic"}}>Roteiro ainda não adicionado.</p>}
+<div style={{marginTop:20}}><label style={lb}>Atualizar status</label><div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{STATUSES.map(s=><button key={s.id} onClick={()=>{updateEntry(dk,entry.id,{status:s.id})}} style={{padding:"6px 14px",borderRadius:20,fontSize:11,border:"1.5px solid "+(entry?.status===s.id?s.color:C.gb),background:entry?.status===s.id?s.color+"15":"transparent",color:entry?.status===s.id?s.color:C.brown,cursor:"pointer",fontWeight:entry?.status===s.id?600:400}}>{s.label}</button>)}</div></div>
+</div>)}
+</div></div>)};
+
+return(<div>
+<div style={{textAlign:"center",marginBottom:20}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,color:C.brown}}>Agenda Editorial</h2><p style={{color:C.gold,fontSize:12}}>Roteiros e calendário de conteúdo</p></div>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16,flexWrap:"wrap",gap:8}}>
+<div style={{display:"flex",gap:4,background:C.bg,borderRadius:8,padding:2}}><button onClick={()=>setView("month")} style={{padding:"6px 14px",borderRadius:6,border:"none",cursor:"pointer",fontSize:11,fontWeight:view==="month"?600:400,background:view==="month"?C.white:"transparent",color:view==="month"?C.brown:C.gold}}>Mês</button><button onClick={()=>setView("week")} style={{padding:"6px 14px",borderRadius:6,border:"none",cursor:"pointer",fontSize:11,fontWeight:view==="week"?600:400,background:view==="week"?C.white:"transparent",color:view==="week"?C.brown:C.gold}}>Semana</button></div>
+{isConsultora&&view==="week"&&<button onClick={()=>{setAddKey(fmtKey(new Date()));setShowAdd(true)}} style={{...bs,fontSize:11}}>+ Novo roteiro</button>}
 </div>
 
-<!-- SOBRE -->
-<section class="sobre" id="sobre">
-  <div class="sobre-img-wrap">
-    <img src="https://i.imgur.com/yum4Uf7.jpeg" alt="Dra. Mila Cintra">
-    <div class="sobre-img-tag">
-      <strong>Mila Cintra</strong>
-      <span>Ginecologista · CRM-SE</span>
-    </div>
-  </div>
-  <div class="sobre-content">
-    <span class="section-tag">Sobre a Médica</span>
-    <h2>Pioneira em cuidado íntimo feminino</h2>
-    <p>Formada em Medicina pela Universidade Federal de Sergipe, com residência em Ginecologia e Obstetrícia em São Paulo, a Dra. Mila Cintra é a primeira especialista em Ginecologia Estética e Funcional de Sergipe.</p>
-    <p>Com três pós-graduações — Ginecologia Endócrina, Sexualidade e Climatério pela Unifesp; Laparoscopia e Histeroscopia pelo Instituto Crisp (MG); e Ginecologia Regenerativa, Estética e Funcional — ela une saber acadêmico de ponta à escuta genuína de cada mulher.</p>
-    <ul class="sobre-list">
-      <li>Pioneira em Estética Íntima em Sergipe</li>
-      <li>Cirurgia Íntima · Laser CO2 · Harmonização</li>
-      <li>Implante Hormonal · Obstetrícia</li>
-      <li>Atendimento premium e completamente personalizado</li>
-    </ul>
-    <a href="https://wa.me/5579988162525" target="_blank" class="btn-primary">Falar com a Clínica</a>
-  </div>
-</section>
+{view==="month"&&(<div>
+<div style={{background:C.white,borderRadius:12,border:"1px solid "+C.gb,padding:18}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}><button onClick={()=>mo===0?((setMo(11)),setYr(yr-1)):setMo(mo-1)} style={nb}>←</button><h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:20,color:C.brown,margin:0}}>{MO[mo]} {yr}</h3><button onClick={()=>mo===11?((setMo(0)),setYr(yr+1)):setMo(mo+1)} style={nb}>→</button></div>
+<div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:3}}>
+{WD.map(d=><div key={d} style={{textAlign:"center",fontSize:10,color:C.gold,fontWeight:600,padding:"3px 0"}}>{d}</div>)}
+{calDays.map((day,i)=>{const k=day?yr+"-"+String(mo+1).padStart(2,"0")+"-"+String(day).padStart(2,"0"):null;const dayEntries=k?entries[k]||[]:[];const td=day&&new Date().getDate()===day&&new Date().getMonth()===mo&&new Date().getFullYear()===yr;
+return(<div key={i} onClick={()=>{if(day&&dayEntries.length){setSelKey(k);setSelIdx(0)}else if(day&&isConsultora){setAddKey(k);setShowAdd(true)}}} style={{minHeight:60,borderRadius:6,fontSize:11,padding:3,background:td?"rgba(201,169,110,0.08)":"transparent",border:td?"1.5px solid "+C.gold:dayEntries.length?"1px solid "+C.gb:"1px solid transparent",cursor:day?"pointer":"default",overflow:"hidden"}}>
+<div style={{color:day?C.brown:"transparent",fontSize:11,fontWeight:td?600:400,marginBottom:2}}>{day||""}</div>
+{dayEntries.slice(0,2).map((e,j)=>{const ty=TYPES.find(t=>t.id===e.type)||TYPES[0];const st=STATUSES.find(s=>s.id===e.status)||STATUSES[0];return(<div key={j} style={{background:ty.color+"12",borderLeft:"2px solid "+ty.color,borderRadius:3,padding:"2px 4px",marginBottom:2,fontSize:9,color:C.brown,lineHeight:1.3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{e.title}</div>)})}
+{dayEntries.length>2&&<div style={{fontSize:8,color:C.gold}}>+{dayEntries.length-2}</div>}
+</div>)})}
+</div></div>
+</div>)}
 
-<!-- PROCEDIMENTOS -->
-<section class="procedimentos" id="procedimentos">
-  <div class="section-header">
-    <div class="divider"><div class="divider-diamond"></div></div>
-    <span class="section-tag">Tratamentos</span>
-    <h2>Procedimentos</h2>
-    <p>Tecnologia de ponta aliada a uma abordagem humanizada para o cuidado íntimo feminino.</p>
-  </div>
-  <div class="proc-grid">
-    <div class="proc-card">
-      <div class="proc-num">01</div>
-      <h3>Cirurgia Íntima</h3>
-      <p>Ninfoplastia e labioplastia realizadas com precisão e sensibilidade. Procedimentos que devolvem conforto, estética e confiança plena.</p>
-      <a href="cirurgia-intima.html" class="proc-link">Saiba mais →</a>
-    </div>
-    <div class="proc-card">
-      <div class="proc-num">02</div>
-      <h3>Laser CO2 Vaginal</h3>
-      <p>Tecnologia de última geração para rejuvenescimento vaginal, ressecamento, incontinência e bem-estar íntimo duradouro.</p>
-      <a href="https://wa.me/5579988162525" class="proc-link" target="_blank">Saiba mais →</a>
-    </div>
-    <div class="proc-card">
-      <div class="proc-num">03</div>
-      <h3>Harmonização Íntima</h3>
-      <p>Preenchimento e remodelação da região íntima com resultado natural, elegante e que respeita a singularidade de cada mulher.</p>
-      <a href="https://wa.me/5579988162525" class="proc-link" target="_blank">Saiba mais →</a>
-    </div>
-    <div class="proc-card">
-      <div class="proc-num">04</div>
-      <h3>Implante Hormonal</h3>
-      <p>Reequilíbrio hormonal com Implanon para energia, libido e qualidade de vida. Uma virada de chave no bem-estar feminino.</p>
-      <a href="https://wa.me/5579988162525" class="proc-link" target="_blank">Saiba mais →</a>
-    </div>
-    <div class="proc-card">
-      <div class="proc-num">05</div>
-      <h3>Bleaching Íntimo</h3>
-      <p>Clareamento da região íntima com protocolos seguros e eficazes. Autoestima e bem-estar em cada detalhe do seu corpo.</p>
-      <a href="https://wa.me/5579988162525" class="proc-link" target="_blank">Saiba mais →</a>
-    </div>
-    <div class="proc-card">
-      <div class="proc-num">06</div>
-      <h3>Obstetrícia</h3>
-      <p>Acompanhamento gestacional com cuidado integral e humanizado, presente em cada etapa da sua maternidade.</p>
-      <a href="https://wa.me/5579988162525" class="proc-link" target="_blank">Saiba mais →</a>
-    </div>
-  </div>
-</section>
+{view==="week"&&(<div>
+<div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:8}}>
+{weekDates.map((d,i)=>{const k=fmtKey(d);const dayEntries=entries[k]||[];const td=d.toDateString()===new Date().toDateString();
+return(<div key={i} style={{background:C.white,borderRadius:10,border:td?"1.5px solid "+C.gold:"1px solid "+C.gb,padding:10,minHeight:200}}>
+<div style={{textAlign:"center",marginBottom:10}}><div style={{fontSize:10,color:C.gold,fontWeight:600}}>{WD[i]}</div><div style={{fontSize:16,fontWeight:td?700:400,color:C.brown}}>{d.getDate()}</div><div style={{fontSize:9,color:"#999"}}>{MO[d.getMonth()].slice(0,3)}</div></div>
+{dayEntries.map((e,j)=>{const ty=TYPES.find(t=>t.id===e.type)||TYPES[0];const st=STATUSES.find(s=>s.id===e.status)||STATUSES[0];
+return(<div key={j} onClick={()=>{setSelKey(k);setSelIdx(j)}} style={{background:ty.color+"10",borderLeft:"3px solid "+ty.color,borderRadius:6,padding:8,marginBottom:6,cursor:"pointer"}}>
+<div style={{fontSize:10,fontWeight:600,color:C.brown,marginBottom:3,lineHeight:1.3}}>{e.title}</div>
+<div style={{display:"flex",gap:4,alignItems:"center"}}><span style={{fontSize:8,color:ty.color,fontWeight:600}}>{ty.label}</span><span style={{fontSize:8,color:st.color}}>· {st.label}</span></div>
+</div>)})}
+{isConsultora&&<button onClick={()=>{setAddKey(k);setShowAdd(true)}} style={{width:"100%",padding:"6px",borderRadius:6,border:"1px dashed "+C.gb,background:"transparent",cursor:"pointer",fontSize:10,color:C.gold,marginTop:4}}>+</button>}
+</div>)})}
+</div>
+</div>)}
 
-<!-- EXPERIÊNCIA -->
-<section class="experiencia" id="experiencia">
-  <div class="exp-img">
-    <img src="https://i.imgur.com/XTwFZRw.jpeg" alt="Atmosfera da clínica">
-  </div>
-  <div class="exp-content">
-    <span class="section-tag">A Experiência</span>
-    <h2>Uma clínica pensada para você</h2>
-    <div class="exp-items">
-      <div class="exp-item">
-        <div class="exp-icon">◆</div>
-        <div>
-          <h4>Ambiente Exclusivo</h4>
-          <p>Espaço projetado para acolher, com privacidade, conforto e uma estética que reflete cuidado em cada detalhe.</p>
-        </div>
-      </div>
-      <div class="exp-item">
-        <div class="exp-icon">◆</div>
-        <div>
-          <h4>Atendimento Personalizado</h4>
-          <p>Cada consulta é única. A Dra. Mila dedica tempo real para ouvir, entender e cuidar da sua história.</p>
-        </div>
-      </div>
-      <div class="exp-item">
-        <div class="exp-icon">◆</div>
-        <div>
-          <h4>Tecnologia de Ponta</h4>
-          <p>Equipamentos e protocolos atualizados para resultados seguros, naturais e duradouros.</p>
-        </div>
-      </div>
-    </div>
-    <a href="https://wa.me/5579988162525" target="_blank" class="btn-primary">Agendar Minha Consulta</a>
-  </div>
-</section>
+{selKey&&selEntry&&<CardModal dk={selKey} entry={selEntry} onClose={()=>{setSelKey(null);setSelIdx(null)}}/>}
+{showAdd&&addKey&&<CardModal dk={addKey} entry={null} onClose={()=>{setShowAdd(false);setAddKey(null)}}/>}
+</div>)}
 
-<!-- FRASE -->
-<section class="frase">
-  <blockquote>Cuidar da sua saúde íntima não é luxo — é o respeito que você deve a si mesma.</blockquote>
-  <cite>— Dra. Mila Cintra</cite>
-</section>
+function Login({onOk}){const[pw,sP]=useState("");const[er,sE]=useState(false);const go=()=>{if(pw===PW)onOk();else{sE(true);setTimeout(()=>sE(false),2000)}};return(<div style={{minHeight:"100vh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}><div style={{background:C.white,borderRadius:20,padding:"44px 32px",maxWidth:360,width:"100%",textAlign:"center",boxShadow:"0 20px 60px rgba(44,36,22,0.1)"}}><h1 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:34,fontWeight:600,color:C.brown,margin:"0 0 4px"}}>M<span style={{color:C.gold}}>|</span>C</h1><p style={{fontSize:10,color:C.gold,letterSpacing:3,textTransform:"uppercase",marginBottom:28}}>Painel Estratégico</p><input type="password" value={pw} onChange={e=>sP(e.target.value)} onKeyDown={e=>e.key==="Enter"&&go()} placeholder="Senha de acesso" style={{...ip,textAlign:"center",marginBottom:er?6:14}}/>{er&&<p style={{color:"#c44",fontSize:11,marginBottom:10}}>Acesso negado</p>}<button onClick={go} style={{...bp,width:"100%"}}>Acessar</button></div></div>)}
 
-<!-- CTA FINAL — uma foto só -->
-<section class="cta-section">
-  <div class="cta-img-single">
-    <img src="https://i.imgur.com/cIiWyzt.jpeg" alt="Dra. Mila Cintra">
-  </div>
-  <div class="cta-content">
-    <span class="section-tag">Próximo passo</span>
-    <h2>Pronta para se cuidar com quem entende de você?</h2>
-    <p>Agende sua consulta e dê o primeiro passo para uma nova relação com o seu corpo, sua autoestima e sua saúde íntima.</p>
-    <a href="https://wa.me/5579988162525" target="_blank" class="btn-primary">Agendar pelo WhatsApp</a>
-  </div>
-</section>
+function App(){
+const[logged,setL]=useState(false);const[tab,setTab]=useState("plan");const[stratOk,setStrat]=useState(false);const[stratPw,setSPw]=useState("");const[stratErr,setSErr]=useState(false);const[showSM,setShowSM]=useState(false);
+const[ct,sCt]=useState("stories");const[topic,sTo]=useState(TOPS[0]);const[cTo,sCTo]=useState("");const[extra,sEx]=useState("");
+const[result,sR]=useState("");const[ld,sLd]=useState(false);const[cp,sCp]=useState(false);
+const[saved,sSv]=useState(()=>sL("sv",[]));const[sn,sSN]=useState("");
+const gen=async()=>{sLd(true);sR("");sCp(false);const c=CTS.find(x=>x.id===ct);const t=cTo.trim()||topic;let msg=c.pr+" sobre: \""+t+"\".";if(ct==="stories")msg+="\nSequência de telas com texto, formato e orientação visual.";if(ct==="legenda")msg+="\nTexto completo, CTA e 15-20 hashtags.";if(ct==="temas")msg+="\n5 temas com título, relevância e formato.";if(extra.trim())msg+="\n\n"+extra;try{const r=await fetch("/api/generate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:sysPr,messages:[{role:"user",content:msg}]})});const d=await r.json();sR(d.content?.map(b=>b.text||"").join("\n")||"Erro.")}catch{sR("Erro de conexão.")}sLd(false)};
+const handleTab=id=>{if(id==="growth"&&!stratOk){setShowSM(true);return}setTab(id)};
+const tryStrat=()=>{if(stratPw===STRATPW){setStrat(true);setShowSM(false);setTab("growth");setSPw("")}else{setSErr(true);setTimeout(()=>setSErr(false),2000)}};
+if(!logged)return <Login onOk={()=>setL(true)}/>;
+const tabs=[{id:"growth",l:"Estratégia",lk:true},{id:"plan",l:"Planejamento"},{id:"gen",l:"Conteúdo"},{id:"sv",l:"Salvos"},{id:"cal",l:"Agenda"}];
+return(<div style={{minHeight:"100vh",background:C.bg,fontFamily:"'Jost',sans-serif"}}>
+<div style={{background:C.white,borderBottom:"1px solid "+C.gb,padding:"14px 16px"}}><div style={{maxWidth:840,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}><div><h1 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,fontWeight:600,color:C.brown,margin:0}}>M<span style={{color:C.gold}}>|</span>C</h1><p style={{fontSize:9,color:C.gold,margin:0,letterSpacing:2,textTransform:"uppercase"}}>Painel Estratégico</p></div><div style={{display:"flex",gap:2,background:C.bg,borderRadius:9,padding:2,flexWrap:"wrap"}}>{tabs.map(t=><button key={t.id} onClick={()=>handleTab(t.id)} style={{padding:"6px 11px",borderRadius:7,border:"none",cursor:"pointer",fontSize:11,fontWeight:tab===t.id?600:400,background:tab===t.id?C.white:"transparent",color:tab===t.id?C.brown:C.gold}}>{t.l}{t.lk&&!stratOk?" ◆":""}</button>)}</div></div></div>
+<div style={{maxWidth:840,margin:"0 auto",padding:"18px 14px"}}>
+{tab==="growth"&&<GrowthTab/>}
+{tab==="plan"&&<PlanTab/>}
+{tab==="gen"&&(<div>
+<div style={{textAlign:"center",marginBottom:20}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,color:C.brown}}>Gerador de Conteúdo</h2><p style={{color:C.gold,fontSize:12}}>Produção alinhada ao posicionamento da marca</p></div>
+<label style={lb}>Formato</label><div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}}>{CTS.map(c=><button key={c.id} onClick={()=>sCt(c.id)} style={{padding:"12px 6px",borderRadius:10,border:"1.5px solid "+(ct===c.id?C.gold:C.gb),background:ct===c.id?C.gl:C.white,cursor:"pointer",textAlign:"center"}}><div style={{fontSize:11,fontWeight:500,color:C.brown}}>{c.label}</div></button>)}</div>
+<label style={lb}>Tema</label><div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:8}}>{TOPS.map(t=><button key={t} onClick={()=>{sTo(t);sCTo("")}} style={{padding:"4px 10px",borderRadius:16,fontSize:10,border:"1px solid "+(topic===t&&!cTo?C.gold:C.gb),background:topic===t&&!cTo?C.gl:C.white,color:C.brown,cursor:"pointer"}}>{t}</button>)}</div>
+<input value={cTo} onChange={e=>sCTo(e.target.value)} placeholder="Ou insira um tema específico..." style={ip}/>
+<label style={lb}>Orientações adicionais</label><textarea value={extra} onChange={e=>sEx(e.target.value)} rows={2} placeholder="Contexto, direcionamento..." style={{...ip,resize:"vertical"}}/>
+<button onClick={gen} disabled={ld} style={{...bp,width:"100%",opacity:ld?.7:1}}>{ld?"Gerando...":"Gerar conteúdo"}</button>
+{result&&(<div style={{marginTop:16,background:C.white,borderRadius:12,border:"1px solid "+C.gb,padding:18}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}><span style={{fontWeight:500,fontSize:13}}>Resultado</span><div style={{display:"flex",gap:4}}><button onClick={()=>{const c=CTS.find(x=>x.id===ct);const u=[{id:Date.now(),tl:c.label,tp:cTo.trim()||topic,tx:result,dt:new Date().toLocaleDateString("pt-BR")},...saved].slice(0,50);sSv(u);sS("sv",u);sSN("Salvo");setTimeout(()=>sSN(""),2000)}} style={bs}>{sn||"Salvar"}</button><button onClick={()=>{navigator.clipboard.writeText(result);sCp(true);setTimeout(()=>sCp(false),2000)}} style={bs}>{cp?"Copiado":"Copiar"}</button></div></div><div style={{whiteSpace:"pre-wrap",fontSize:13,lineHeight:1.7}}>{result}</div></div>)}
+</div>)}
+{tab==="sv"&&(<div>
+<div style={{textAlign:"center",marginBottom:20}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,color:C.brown}}>Conteúdos Salvos</h2></div>
+{saved.length===0?<p style={{textAlign:"center",color:C.gold}}>Nenhum conteúdo salvo.</p>:saved.map(it=><div key={it.id} style={{background:C.white,borderRadius:10,border:"1px solid "+C.gb,padding:16,marginBottom:8}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:6,flexWrap:"wrap",gap:4}}><span style={{fontSize:12}}>{it.tl} · {it.tp} · {it.dt}</span><div style={{display:"flex",gap:4}}><button onClick={()=>navigator.clipboard.writeText(it.tx)} style={bs}>Copiar</button><button onClick={()=>{const u=saved.filter(c=>c.id!==it.id);sSv(u);sS("sv",u)}} style={{...bs,color:"#c44"}}>Remover</button></div></div><div style={{whiteSpace:"pre-wrap",fontSize:12,lineHeight:1.5,maxHeight:160,overflow:"auto"}}>{it.tx}</div></div>)}
+</div>)}
+{tab==="cal"&&<AgendaTab isConsultora={stratOk}/>}
+{showSM&&(<div style={{position:"fixed",inset:0,background:"rgba(44,36,22,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000,padding:16}}><div style={{background:C.white,borderRadius:16,padding:"36px 28px",maxWidth:360,width:"100%",textAlign:"center"}}><h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,color:C.brown,margin:"0 0 6px"}}>Área restrita</h3><p style={{fontSize:13,color:C.gold,marginBottom:20}}>Acesso exclusivo da consultoria</p><input type="password" value={stratPw} onChange={e=>setSPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&tryStrat()} placeholder="Senha" style={{...ip,textAlign:"center",marginBottom:stratErr?6:14}}/>{stratErr&&<p style={{color:"#c44",fontSize:11,marginBottom:10}}>Acesso negado</p>}<div style={{display:"flex",gap:8}}><button onClick={()=>{setShowSM(false);setSPw("");setSErr(false)}} style={{...bs,flex:1}}>Cancelar</button><button onClick={tryStrat} style={{...bp,flex:1}}>Acessar</button></div></div></div>)}
+</div>
+</div>)}
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-logo">DRA. MILA <span>CINTRA</span></div>
-  <div class="footer-links">
-    <a href="#sobre">Sobre</a>
-    <a href="#procedimentos">Procedimentos</a>
-    <a href="https://instagram.com/dramilacintra" target="_blank">Instagram</a>
-    <a href="https://wa.me/5579988162525" target="_blank">WhatsApp</a>
-  </div>
-  <p>© 2026 · Ginecologia & Estética Íntima · Aracaju-SE</p>
-</footer>
-
-<a href="https://wa.me/5579988162525" target="_blank" class="wa-float" title="Falar no WhatsApp">💬</a>
-
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
 </body>
 </html>
