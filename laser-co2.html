@@ -12,6 +12,8 @@
 html{scroll-behavior:smooth}
 body{font-family:'Jost',sans-serif;background:var(--white);color:var(--text);font-weight:300}
 h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;font-weight:400}
+
+/* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(253,252,250,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:18px 48px;display:flex;align-items:center;justify-content:space-between}
 .nav-logo{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;letter-spacing:3px;color:var(--text);text-decoration:none}
 .nav-logo span{color:var(--gold)}
@@ -19,6 +21,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(253,252,250,
 .nav-back:hover{color:var(--gold)}
 .nav-cta{background:transparent;border:1px solid var(--gold);color:var(--gold);padding:10px 26px;font-family:'Jost',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .3s;text-decoration:none}
 .nav-cta:hover{background:var(--gold);color:var(--white)}
+
+/* HERO */
 .hero-proc{min-height:70vh;display:grid;grid-template-columns:1fr 1fr;position:relative}
 .hero-proc-left{background:linear-gradient(160deg,var(--beige),var(--white));display:flex;flex-direction:column;justify-content:center;padding:140px 64px 80px}
 .hero-proc-left::after{content:'';position:absolute;top:0;right:50%;bottom:0;width:1px;background:linear-gradient(180deg,transparent,var(--gold-light),transparent)}
@@ -28,8 +32,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(253,252,250,
 .hero-proc-sub{font-size:15px;line-height:1.85;color:var(--text-light);max-width:420px;margin-bottom:40px}
 .btn-primary{background:var(--gold);color:var(--white);padding:15px 36px;border:none;font-family:'Jost',sans-serif;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;transition:all .3s;text-decoration:none;display:inline-block}
 .btn-primary:hover{background:var(--gold-dark)}
-.hero-proc-right{position:relative;overflow:hidden}
-.hero-proc-right img{width:100%;height:100%;object-fit:cover;object-position:center top}
+.hero-proc-right{position:relative;overflow:hidden;background:var(--beige)}
+.hero-proc-right img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
+
+/* SECTIONS */
 .section{padding:100px 64px;max-width:1100px;margin:0 auto}
 .section-alt{background:var(--beige)}
 .section-full{padding:100px 64px}
@@ -37,15 +43,31 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(253,252,250,
 .section h2{font-size:40px;line-height:1.2;margin-bottom:24px}
 .section p,.section-full p{font-size:15px;line-height:1.9;color:var(--text-light);margin-bottom:16px}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+
+/* CARD LIST */
 .card-list{list-style:none;margin:32px 0}
 .card-list li{display:flex;align-items:flex-start;gap:14px;font-size:14px;color:var(--text);padding:16px 0;border-bottom:1px solid var(--border)}
 .card-list li::before{content:'◆';color:var(--gold);font-size:7px;flex-shrink:0;margin-top:6px}
+
+/* BENEFITS */
 .benefits-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:40px}
 .benefit-card{background:var(--white);border:1px solid var(--border);border-radius:4px;padding:36px 28px;text-align:center;transition:all .3s}
 .benefit-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(201,169,110,0.1)}
 .benefit-card h4{font-size:20px;margin-bottom:10px}
 .benefit-card p{font-size:13px;line-height:1.7;color:var(--text-light)}
 .benefit-num{font-family:'Cormorant Garamond',serif;font-size:36px;color:var(--gold-light);margin-bottom:8px}
+
+/* PHOTO FRAME */
+.photo-frame{position:relative;overflow:hidden;border-radius:4px}
+.photo-frame::after{content:'';position:absolute;inset:0;border:1px solid var(--gold-light);border-radius:4px;pointer-events:none}
+.photo-frame img{width:100%;height:auto;display:block;border-radius:4px;object-fit:contain}
+
+/* QUOTE */
+.quote-block{background:var(--beige);border-left:3px solid var(--gold);padding:32px 40px;margin:48px 0;border-radius:0 4px 4px 0}
+.quote-block p{font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;line-height:1.6;color:var(--text);margin:0}
+.quote-block cite{font-family:'Jost',sans-serif;font-size:12px;font-style:normal;letter-spacing:2px;text-transform:uppercase;color:var(--gold);display:block;margin-top:16px}
+
+/* FAQ */
 .faq-section{padding:100px 64px;max-width:900px;margin:0 auto}
 .faq-item{border-bottom:1px solid var(--border);padding:24px 0}
 .faq-q{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center}
@@ -53,37 +75,50 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(253,252,250,
 .faq-a{font-size:14px;line-height:1.85;color:var(--text-light);padding-top:16px;display:none}
 .faq-item.open .faq-a{display:block}
 .faq-item.open .faq-q span{transform:rotate(45deg)}
+
+/* CTA FINAL */
 .cta-final{background:var(--text);padding:100px 64px;text-align:center}
 .cta-final h2{font-size:42px;color:var(--white);margin-bottom:16px}
 .cta-final p{font-size:15px;color:rgba(255,255,255,0.5);margin-bottom:40px;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.8}
 .cta-final .btn-primary{background:var(--gold)}
+
+/* FOOTER */
 footer{background:var(--text);padding:40px 64px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;border-top:1px solid rgba(255,255,255,0.06)}
 .footer-logo{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--white);letter-spacing:3px}
 .footer-logo span{color:var(--gold)}
 footer p{font-size:10px;color:rgba(255,255,255,0.3)}
+
+/* WHATSAPP FLOAT */
 .wa-float{position:fixed;bottom:32px;right:32px;z-index:999;width:54px;height:54px;border-radius:50%;background:#25D366;color:white;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:24px;box-shadow:0 8px 32px rgba(37,211,102,0.4);transition:transform .3s}
 .wa-float:hover{transform:scale(1.1)}
+
+/* RESPONSIVE */
 @media(max-width:900px){
 nav{padding:16px 24px}
 .hero-proc{grid-template-columns:1fr;min-height:auto}
 .hero-proc-left{padding:100px 28px 60px}
-.hero-proc-right{height:60vw}
+.hero-proc-right{height:auto;min-height:300px}
+.hero-proc-right img{object-fit:contain;object-position:center;height:auto;max-height:70vh}
 .hero-proc-left::after{display:none}
 .section,.section-full,.faq-section{padding:80px 28px}
 .grid-2{grid-template-columns:1fr;gap:40px}
 .benefits-grid{grid-template-columns:1fr}
 .cta-final{padding:80px 28px}
 footer{padding:32px 28px;flex-direction:column;text-align:center}
+.quote-block{padding:24px 28px}
 }
 </style>
 </head>
 <body>
+
+<!-- NAV -->
 <nav>
 <a href="index.html" class="nav-logo">DRA. MILA <span>CINTRA</span></a>
 <a href="index.html" class="nav-back">← Voltar ao site</a>
 <a href="https://wa.me/5579988162525" target="_blank" class="nav-cta">Agendar Consulta</a>
 </nav>
 
+<!-- HERO -->
 <section class="hero-proc">
 <div class="hero-proc-left">
 <span class="hero-tag">Procedimento</span>
@@ -92,10 +127,12 @@ footer{padding:32px 28px;flex-direction:column;text-align:center}
 <a href="https://wa.me/5579988162525" target="_blank" class="btn-primary">Agendar Consulta</a>
 </div>
 <div class="hero-proc-right">
-<img src="https://i.imgur.com/cmOJsXF.jpeg" alt="Dra. Mila Cintra">
+<!-- Dra. Mila de pé ao lado do equipamento Icone MTZ — transmite autoridade e profissionalismo -->
+<img src="https://i.imgur.com/TIc8Yqs.jpeg" alt="Dra. Mila Cintra com equipamento Laser CO2 Icone MTZ">
 </div>
 </section>
 
+<!-- O QUE É -->
 <section class="section">
 <div class="grid-2">
 <div>
@@ -104,9 +141,20 @@ footer{padding:32px 28px;flex-direction:column;text-align:center}
 <p>O Laser CO2 fracionado é uma tecnologia que emite microfeixes de luz na mucosa vaginal, estimulando a renovação celular e a produção de colágeno. O resultado é uma mucosa mais hidratada, firme e funcional.</p>
 <p>O procedimento é realizado em consultório, dura entre 15 e 20 minutos, é indolor na maioria dos casos e não exige afastamento das atividades. Os resultados começam a ser percebidos já após a primeira sessão.</p>
 </div>
-<div>
+<div class="photo-frame">
+<!-- Dra. Mila sentada com o aplicador do laser na mão — mostra domínio do equipamento -->
+<img src="https://i.imgur.com/VLKx8GG.jpeg" alt="Dra. Mila Cintra com aplicador do Laser CO2">
+</div>
+</div>
+</section>
+
+<!-- PARA QUEM É INDICADO -->
+<section class="section-alt">
+<div class="section-full" style="max-width:900px;margin:0 auto">
+<div style="text-align:center;margin-bottom:48px">
 <span class="section-tag">Para quem é indicado</span>
 <h2>Você pode se beneficiar se</h2>
+</div>
 <ul class="card-list">
 <li>Sente ressecamento vaginal que afeta seu dia a dia e suas relações</li>
 <li>Percebe flacidez ou perda de firmeza na região íntima</li>
@@ -116,15 +164,14 @@ footer{padding:32px 28px;flex-direction:column;text-align:center}
 <li>Deseja melhorar a satisfação nas relações íntimas</li>
 </ul>
 </div>
-</div>
 </section>
 
-<section class="section-alt">
-<div class="section-full" style="max-width:1100px;margin:0 auto">
+<!-- COMO FUNCIONA -->
+<section class="section">
 <div style="text-align:center;margin-bottom:48px">
 <span class="section-tag">Como funciona</span>
 <h2>O protocolo em 3 sessões</h2>
-<p style="max-width:500px;margin:16px auto 0">O tratamento completo é realizado em 3 sessões com intervalo de 30 dias entre cada uma. Os benefícios são progressivos e duradouros.</p>
+<p style="max-width:500px;margin:16px auto 0;font-size:15px;line-height:1.9;color:var(--text-light)">O tratamento completo é realizado em 3 sessões com intervalo de 30 dias entre cada uma. Os benefícios são progressivos e duradouros.</p>
 </div>
 <div class="benefits-grid">
 <div class="benefit-card">
@@ -143,9 +190,21 @@ footer{padding:32px 28px;flex-direction:column;text-align:center}
 <p>Consolidação dos resultados. Firmeza, hidratação e funcionalidade restabelecidas. Manutenção anual recomendada para preservar os benefícios.</p>
 </div>
 </div>
+
+
+</section>
+
+<!-- CITAÇÃO -->
+<section class="section-alt">
+<div class="section-full" style="max-width:900px;margin:0 auto">
+<div class="quote-block">
+<p>"Cada corpo é único. O Laser CO2 não é apenas um procedimento — é devolver a uma mulher o conforto, a confiança e a qualidade de vida que ela merece sentir todos os dias."</p>
+<cite>Dra. Mila Cintra · CRM-SE 4581</cite>
+</div>
 </div>
 </section>
 
+<!-- RESULTADOS + POR QUE A DRA. MILA -->
 <section class="section">
 <div class="grid-2">
 <div>
@@ -164,36 +223,87 @@ footer{padding:32px 28px;flex-direction:column;text-align:center}
 <span class="section-tag">Por que a Dra. Mila</span>
 <h2>Referência em Sergipe</h2>
 <p>Primeira especialista em Ginecologia Estética e Funcional de Sergipe, a Dra. Mila Cintra combina formação de excelência com mais de 1.000 pacientes atendidas.</p>
-<p>Com residência em São Paulo e três pós-graduações, ela domina as técnicas mais atualizadas de Laser CO2, aplicando cada sessão com o cuidado e a precisão que o procedimento exige.</p>
+<p>Com residência em São Paulo e três pós-graduações — incluindo Ginecologia Regenerativa, Estética e Funcional — ela domina as técnicas mais atualizadas de Laser CO2, utilizando o equipamento Icone MTZ 4C, um dos mais avançados do mercado.</p>
 <p>Cada protocolo é personalizado de acordo com a necessidade da paciente, garantindo resultados seguros e naturais.</p>
+<div class="photo-frame" style="margin-top:32px">
+<img src="https://i.imgur.com/Q2EKlS7.jpeg" alt="Dra. Mila Cintra — referência em estética íntima em Sergipe">
+</div>
 </div>
 </div>
 </section>
 
+<!-- FAQ -->
 <section class="faq-section">
 <div style="text-align:center;margin-bottom:48px">
 <span class="section-tag">Dúvidas frequentes</span>
 <h2>Perguntas sobre o Laser CO2</h2>
 </div>
-<div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">O procedimento dói?<span>+</span></div><div class="faq-a">A maioria das pacientes relata apenas uma leve sensação de calor durante a aplicação. Em geral, não é necessário anestesia. Em casos de maior sensibilidade, pode-se aplicar um creme anestésico tópico antes da sessão.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Quanto tempo dura cada sessão?<span>+</span></div><div class="faq-a">Cada sessão dura entre 15 e 20 minutos. Você pode retornar às atividades normais imediatamente após o procedimento.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Quantas sessões são necessárias?<span>+</span></div><div class="faq-a">O protocolo padrão é de 3 sessões, com intervalo de 30 dias entre cada uma. Os resultados começam a ser percebidos já após a primeira aplicação e se consolidam ao longo do tratamento.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Preciso de afastamento?<span>+</span></div><div class="faq-a">Não há necessidade de afastamento das atividades do dia a dia. A única recomendação é evitar relações sexuais nos primeiros 5 a 7 dias após cada sessão.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Os resultados são permanentes?<span>+</span></div><div class="faq-a">Os resultados são duradouros, mas não permanentes. Recomenda-se uma sessão de manutenção anual para preservar os benefícios. Fatores como menopausa e envelhecimento natural podem influenciar a duração.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Pode ser feito durante a menstruação?<span>+</span></div><div class="faq-a">Não. A sessão deve ser realizada fora do período menstrual. Agende sua consulta considerando seu ciclo para melhor aproveitamento.</div></div>
+
+<div class="faq-item">
+<div class="faq-q" onclick="this.parentElement.classList.toggle('open')">O procedimento dói?<span>+</span></div>
+<div class="faq-a">A maioria das pacientes relata apenas uma leve sensação de calor durante a aplicação. Em geral, não é necessário anestesia. Em casos de maior sensibilidade, pode-se aplicar um creme anestésico tópico antes da sessão.</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Quanto tempo dura cada sessão?<span>+</span></div>
+<div class="faq-a">Cada sessão dura entre 15 e 20 minutos. Você pode retornar às atividades normais imediatamente após o procedimento.</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Quantas sessões são necessárias?<span>+</span></div>
+<div class="faq-a">O protocolo padrão é de 3 sessões, com intervalo de 30 dias entre cada uma. Os resultados começam a ser percebidos já após a primeira aplicação e se consolidam ao longo do tratamento.</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Preciso de afastamento?<span>+</span></div>
+<div class="faq-a">Não há necessidade de afastamento das atividades do dia a dia. A única recomendação é evitar relações sexuais nos primeiros 5 a 7 dias após cada sessão.</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Os resultados são permanentes?<span>+</span></div>
+<div class="faq-a">Os resultados são duradouros, mas não permanentes. Recomenda-se uma sessão de manutenção anual para preservar os benefícios. Fatores como menopausa e envelhecimento natural podem influenciar a duração.</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Pode ser feito durante a menstruação?<span>+</span></div>
+<div class="faq-a">Não. A sessão deve ser realizada fora do período menstrual. Agende sua consulta considerando seu ciclo para melhor aproveitamento.</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q" onclick="this.parentElement.classList.toggle('open')">É seguro para quem está na menopausa?<span>+</span></div>
+<div class="faq-a">Sim, e é justamente uma das indicações mais frequentes. O Laser CO2 é especialmente eficaz para mulheres na menopausa que sofrem com ressecamento e atrofia vaginal, devolvendo hidratação e conforto de forma não hormonal.</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Posso combinar com outros procedimentos?<span>+</span></div>
+<div class="faq-a">Sim. O Laser CO2 pode ser combinado com harmonização íntima, bleaching e outros procedimentos de estética ginecológica. A Dra. Mila avalia cada caso individualmente para indicar o melhor protocolo.</div>
+</div>
 </section>
 
+<!-- CTA FINAL -->
 <section class="cta-final">
 <span class="section-tag" style="color:var(--gold-light)">Próximo passo</span>
 <h2>Pronta para recuperar sua qualidade de vida?</h2>
 <p>Agende sua consulta e descubra como o Laser CO2 pode transformar seu bem-estar íntimo com segurança e resultados reais.</p>
+<div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
 <a href="https://wa.me/5579988162525" target="_blank" class="btn-primary">Agendar pelo WhatsApp</a>
+<a href="index.html" class="btn-primary" style="background:transparent;border:1px solid var(--gold-light);color:var(--gold-light)">Voltar ao site</a>
+</div>
 </section>
 
+<!-- FOOTER -->
 <footer>
 <div class="footer-logo">DRA. MILA <span>CINTRA</span></div>
 <p>CRM-SE 4581 · RQE 3556 · © 2026</p>
 </footer>
+
 <a href="https://wa.me/5579988162525" target="_blank" class="wa-float" title="WhatsApp">💬</a>
+
+<script>
+// FAQ toggle
+document.querySelectorAll('.faq-q').forEach(q=>{
+  q.addEventListener('click',()=>q.parentElement.classList.toggle('open'));
+});
+</script>
 </body>
 </html>
