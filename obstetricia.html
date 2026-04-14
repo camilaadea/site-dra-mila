@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Obstetrícia | Dra. Mila Cintra</title>
+<meta name="description" content="Obstetrícia humanizada em Aracaju-SE com a Dra. Mila Cintra. Pré-natal com acolhimento, parto humanizado e acompanhamento do pós-parto com carinho do início ao fim.">
+<link rel="icon" type="image/png" href="android-chrome-512x512.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --gold: #C9A96E; --gold-light: #E8D5B0; --gold-dark: #A07840;
+    --beige: #F5F0E8; --white: #FDFCFA;
+    --text: #2C2416; --text-light: #8C7B5E; --border: #E8DFC8;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Jost', sans-serif; background: var(--white); color: var(--text); font-weight: 300; }
+  h1,h2,h3,h4 { font-family: 'Cormorant Garamond', serif; font-weight: 400; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(253,252,250,0.96); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 48px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 500; letter-spacing: 3px; color: var(--text); text-decoration: none; }
+  .nav-logo span { color: var(--gold); }
+  .nav-back { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-light); text-decoration: none; transition: color .3s; display: flex; align-items: center; gap: 8px; }
+  .nav-back:hover { color: var(--gold); }
+  .nav-cta { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 10px 26px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all .3s; text-decoration: none; }
+  .nav-cta:hover { background: var(--gold); color: var(--white); }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; padding-top: 72px; }
+  .hero-left {
+    background: var(--text); display: flex; flex-direction: column;
+    justify-content: center; padding: 80px 64px; position: relative;
+  }
+  .hero-left::after {
+    content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px;
+    background: linear-gradient(180deg, transparent, var(--gold), transparent);
+  }
+  .hero-tag { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 32px; display: block; }
+  .hero h1 { font-size: clamp(36px, 4vw, 60px); line-height: 1.08; color: var(--white); margin-bottom: 24px; }
+  .hero h1 em { color: var(--gold); font-style: italic; }
+  .hero-sub { font-size: 15px; line-height: 1.9; color: rgba(255,255,255,0.5); max-width: 400px; margin-bottom: 48px; }
+  .btn-primary { background: var(--gold); color: var(--white); padding: 15px 36px; border: none; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; cursor: pointer; transition: all .3s; text-decoration: none; display: inline-block; }
+  .btn-primary:hover { background: var(--gold-dark); }
+  .hero-credencial { margin-top: 56px; padding-top: 36px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 12px; align-items: center; }
+  .hero-credencial-dot { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); flex-shrink: 0; }
+  .hero-credencial p { font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.6; }
+  .hero-credencial p strong { color: rgba(255,255,255,0.7); font-weight: 400; }
+  .hero-right { background: var(--beige); display: flex; align-items: center; justify-content: center; padding: 80px 64px; }
+  .hero-right-inner { max-width: 400px; }
+  .hero-right-inner blockquote { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.55; color: var(--text); margin-bottom: 20px; }
+  .hero-right-inner cite { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); font-style: normal; }
+
+  /* UTILS */
+  .section-tag { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 14px; }
+  .divider { display: flex; align-items: center; gap: 14px; width: 100px; margin: 0 auto 40px; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--gold-light); }
+  .divider-d { width: 5px; height: 5px; background: var(--gold); transform: rotate(45deg); }
+
+  /* TRANSFORMAÇÃO */
+  .transformacao { padding: 120px 64px; max-width: 1100px; margin: 0 auto; }
+  .transformacao-header { text-align: center; margin-bottom: 72px; }
+  .transformacao-header h2 { font-size: 48px; margin-top: 8px; line-height: 1.15; }
+  .transform-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+  .transform-card { background: var(--white); padding: 48px 36px; transition: all .4s; position: relative; overflow: hidden; }
+  .transform-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--gold-light), var(--gold)); transform: scaleX(0); transition: transform .4s; transform-origin: left; }
+  .transform-card:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(201,169,110,0.1); z-index: 1; }
+  .transform-card:hover::after { transform: scaleX(1); }
+  .transform-icon { font-family: 'Cormorant Garamond', serif; font-size: 44px; color: var(--gold-light); line-height: 1; margin-bottom: 16px; }
+  .transform-card h3 { font-size: 22px; margin-bottom: 12px; }
+  .transform-card p { font-size: 14px; line-height: 1.85; color: var(--text-light); }
+
+  /* PROCEDIMENTOS */
+  .procedimentos { background: var(--beige); padding: 120px 64px; }
+  .proc-inner { max-width: 1100px; margin: 0 auto; }
+  .proc-header { text-align: center; margin-bottom: 72px; }
+  .proc-header h2 { font-size: 48px; margin-top: 8px; }
+  .proc-header p { font-size: 15px; color: var(--text-light); max-width: 520px; margin: 16px auto 0; line-height: 1.85; }
+  .proc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; background: var(--border); }
+  .proc-card { background: var(--white); padding: 44px 40px; }
+  .proc-num { font-family: 'Cormorant Garamond', serif; font-size: 44px; color: var(--gold-light); line-height: 1; margin-bottom: 16px; }
+  .proc-card h3 { font-size: 24px; margin-bottom: 12px; }
+  .proc-card p { font-size: 14px; line-height: 1.9; color: var(--text-light); }
+
+  /* POR QUE DRA MILA */
+  .diferenciais { padding: 0; display: grid; grid-template-columns: 1fr 1fr; min-height: 560px; }
+  .dif-img { overflow: hidden; background: var(--beige); display: flex; align-items: center; justify-content: center; }
+  .dif-img img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+  .dif-content { background: var(--text); padding: 80px 72px; display: flex; flex-direction: column; justify-content: center; }
+  .dif-content .section-tag { color: var(--gold-light); }
+  .dif-content h2 { font-size: 42px; color: var(--white); margin: 12px 0 40px; line-height: 1.2; }
+  .dif-items { display: flex; flex-direction: column; }
+  .dif-item { display: flex; gap: 20px; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .dif-item:last-child { border-bottom: none; }
+  .dif-icon { color: var(--gold); font-size: 10px; flex-shrink: 0; margin-top: 5px; }
+  .dif-item h4 { font-family: 'Cormorant Garamond', serif; font-size: 19px; color: var(--white); margin-bottom: 4px; }
+  .dif-item p { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.7; }
+
+  /* FAQ */
+  .faq-section { padding: 120px 64px; max-width: 860px; margin: 0 auto; }
+  .faq-header { text-align: center; margin-bottom: 64px; }
+  .faq-header h2 { font-size: 48px; margin-top: 8px; }
+  .faq-item { border-bottom: 1px solid var(--border); }
+  .faq-btn { width: 100%; text-align: left; background: none; border: none; padding: 28px 0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+  .faq-btn h4 { font-family: 'Cormorant Garamond', serif; font-size: 21px; color: var(--text); font-weight: 400; line-height: 1.3; }
+  .faq-arrow { color: var(--gold); font-size: 18px; flex-shrink: 0; transition: transform .3s; }
+  .faq-body { overflow: hidden; max-height: 0; transition: max-height .4s ease; }
+  .faq-body p { font-size: 14px; line-height: 1.9; color: var(--text-light); padding-bottom: 24px; }
+  .faq-item.open .faq-arrow { transform: rotate(45deg); }
+  .faq-item.open .faq-body { max-height: 200px; }
+
+  /* CTA FINAL */
+  .cta-final { background: var(--beige); padding: 120px 64px; text-align: center; border-top: 1px solid var(--border); }
+  .cta-final h2 { font-size: 50px; line-height: 1.15; max-width: 660px; margin: 12px auto 24px; }
+  .cta-final p { font-size: 15px; color: var(--text-light); max-width: 480px; margin: 0 auto 48px; line-height: 1.9; }
+  .cta-final-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn-outline { background: transparent; color: var(--text); padding: 15px 36px; border: 1px solid var(--border); font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; cursor: pointer; transition: all .3s; text-decoration: none; display: inline-block; }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* FOOTER */
+  footer { background: var(--text); padding: 40px 64px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--white); letter-spacing: 3px; }
+  .footer-logo span { color: var(--gold); }
+  footer p { font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 1px; }
+
+  /* WA FLOAT */
+  .wa-float { position: fixed; bottom: 32px; right: 32px; z-index: 999; width: 54px; height: 54px; border-radius: 50%; background: #25D366; color: white; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 24px; box-shadow: 0 8px 32px rgba(37,211,102,0.4); transition: transform .3s; }
+  .wa-float:hover { transform: scale(1.1); }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-back span { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .hero-left { padding: 60px 28px 72px; }
+    .transformacao { padding: 80px 28px; }
+    .transform-grid { grid-template-columns: 1fr; }
+    .procedimentos { padding: 80px 28px; }
+    .proc-grid { grid-template-columns: 1fr; }
+    .diferenciais { grid-template-columns: 1fr; }
+    .dif-img { height: 300px; }
+    .dif-content { padding: 56px 28px; }
+    .faq-section { padding: 80px 28px; }
+    .cta-final { padding: 80px 28px; }
+    .video-section { padding: 60px 24px; }
+    .video-section iframe { height: 580px; }
+    footer { padding: 32px 28px; flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-back">← <span>Voltar ao site</span></a>
+  <a href="index.html" class="nav-logo">DRA. MILA <span>CINTRA</span></a>
+  <a href="https://wa.me/5579988162525" target="_blank" class="nav-cta">Agendar Consulta</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <span class="hero-tag">Obstetrícia Humanizada · Aracaju, SE</span>
+    <h1>Sua gestação merece ser vivida com <em>amor e segurança</em></h1>
+    <p class="hero-sub">Do primeiro ultrassom ao nascimento e além — um acompanhamento de pré-natal presente, acolhedor e individualizado, que respeita o seu tempo, o seu corpo e as suas escolhas.</p>
+    <a href="https://wa.me/5579988162525" target="_blank" class="btn-primary">Agendar minha consulta</a>
+    <div class="hero-credencial">
+      <div class="hero-credencial-dot"></div>
+      <p><strong>Dra. Mila Cintra</strong> — Ginecologista e obstetra. Formada pela UFS, com residência em Ginecologia e Obstetrícia em São Paulo. Defensora do parto humanizado e respeitoso.</p>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-right-inner">
+      <blockquote>"Trazer um filho ao mundo é o momento mais transformador da vida de uma mulher. Meu papel é garantir que ela se sinta segura, amparada e protagonista dessa história."</blockquote>
+      <cite>— Dra. Mila Cintra</cite>
+    </div>
+  </div>
+</section>
+
+<!-- O QUE MUDA -->
+<section class="transformacao">
+  <div class="transformacao-header">
+    <div class="divider"><div class="divider-d"></div></div>
+    <span class="section-tag">Nosso cuidado</span>
+    <h2>Como é ser acompanhada pela Dra. Mila</h2>
+  </div>
+  <div class="transform-grid">
+    <div class="transform-card">
+      <div class="transform-icon">◇</div>
+      <h3>Presença de verdade</h3>
+      <p>Consultas sem pressa, com escuta genuína. Cada dúvida é acolhida, cada medo é respeitado. Você nunca se sente apenas mais um número — se sente cuidada, do início ao fim.</p>
+    </div>
+    <div class="transform-card">
+      <div class="transform-icon">◇</div>
+      <h3>Abertura para o parto normal</h3>
+      <p>A Dra. Mila acredita no protagonismo da mulher. O parto normal é incentivado e apoiado quando possível, com acompanhamento atento e sem intervenções desnecessárias.</p>
+    </div>
+    <div class="transform-card">
+      <div class="transform-icon">◇</div>
+      <h3>Vínculo que vai além</h3>
+      <p>A relação construída durante o pré-natal não termina no parto. O pós-parto é acompanhado com o mesmo carinho — porque cuidar da mãe é também cuidar do bebê.</p>
+    </div>
+  </div>
+</section>
+
+<!-- JORNADA -->
+<section class="procedimentos">
+  <div class="proc-inner">
+    <div class="proc-header">
+      <div class="divider"><div class="divider-d"></div></div>
+      <span class="section-tag">A jornada</span>
+      <h2>Do primeiro encontro ao nascimento</h2>
+      <p>Cada etapa da sua gestação é acompanhada com atenção, carinho e a segurança de quem tem experiência e formação para estar ao seu lado nos momentos mais importantes.</p>
+    </div>
+    <div class="proc-grid">
+      <div class="proc-card">
+        <div class="proc-num">01</div>
+        <h3>Primeira consulta</h3>
+        <p>Um encontro de acolhimento. Histórico completo, exames iniciais, esclarecimento de dúvidas e o início de uma relação de confiança que vai durar toda a gestação. Você sai sabendo que está em boas mãos.</p>
+      </div>
+      <div class="proc-card">
+        <div class="proc-num">02</div>
+        <h3>Pré-natal completo</h3>
+        <p>Consultas mensais com acompanhamento de perto — ultrassons, exames laboratoriais, orientação nutricional e emocional. Cada fase da gestação é vivida com segurança e informação.</p>
+      </div>
+      <div class="proc-card">
+        <div class="proc-num">03</div>
+        <h3>Parto humanizado</h3>
+        <p>Respeito ao seu tempo, ao seu corpo e à sua escolha. A Dra. Mila apoia o parto normal quando possível, com liberdade de movimento, presença do acompanhante e o mínimo de intervenções necessárias.</p>
+      </div>
+      <div class="proc-card">
+        <div class="proc-num">04</div>
+        <h3>Pós-parto e puerpério</h3>
+        <p>O cuidado não termina no nascimento. Acompanhamento da recuperação, orientação sobre amamentação, saúde emocional e retorno gradual — porque o puerpério merece a mesma atenção que a gestação.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VÍDEO -->
+<section style="padding:80px 64px;max-width:560px;margin:0 auto;text-align:center">
+  <div class="divider"><div class="divider-d"></div></div>
+  <span class="section-tag">Na prática</span>
+  <h2 style="font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:400;margin-top:8px;margin-bottom:40px">Quem vive, recomenda</h2>
+  <iframe src="https://www.instagram.com/p/DW9qBk5ETYk/embed" width="100%" height="680" frameborder="0" scrolling="no" allowtransparency="true" style="border:1px solid var(--border);border-radius:4px;max-width:480px"></iframe>
+</section>
+
+<!-- POR QUE DRA MILA -->
+<section class="diferenciais">
+  <div class="dif-img">
+    <img src="https://i.imgur.com/AgEyWnJ.jpeg" alt="Dra. Mila Cintra — obstetrícia humanizada">
+  </div>
+  <div class="dif-content">
+    <span class="section-tag">Por que a Dra. Mila</span>
+    <h2>Uma obstetra que cuida com o coração</h2>
+    <div class="dif-items">
+      <div class="dif-item">
+        <div class="dif-icon">◆</div>
+        <div>
+          <h4>Parto humanizado de verdade</h4>
+          <p>Não é apenas um discurso — é prática. A Dra. Mila abre espaço real para partos normais, respeita o tempo da mulher e do bebê e prioriza o mínimo de intervenções.</p>
+        </div>
+      </div>
+      <div class="dif-item">
+        <div class="dif-icon">◆</div>
+        <div>
+          <h4>Elogiada por todas as pacientes</h4>
+          <p>A relação que constrói com cada gestante é marcada por carinho, disponibilidade e escuta. As pacientes não apenas confiam — elas indicam, voltam e agradecem.</p>
+        </div>
+      </div>
+      <div class="dif-item">
+        <div class="dif-icon">◆</div>
+        <div>
+          <h4>Formação de excelência</h4>
+          <p>Medicina pela UFS, residência em Ginecologia e Obstetrícia em São Paulo. Preparo técnico para lidar com qualquer cenário com segurança e competência.</p>
+        </div>
+      </div>
+      <div class="dif-item">
+        <div class="dif-icon">◆</div>
+        <div>
+          <h4>Cuidado integral</h4>
+          <p>Do pré-natal ao puerpério, passando pela amamentação e recuperação — cada fase é acompanhada com a mesma atenção e dedicação do primeiro encontro.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="faq-header">
+    <div class="divider"><div class="divider-d"></div></div>
+    <span class="section-tag">Dúvidas frequentes</span>
+    <h2>Suas perguntas, respondidas</h2>
+  </div>
+  <div class="faq">
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggle(this)">
+        <h4>A Dra. Mila faz parto normal?</h4>
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-body"><p>Sim. A Dra. Mila é defensora do parto humanizado e abre espaço real para partos normais. A via de parto é discutida ao longo do pré-natal, respeitando sempre a segurança e as preferências da gestante.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggle(this)">
+        <h4>Como funciona o pré-natal com ela?</h4>
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-body"><p>As consultas são mensais no início e ficam mais frequentes no terceiro trimestre. Cada encontro é um espaço de escuta e orientação — exames, ultrassons, dúvidas e acompanhamento emocional fazem parte do cuidado.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggle(this)">
+        <h4>Posso levar acompanhante nas consultas?</h4>
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-body"><p>Sim, e é incentivado. A presença do parceiro ou parceira, de uma familiar ou de quem você se sentir mais segura é sempre bem-vinda nas consultas e no momento do parto.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggle(this)">
+        <h4>E se eu precisar de cesárea?</h4>
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-body"><p>A cesárea é realizada quando há indicação clínica ou quando é a preferência da gestante após conversa aberta e honesta. Mesmo na cesárea, o cuidado é humanizado — com contato pele a pele, presença do acompanhante e respeito ao momento.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggle(this)">
+        <h4>Ela acompanha o pós-parto também?</h4>
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-body"><p>Sim. O acompanhamento continua após o nascimento — recuperação, amamentação, saúde emocional e revisão pós-parto fazem parte do cuidado. O puerpério é tão importante quanto a gestação.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggle(this)">
+        <h4>Posso iniciar o pré-natal mesmo no início da gestação?</h4>
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-body"><p>Sim, e quanto antes melhor. O ideal é iniciar o pré-natal assim que a gestação for confirmada. As primeiras semanas são fundamentais para exames iniciais, suplementação e orientações importantes.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggle(this)">
+        <h4>A Dra. Mila está disponível fora do horário de consulta?</h4>
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-body"><p>Sim. A Dra. Mila mantém um canal de comunicação aberto com suas gestantes para dúvidas e emergências. Esse vínculo de confiança e disponibilidade é parte essencial do cuidado que ela oferece.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <div class="divider"><div class="divider-d"></div></div>
+  <span class="section-tag">Próximo passo</span>
+  <h2>Pronta para viver sua gestação com quem realmente cuida?</h2>
+  <p>Agende sua primeira consulta e sinta a diferença de um pré-natal feito com presença, carinho e segurança — do início ao fim.</p>
+  <div class="cta-final-btns">
+    <a href="https://wa.me/5579988162525" target="_blank" class="btn-primary">Agendar pelo WhatsApp</a>
+    <a href="index.html" class="btn-outline">Voltar ao site</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">DRA. MILA <span>CINTRA</span></div>
+  <p>CRM-SE 4581 · RQE 3556 · © 2026</p>
+</footer>
+
+<a href="https://wa.me/5579988162525" target="_blank" class="wa-float" title="Falar no WhatsApp">💬</a>
+
+<script>
+  function toggle(btn) {
+    const item = btn.parentElement;
+    item.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
