@@ -12,6 +12,11 @@
 body{font-family:'Jost',sans-serif;background:#F5F0E8;color:#2C2416;-webkit-font-smoothing:antialiased}
 input,select,textarea,button{font-family:inherit}
 #root{min-height:100vh}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:rgba(201,169,110,0.3);border-radius:4px}
+::selection{background:rgba(201,169,110,0.2)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .3s ease}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -33,117 +38,516 @@ var db=firebase.firestore();
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
 <script type="text/babel">
-const {useState,useEffect}=React;
-const C={bg:"#F5F0E8",gold:"#C9A96E",white:"#FDFCFA",brown:"#2C2416",gl:"rgba(201,169,110,0.12)",gb:"rgba(201,169,110,0.3)"};
+const {useState,useEffect,useCallback}=React;
+
+/* ═══ TOKENS ═══ */
+const C={bg:"#F5F0E8",gold:"#C9A96E",white:"#FDFCFA",brown:"#2C2416",gl:"rgba(201,169,110,0.12)",gb:"rgba(201,169,110,0.3)",muted:"#8C7E6A"};
 const MO=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
 const WD=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
 const PW="mila2026";const STRATPW="atoz2026";
+
+const TYPES=[{id:"reels",label:"Reels",color:"#E91E8B"},{id:"stories",label:"Stories",color:"#9B59B6"},{id:"carrossel",label:"Carrossel",color:"#2980B9"},{id:"foto",label:"Post",color:"#E67E22"},{id:"live",label:"Live",color:"#27ae60"}];
+const STS=[{id:"rascunho",label:"Rascunho",color:"#999"},{id:"roteirizado",label:"Roteirizado",color:C.gold},{id:"gravar",label:"A gravar",color:"#E67E22"},{id:"gravado",label:"Gravado",color:"#2980B9"},{id:"editado",label:"Editado",color:"#9B59B6"},{id:"postado",label:"Postado",color:"#27ae60"}];
+
+const TOPS=["Cirurgia Íntima","Laser CO2","Saúde da Mulher","Autoestima Feminina","Menopausa","Estética Íntima","Incontinência Urinária","Sexualidade Feminina","Pós-parto","Qualidade de Vida","Prevenção Ginecológica","Empoderamento Feminino","Implante Hormonal","Tirzepatida","DIU"];
 const CTS=[{id:"stories",label:"Stories",pr:"Crie um roteiro de stories para Instagram"},{id:"legenda",label:"Legenda",pr:"Crie uma legenda para post de feed no Instagram"},{id:"temas",label:"Temas",pr:"Sugira 5 ideias de temas/pautas de conteúdo para Instagram"}];
-const TOPS=["Cirurgia Íntima","Laser CO2","Saúde da Mulher","Autoestima Feminina","Menopausa","Estética Íntima","Incontinência Urinária","Sexualidade Feminina","Pós-parto","Qualidade de Vida","Prevenção Ginecológica","Empoderamento Feminino","Desafio #LeveComDraMila","Hábitos Saudáveis","Maternidade","Implante Hormonal","Tirzepatida","DIU"];
-const sysPr="Você é a redatora da Dra. Mila Cintra, ginecologista especialista em estética íntima em Aracaju-SE. Tom: elegante, sofisticado, acolhedor. Nunca clínico frio ou vendas. Como amiga médica culta para mulheres premium 30-55 anos. Emojis com moderação. CRM-SE 4581, RQE 3556, UFS, residência SP, 3 pós-graduações, +1000 pacientes, @dramilacintra. Contexto: Dra. Mila grávida da Nina (previsão final maio). Mãe do Walter (4 anos). Serviços: ninfoplastia, laser CO2, implante hormonal, tirzepatida, betaglucona, DIU, consultas. Responda APENAS o conteúdo solicitado.";
+const sysPr="Você é a redatora da Dra. Mila Cintra, ginecologista especialista em estética íntima em Aracaju-SE. Tom: elegante, sofisticado, acolhedor. Nunca clínico frio ou vendas. Como amiga médica culta para mulheres premium 30-55 anos. Emojis com moderação. CRM-SE 4581, RQE 3556, UFS, residência SP, 3 pós-graduações, +1000 pacientes, @dramilacintra. Serviços: ninfoplastia, laser CO2, implante hormonal, tirzepatida, betaglucona, DIU, consultas. Responda APENAS o conteúdo solicitado.";
+
+/* ═══ SHARED STYLES ═══ */
 const nb={background:C.white,border:"1px solid "+C.gb,borderRadius:8,width:36,height:36,cursor:"pointer",fontSize:16,color:C.brown,display:"flex",alignItems:"center",justifyContent:"center"};
-const lb={display:"block",fontSize:12,fontWeight:500,color:C.gold,marginBottom:6,textTransform:"uppercase",letterSpacing:1};
+const lb={display:"block",fontSize:11,fontWeight:600,color:C.gold,marginBottom:6,textTransform:"uppercase",letterSpacing:1.5};
 const ip={width:"100%",padding:"10px 14px",borderRadius:10,border:"1px solid "+C.gb,background:C.white,fontSize:14,color:C.brown,outline:"none",marginBottom:16,boxSizing:"border-box"};
 const bp={padding:"12px 24px",borderRadius:10,border:"none",background:C.gold,color:C.white,fontSize:14,fontWeight:500,cursor:"pointer"};
 const bs={padding:"6px 14px",borderRadius:8,border:"1px solid "+C.gb,background:C.white,color:C.brown,fontSize:12,cursor:"pointer"};
 const sL=(k,f)=>{try{const v=localStorage.getItem("mc_"+k);return v?JSON.parse(v):f}catch{return f}};
 const sS=(k,v)=>{try{localStorage.setItem("mc_"+k,JSON.stringify(v))}catch{}};
 
-const TYPES=[{id:"reels",label:"Reels",color:"#E91E8B"},{id:"stories",label:"Stories",color:"#9B59B6"},{id:"carrossel",label:"Carrossel",color:"#2980B9"},{id:"foto",label:"Post",color:"#E67E22"},{id:"live",label:"Live",color:"#A8B5A2"}];
-const STS=[{id:"rascunho",label:"Rascunho",color:"#999"},{id:"roteirizado",label:"Roteirizado",color:C.gold},{id:"gravar",label:"A gravar",color:"#E67E22"},{id:"gravado",label:"Gravado",color:"#2980B9"},{id:"editado",label:"Editado",color:"#9B59B6"},{id:"postado",label:"Postado",color:"#27ae60"}];
-
-/* Firebase helpers */
+/* ═══ FIREBASE AGENDA ═══ */
 const fbCol=db.collection("agenda");
 function useAgenda(){
   const[entries,setEntries]=useState({});
   const[loading,setLoading]=useState(true);
   useEffect(()=>{
     const unsub=fbCol.onSnapshot(snap=>{
-      const data={};
-      snap.forEach(doc=>{data[doc.id]=doc.data().items||[]});
+      const data={};snap.forEach(doc=>{data[doc.id]=doc.data().items||[]});
       setEntries(data);setLoading(false);
     });
     return ()=>unsub();
   },[]);
-  const addEntry=async(key,entry)=>{
-    const cur=entries[key]||[];
-    const item={...entry,id:Date.now(),status:"roteirizado"};
-    await fbCol.doc(key).set({items:[...cur,item]});
-  };
-  const updateEntry=async(key,id,updates)=>{
-    const cur=(entries[key]||[]).map(e=>e.id===id?{...e,...updates}:e);
-    await fbCol.doc(key).set({items:cur});
-  };
-  const deleteEntry=async(key,id)=>{
-    const cur=(entries[key]||[]).filter(e=>e.id!==id);
-    if(cur.length)await fbCol.doc(key).set({items:cur});
-    else await fbCol.doc(key).delete();
-  };
+  const addEntry=async(key,entry)=>{const cur=entries[key]||[];const item={...entry,id:Date.now(),status:"roteirizado"};await fbCol.doc(key).set({items:[...cur,item]})};
+  const updateEntry=async(key,id,updates)=>{const cur=(entries[key]||[]).map(e=>e.id===id?{...e,...updates}:e);await fbCol.doc(key).set({items:cur})};
+  const deleteEntry=async(key,id)=>{const cur=(entries[key]||[]).filter(e=>e.id!==id);if(cur.length)await fbCol.doc(key).set({items:cur});else await fbCol.doc(key).delete()};
   return{entries,loading,addEntry,updateEntry,deleteEntry};
 }
 
-/* ── Plan Data (same as before, keeping compact) ── */
-const PD=[
-{mo:"Março",col:"#9B59B6",tp:"Mês da Mulher — Foco: Reposição Hormonal",cn:"#LeveComDraMila + Mês da Mulher",cc:"Mês da Mulher (08/03). Aniversário de Aracaju (17/03). Desafio #LeveComDraMila 21 dias Gymrats (02–22/03). Café fitness 22/03. GRAVAR EM MARÇO: conteúdos de abril inteiro.",dates:"08/03 Dia Internacional da Mulher · 17/03 Aniversário de Aracaju · 22/03 Evento café fitness",reels:["'Sinais de que seus hormônios estão desregulados' — educativo viral","'O que a reposição hormonal faz no corpo em 30 dias' — desmistificação","'Minha mãe carrega a 4ª geração da nossa família' — emocional Dia da Mulher","'3 hábitos que destroem seus hormônios' — formato tendência","'Aracaju: a cidade que cuida das suas mulheres' — conteúdo local"],campaign:"#LeveComDraMila: desafio 21 dias. Encerramento evento presencial. Urgência pré-licença.",obj:"Engajamento máximo, posicionamento hormônios, lotação agenda.",kp:["40+ consultas","50+ no desafio","Evento 22/03","Pacotes lançados"],aud:"Participantes desafio, seguidoras, mulheres 35+",pal:{m:"Sofisticado, feminino, empoderado"},logo:"#LeveComDraMila + M|C",act:["Conteúdo diário desafio","Ação Dia da Mulher 08/03","Post aniversário Aracaju 17/03","Evento 22/03","CTA urgência pré-licença","Pacotes reposição hormonal"],wk:[{w:"Semana 3 (17–22)",c:"Aniversário Aracaju. Reta final desafio. Evento 22/03. GRAVAR abril.",f:"Stories + evento + gravações"},{w:"Semana 4 (23–31)",c:"Pós-evento. Último chamado. Finalizar gravações abril.",f:"Feed + reels + stories"}]},
-{mo:"Abril",col:"#E8967D",tp:"Maternidade e Fertilidade — Foco: Fertilidade após os 35",cn:"Preparação, Fertilidade e Cuidado",cc:"Mês da maternidade. Dra. Mila grávida da Nina, Walter 4 anos. Últimas semanas. GRAVAR EM ABRIL: conteúdos de maio + carta Nina + Dia das Mães.",dates:"07/04 Dia Mundial da Saúde · 25/04 Dia da Gestante",reels:["'Fertilidade depois dos 35: o que ninguém te conta'","'Planejamento reprodutivo: quando começar a pensar?'","'Grávida pela segunda vez: o que muda?'","'5 exames que toda mulher que quer engravidar deve fazer'","'A consulta pré-concepcional que pode mudar sua gestação'"],campaign:"'Última Chamada': urgência de agenda. Lista espera. Pré-venda pacotes.",obj:"Maximizar faturamento. Lista espera 30+. Gravar conteúdo maio.",kp:["Agenda máxima","Lista espera 30+","Conteúdos maio gravados"],aud:"Mulheres planejando gestação, pacientes ativas",pal:{m:"Acolhedor, maternal"},logo:"M|C maternidade",act:["Série fertilidade após 35","Comunicado afastamento","Walter conhecendo a irmã","Gravação conteúdo maio + carta Nina","Venda antecipada pacotes"],wk:[{w:"Semana 1–2",c:"Dia Mundial da Saúde. Série fertilidade. Agenda lotada.",f:"Feed + reels + stories"},{w:"Semana 3–4",c:"Comunicado afastamento. GRAVAR maio. Despedida.",f:"Feed + stories + gravações"}]},
-{mo:"Maio",col:"#F8C8DC",tp:"Dia das Mães — Maternidade e Saúde da Mulher (pré-gravado)",cn:"Bem-vinda, Nina",cc:"Nascimento Nina (final maio). TODO PRÉ-GRAVADO. Dia das Mães 11/05. Dia Saúde da Mulher 28/05.",dates:"11/05 Dia das Mães · 28/05 Dia Internacional Saúde da Mulher · 01/05 Dia do Trabalho",reels:["'O maior presente que posso dar às minhas pacientes é cuidar de mim' (PRÉ-GRAVADO)","'28 de maio: por que esse dia importa para TODA mulher' (PRÉ-GRAVADO)","'Walter vai ser irmão mais velho' (PRÉ-GRAVADO)","'5 cuidados que toda mãe esquece de ter consigo' (PRÉ-GRAVADO)","'Carta para Nina: o dia que você chegou' (PÓS-NASCIMENTO)"],campaign:"Conteúdo programado + carta Nina. Serviços alternativos ativos.",obj:"Engajamento 80%. Receita alternativa R$ 15–20k.",kp:["Engajamento 80%","Locações mantidas","Tirzepatida ativa"],aud:"Base fiel, mães, gestantes",pal:{m:"Delicado, maternal, premium"},logo:"M|C maternal",act:["Publicação pré-gravados 2x/semana","Dia das Mães 11/05","Dia Saúde Mulher 28/05","Carta narrada Nina","Serviços alternativos"],wk:[{w:"Semana 1–2",c:"Pré-gravados. Dia das Mães 11/05.",f:"Posts programados"},{w:"Semana 3–4",c:"Nascimento Nina. Anúncio. Carta.",f:"Post nascimento + programados"}]},
-{mo:"Junho",col:"#E74C6F",tp:"Amor e Intimidade — Foco: Saúde Sexual Feminina",cn:"Intimidade, Prazer e Autocuidado",cc:"Dia dos Namorados 12/06. Forró Caju. Retorno Dra. Mila ~final junho. GRAVAR EM JUNHO: conteúdos julho.",dates:"12/06 Dia dos Namorados · 24/06 São João · Forró Caju",reels:["'Dor na relação NÃO é normal' — quebra tabu, viral","'Libido baixa? 5 causas que sua ginecologista investiga'","'O que o Laser Íntimo faz e o que NÃO faz'","'Autoestima íntima: como se reconectar com seu corpo'","'Reposição hormonal e libido: a relação que ninguém explicou'"],campaign:"Dia dos Namorados: 'O melhor presente é se sentir bem'. Retorno como evento.",obj:"Reativar agenda. Converter lista espera 80%.",kp:["Lista convertida 80%","Retomada operacional"],aud:"Lista espera, mulheres em relacionamento",pal:{m:"Sensual com elegância"},logo:"M|C retorno",act:["Conteúdo saúde sexual","Campanha Dia dos Namorados","Conteúdo Forró Caju","Retorno Dra. Mila","Ativação WhatsApp","GRAVAR julho"],wk:[{w:"Semana 1–2",c:"Saúde sexual. Dia dos Namorados 12/06.",f:"Feed + reels"},{w:"Semana 3–4",c:"RETORNO. São João. GRAVAR julho.",f:"Feed + reels + gravações"}]},
-{mo:"Julho",col:"#7BA7BC",tp:"Férias e Bem-Estar — Autocuidado no Meio do Ano",cn:"Pausa para se Cuidar",cc:"Férias. Autocuidado. Recuperação financeira. GRAVAR EM JULHO: conteúdos agosto.",dates:"26/07 Dia dos Avós",reels:["'Checklist de saúde que toda mulher deveria fazer'","'Autocuidado não é luxo: 5 procedimentos que mudam qualidade de vida'","'Férias por VOCÊ, não só pelas crianças'","'Cirurgia íntima: tudo que você tem medo de perguntar'","'Implante hormonal: como funciona e para quem'"],campaign:"'Pausa para Você': pacotes autocuidado meio de ano.",obj:"Acelerar faturamento. Escalar tirzepatida.",kp:["Volume procedimentos elevado","Pacotes vendidos"],aud:"Férias, mães, quem adiou",pal:{m:"Fresco, luminoso"},logo:"M|C sazonal",act:["Campanha autocuidado","Pacotes","Cirurgia íntima e implante","Indicação tirzepatida","GRAVAR agosto"],wk:[{w:"Semana 1–2",c:"Campanha. Pacotes.",f:"Reels + feed"},{w:"Semana 3–4",c:"Conversão. GRAVAR agosto.",f:"Feed + gravações"}]},
-{mo:"Agosto",col:"#8B6F8B",tp:"Agosto Lilás — Aniversário Dra. Mila (27/08)",cn:"Mila Plena",cc:"Agosto Lilás. Aniversário 27/08. Walter e Nina. GRAVAR EM AGOSTO: conteúdos setembro.",dates:"27/08 Aniversário Dra. Mila · 19/08 Dia Combate Violência contra Mulher",reels:["'Violência não é só física: sinais que mulheres não reconhecem'","'O que aprendi em X anos como mulher e médica'","'Saúde íntima e violência doméstica: a conexão'","'Mãe de dois, médica, mulher: bastidores reais'","'Por que escolhi a ginecologia: carta às pacientes'"],campaign:"Agosto Lilás + semana aniversário. Ação social.",obj:"Marca pessoal. Mídia local.",kp:["Maior engajamento semestre","1+ matéria mídia"],aud:"Público amplo, causas sociais",pal:{m:"Lilás sofisticado"},logo:"Agosto Lilás + M|C",act:["Série Agosto Lilás","Aniversário 27/08","Ação social","Mídia local","GRAVAR setembro"],wk:[{w:"Semana 1–2",c:"Agosto Lilás. Educativo.",f:"Feed + live"},{w:"Semana 3–4",c:"Aniversário. GRAVAR setembro.",f:"Feed + reels + gravações"}]},
-{mo:"Setembro",col:"#E67E22",tp:"Autocuidado e Prevenção — Setembro Amarelo",cn:"Cuidar de Si é Saúde",cc:"Setembro Amarelo. Saúde mental + hormonal. Aquecimento Outubro Rosa. GRAVAR TODO conteúdo outubro.",dates:"Setembro Amarelo · 10/09 Dia Prevenção Suicídio",reels:["'Hormônios e saúde mental: o que ginecologista precisa te contar'","'Menopausa e depressão: por que tantas sofrem em silêncio'","'Autocuidado começa pelo básico: check-up que salva vidas'","'Quando foi sua última consulta ginecológica?'","'O que é Outubro Rosa e por que se importar agora'"],campaign:"'Cuidar de Si': saúde mental + hormonal. Aquecimento Outubro Rosa.",obj:"Referência saúde integral. Aquecer outubro.",kp:["Alcance +40%","TODO outubro gravado"],aud:"Cuidado integral",pal:{m:"Dourado quente"},logo:"M|C Setembro Amarelo",act:["Série saúde mental + hormonal","Aquecimento Outubro Rosa","GRAVAR TODO outubro"],wk:[{w:"Semana 1–2",c:"Setembro Amarelo. GRAVAR outubro.",f:"Feed + reels + gravações"},{w:"Semana 3–4",c:"Aquecimento Outubro Rosa.",f:"Feed + stories"}]},
-{mo:"Outubro",col:"#E91E8B",tp:"Outubro Rosa — Saúde Feminina e Prevenção",cn:"Prevenção é o Maior Ato de Amor",cc:"CAMPANHA PRINCIPAL. Out/2025 melhor mês. 18/10 Dia do Médico. GRAVAR novembro.",dates:"Outubro Rosa · 18/10 Dia do Médico · 12/10 Dia das Crianças",reels:["'O exame que salva vidas e muitas adiam'","'Outubro Rosa não é só mamografia: checklist completo'","'18/10: por que escolhi cuidar de mulheres'","'A paciente que quase deixou para depois'","'5 sinais que seu corpo dá e você ignora'"],campaign:"Outubro Rosa completo: mutirão preventivos, mastologista, mídia local.",obj:"Maior visibilidade e faturamento.",kp:["45+ consultas","30+ preventivos","2+ mídias"],aud:"Alcance máximo",pal:{m:"Rosa vibrante"},logo:"Laço rosa M|C",act:["Presença diária","Mutirão preventivos","Mídia local","Dia do Médico 18/10","Dia das Crianças 12/10","GRAVAR novembro"],wk:[{w:"Semana 1–2",c:"Abertura. Educativo. Mutirão.",f:"Presença diária"},{w:"Semana 3–4",c:"Mídia. GRAVAR novembro.",f:"Presença diária + gravações"}]},
-{mo:"Novembro",col:"#2C2416",tp:"Libido e Qualidade de Vida — Black Friday Premium",cn:"Black Mila",cc:"Libido, qualidade de vida. Black Friday 28/11 premium. Novembro Azul. GRAVAR dezembro.",dates:"Black Friday 28/11 · Novembro Azul · 20/11 Consciência Negra",reels:["'Libido baixa depois dos 40: tem solução'","'Qualidade de vida íntima: o que muda com acompanhamento'","'Black Mila: por que decidimos fazer diferente'","'O parceiro também precisa: Novembro Azul'","'A consulta que transformou minha vida'"],campaign:"Black Mila: pacotes premium. Lista VIP. Zero desconto — condição especial.",obj:"Maior faturamento do ano.",kp:["Faturamento acima meta","25+ pacotes"],aud:"Base para upsell, novas",pal:{m:"Preto premium, dourado"},logo:"M|C dourado fundo escuro",act:["Série libido","Novembro Azul","Black Mila","GRAVAR dezembro"],wk:[{w:"Semana 1–2",c:"Série libido. Teaser Black Mila.",f:"Feed + reels"},{w:"Semana 3–4",c:"Black Friday. GRAVAR dezembro.",f:"Feed diário + gravações"}]},
-{mo:"Dezembro",col:"#C0392B",tp:"Reflexão e Autocuidado — Natal e Ano Novo",cn:"Um Ano Extraordinário",cc:"Natal Walter e Nina. Retrospectiva. Gift cards. Pré-agendamento 2027. GRAVAR jan–fev 2027.",dates:"25/12 Natal · 31/12 Ano Novo · 08/12 N.S. Conceição",reels:["'Retrospectiva 2026: o ano que mudou tudo'","'O primeiro Natal da Nina'","'O presente que toda mulher merece dar a si mesma'","'Obrigada por cada uma de vocês: carta às pacientes'","'2027: o que vem por aí'"],campaign:"Gift cards Natal + pré-agendamento janeiro 2027.",obj:"Fidelizar. Pré-agendar 2027.",kp:["20+ pré-agendamentos","15+ gift cards"],aud:"Base fiel",pal:{m:"Vermelho natalino, gratidão"},logo:"M|C estrela",act:["Retrospectiva","Natal Walter e Nina","Gift cards","Pré-agendamento 2027","GRAVAR jan–fev 2027"],wk:[{w:"Semana 1–2",c:"Retrospectiva. Gift cards.",f:"Carrossel + reels"},{w:"Semana 3–4",c:"Natal. Ano Novo. GRAVAR 2027.",f:"Posts especiais + gravações"}]},
-{mo:"Jan 27",col:"#C9A96E",tp:"Recomeço — Check-up e Planejamento",cn:"Novo Ano, Nova Você",cc:"Aniversário clínica 16/01 (3 anos). Check-up início de ano.",dates:"16/01 Aniversário Clínica (3 anos)",reels:["'Checklist saúde feminina 2027'","'3 anos de Clínica Mila Cintra'","'Janeiro: mês perfeito para check-up'","'Resolução que importa: cuidar da saúde'","'Antes e depois: 3 anos de M|C'"],campaign:"Aniversário 3 anos + Check-up Ano Novo.",obj:"Lotação agenda. Celebrar 3 anos.",kp:["Agenda lotada","Evento aniversário"],aud:"Pacientes retornando",pal:{m:"Dourado, renovação"},logo:"Selo 3 Anos M|C",act:["Campanha Check-up","Evento aniversário 16/01","GRAVAR março 2027"],wk:[{w:"Semana 1–2",c:"Abertura 2027. Aniversário 16/01.",f:"Feed + reels"},{w:"Semana 3–4",c:"Conversão. GRAVAR março.",f:"Feed + gravações"}]},
-{mo:"Fev 27",col:"#D4A0A0",tp:"Amor-Próprio — Carnaval e Saúde",cn:"Carnaval do Autocuidado",cc:"Carnaval 2027. Autoestima, cuidado íntimo, laser, procedimentos estéticos.",dates:"Carnaval 2027 · 14/02 Valentine's Day",reels:["'Preparação íntima para o carnaval'","'Amor-próprio não tem estação'","'Laser íntimo antes do carnaval: mito ou faz sentido?'","'Autoestima íntima: por que tantas sofrem em silêncio'","'O carnaval passa, o autocuidado fica'"],campaign:"'Carnaval do Autocuidado': pacotes laser + consulta.",obj:"Manter faturamento alto.",kp:["Pacotes carnaval vendidos","Laser volume alto"],aud:"Mulheres pré-carnaval",pal:{m:"Rosa quente, festivo elegante"},logo:"M|C pré-carnaval",act:["Campanha Carnaval","Pacotes laser","Série autoestima"],wk:[{w:"Semana 1–2",c:"Série autoestima. Pacotes.",f:"Feed + reels"},{w:"Semana 3–4",c:"Pré-carnaval. CTA.",f:"Feed + stories"}]}
+/* ═══════════════════════════════════════════════════════════
+   PLANEJAMENTO MENSAL — DADOS COMPLETOS
+   12 posts feed + stories semanais + campanhas + CTAs
+   ═══════════════════════════════════════════════════════════ */
+
+const PLAN_DATA=[
+/* ── ABRIL 2026 (14/04 em diante) ── */
+{
+mo:"Abril",moNum:3,yr:2026,cor:"#E8967D",
+tema:"Saúde da Mulher e Prevenção",
+foco:"Conteúdo educativo que converte · Preparação e gravação dos conteúdos de maio",
+datas:[
+  {dia:"28/04",nome:"Dia da Educação (oportunidade educativa)"},
+  {dia:"—",nome:"GRAVAR conteúdos de maio inteiro (Dia das Mães 10/05 + 28/05 Saúde da Mulher)"}
+],
+campanha:{
+  nome:"Cuidar é o Primeiro Passo",
+  desc:"Conteúdo educativo e esclarecedor sobre saúde feminina — hormônios, prevenção, laser, fertilidade. Cada post entrega valor real e direciona para consulta de forma natural. Em paralelo: preparar e gravar toda a campanha de Dia das Mães.",
+  cta:"Seu corpo merece atenção. Agende sua consulta e descubra como cuidar de você."
+},
+posts:[
+  {sem:3,tipo:"reels",titulo:"3 sinais de que seus hormônios estão desregulados",copy:"Cansaço que não passa. Irritabilidade sem motivo. Dificuldade para dormir.\n\nEsses sinais podem parecer 'coisa da rotina', mas muitas vezes são o corpo pedindo atenção hormonal.\n\nInvestigar é simples. E a diferença no dia a dia é enorme.",cta:"Reconheceu algum desses sinais? Converse com sua ginecologista. Agende pelo link na bio.",video:"Dra. Mila falando direto para câmera, tom calmo e acolhedor. Texto na tela com os 3 sinais aparecendo. Formato: 30-45s."},
+  {sem:3,tipo:"carrossel",titulo:"Quando foi sua última consulta ginecológica?",copy:"A consulta ginecológica não é só para quando algo incomoda. É a base da prevenção.\n\nNela avaliamos:\n→ Saúde hormonal\n→ Prevenção de câncer de colo de útero\n→ Saúde íntima e do assoalho pélvico\n→ Acompanhamento contraceptivo\n→ Bem-estar geral\n\nSe faz mais de 1 ano, é hora de agendar.",cta:"Prevenção é o cuidado mais inteligente. Agende sua consulta."},
+  {sem:3,tipo:"reels",titulo:"O que o Laser CO2 íntimo realmente trata",copy:"Laser íntimo não é estética. É tratamento médico.\n\nEle atua na mucosa vaginal, estimulando colágeno e melhorando:\n→ Lubrificação\n→ Elasticidade\n→ Incontinência urinária leve\n→ Desconforto na relação\n\nÉ rápido, ambulatorial, sem cortes. E os resultados mudam a qualidade de vida.",cta:"Quer saber se o laser é indicado pra você? Agende sua avaliação.",video:"Dra. Mila explicando com naturalidade. Pode intercalar com imagens da clínica. Formato: 40-60s educativo."},
+  {sem:3,tipo:"reels",titulo:"Implante hormonal: como funciona e pra quem é",copy:"O implante hormonal é inserido sob a pele e libera hormônios de forma contínua.\n\nIndicado para:\n→ Controle de sintomas hormonais\n→ TPM intensa\n→ Irregularidade menstrual\n→ Perimenopausa\n\nA troca é a cada 6-12 meses. A indicação é individual e precisa de avaliação completa.",cta:"Cada corpo é único. Agende sua avaliação para saber se o implante é indicado pra você.",video:"Dra. Mila explicando o procedimento. Tom informativo e seguro. 40-50s."},
+  {sem:3,tipo:"foto",titulo:"Menopausa não é o fim. É uma nova fase que merece cuidado.",copy:"Muitas mulheres chegam à menopausa sem informação. Sem acompanhamento. Sofrendo em silêncio.\n\nFogachos, insônia, ressecamento, queda de libido, mudanças de humor — tudo isso tem causa e tem tratamento.\n\nA menopausa é uma fase natural. Mas natural não significa que você precisa sofrer.",cta:"Menopausa com qualidade de vida existe. Agende sua consulta."},
+  {sem:3,tipo:"carrossel",titulo:"5 mitos sobre reposição hormonal que precisam acabar",copy:"1. 'Reposição hormonal causa câncer' → Quando bem indicada e acompanhada, os benefícios superam os riscos.\n\n2. 'Só serve pra quem está na menopausa' → Mulheres em perimenopausa também se beneficiam.\n\n3. 'Engorda' → Não. Desequilíbrio hormonal é que pode causar ganho de peso.\n\n4. 'É tudo igual' → Cada protocolo é personalizado.\n\n5. 'É pra sempre' → A duração é avaliada caso a caso.\n\nInformação correta muda tudo.",cta:"Tem dúvidas sobre reposição hormonal? Agende sua consulta e converse com a Dra. Mila."},
+  {sem:4,tipo:"reels",titulo:"Incontinência urinária: por que tantas sofrem em silêncio?",copy:"Perder urina ao tossir, espirrar ou rir não é 'normal da idade'.\n\nÉ um sintoma que tem investigação e tratamento.\n\nMuitas mulheres convivem com isso por vergonha. Mas na consulta, esse é um assunto tratado com total acolhimento e sem julgamento.\n\nSeu corpo merece cuidado, não adaptação.",cta:"Não precisa se acostumar. Fale sobre isso na sua próxima consulta. Agende pelo WhatsApp.",video:"Dra. Mila falando com empatia. Tema sensível tratado com delicadeza. 30-45s."},
+  {sem:4,tipo:"carrossel",titulo:"O que avalio numa consulta ginecológica completa",copy:"Uma consulta ginecológica vai muito além do Papanicolau.\n\nNa Clínica Mila Cintra, avaliamos:\n→ Histórico de saúde e queixas\n→ Saúde hormonal\n→ Saúde íntima e sexual\n→ Assoalho pélvico\n→ Prevenção de câncer\n→ Contracepção\n→ Bem-estar emocional\n\nÉ um espaço de escuta. Sem pressa, sem julgamento.",cta:"Uma consulta completa pode mudar sua relação com a própria saúde. Agende a sua."},
+  {sem:4,tipo:"reels",titulo:"Dor na relação NÃO é normal — e tem tratamento",copy:"Se a relação sexual causa desconforto ou dor, isso merece investigação.\n\nAs causas podem ser:\n→ Ressecamento vaginal\n→ Alteração hormonal\n→ Tensão do assoalho pélvico\n→ Infecções recorrentes\n\nExistem tratamentos eficazes — desde laser íntimo até reposição hormonal.\n\nO primeiro passo é falar sobre isso.",cta:"Na consulta, esse assunto é tratado com total sigilo e acolhimento. Agende pelo WhatsApp.",video:"Tom acolhedor e direto. Tema que gera alto compartilhamento. 40-50s."},
+  {sem:4,tipo:"carrossel",titulo:"Tirzepatida: o que você precisa saber antes de usar",copy:"A tirzepatida tem sido muito comentada. Mas o acompanhamento médico faz toda a diferença.\n\nNa Clínica Mila Cintra:\n→ Avaliação clínica completa antes\n→ Protocolo individualizado\n→ Acompanhamento contínuo\n→ Foco em saúde metabólica, não apenas estética\n\nNão é mágica. É ciência com responsabilidade.",cta:"Converse com a Dra. Mila sobre tirzepatida. Agende sua consulta."},
+  {sem:4,tipo:"reels",titulo:"Por que cuido de mulheres: uma carta da Dra. Mila",copy:"Escolhi a ginecologia porque acredito que toda mulher merece ser ouvida.\n\nMuitas chegam no consultório com queixas que carregam há anos. Queixas que foram minimizadas, ignoradas ou normalizadas.\n\nMeu papel é escutar, investigar e cuidar.\n\nPorque seu corpo merece atenção. E suas queixas merecem respostas.",cta:"Aqui, você é ouvida. Agende sua consulta pelo link na bio.",video:"Conteúdo pessoal e emocional. Dra. Mila olhando pra câmera, tom íntimo. Ideal para conexão. 45-60s. GRAVAR ESSE EM ABRIL."},
+  {sem:4,tipo:"foto",titulo:"Educação em saúde salva vidas",copy:"28 de abril — Dia da Educação.\n\nInformação de qualidade sobre saúde feminina ainda é um privilégio. Não deveria ser.\n\nCada conteúdo que compartilho aqui tem um objetivo: que mais mulheres saibam que seus sintomas merecem atenção e que existem caminhos para viver melhor.\n\nInformar é cuidar.",cta:"Compartilhe esse conteúdo com uma mulher que precisa ouvir isso."}
+],
+stories_semana:[
+  {dia:"Seg",tipo:"Bastidor",texto:"Começando a semana na clínica! Hoje é dia de consultas e cada paciente recebe atenção completa 🤍",formato:"Vídeo curto da clínica abrindo / recepção"},
+  {dia:"Ter",tipo:"Educativo",texto:"Sabia que o laser íntimo tem indicação médica? Não é estética — é saúde, lubrificação e qualidade de vida.",formato:"Card informativo com visual da marca"},
+  {dia:"Qua",tipo:"Rotina",texto:"Entre uma consulta e outra, o cuidado continua: organizando prontuários, protocolos e preparando tudo com atenção ✨",formato:"Vídeo bastidor + texto"},
+  {dia:"Qui",tipo:"Interação",texto:"Enquete: Quando foi sua última consulta ginecológica? ( ) Menos de 1 ano ( ) Mais de 1 ano ( ) Não lembro",formato:"Enquete no stories"},
+  {dia:"Sex",tipo:"Lembrete",texto:"Se você sente dor na relação, isso não é normal e tem tratamento. Converse com sua ginecologista.",formato:"Card com fundo da marca"},
+  {dia:"Sáb",tipo:"Pessoal",texto:"Sábado de descanso. Curtindo a reta final com a família antes da Nina chegar 🤍 Bom fim de semana!",formato:"Foto pessoal + texto leve"}
+],
+ctas_prontos:[
+  "Seu corpo merece atenção. Agende sua consulta pelo link na bio 🤍",
+  "Tem dúvidas sobre hormônios, laser ou prevenção? A resposta está numa consulta.",
+  "Cuidar de você é o primeiro passo. Fale com a gente pelo WhatsApp.",
+  "Cada detalhe importa. Agende e descubra como podemos cuidar de você."
+]
+},
+
+/* ── MAIO 2026 ── */
+{
+mo:"Maio",moNum:4,yr:2026,cor:"#F8C8DC",
+tema:"Dia das Mães · Saúde da Mulher",
+foco:"Campanha Dia das Mães (10/05) · 28/05 Saúde da Mulher + Mortalidade Materna · Conteúdos pré-gravados · Nascimento da Nina",
+datas:[
+  {dia:"10/05",nome:"Dia das Mães"},
+  {dia:"28/05",nome:"Dia Internacional de Luta pela Saúde da Mulher"},
+  {dia:"28/05",nome:"Dia Nacional de Redução da Mortalidade Materna"},
+  {dia:"—",nome:"Nascimento da Nina (previsão final maio / início junho)"},
+  {dia:"—",nome:"TODO conteúdo pré-gravado em abril"}
+],
+campanha:{
+  nome:"Mãe Também Precisa de Cuidado",
+  desc:"Campanha que conecta o Dia das Mães com a jornada da Dra. Mila como mãe e médica. A mensagem central: ser mãe não significa se esquecer de si. Cada vídeo conecta maternidade com cuidado feminino, direcionando para consulta. Antecede a saída da Dra. — todos os conteúdos devem ser gravados em abril.",
+  cta:"Mãe também precisa de cuidado. Agende sua consulta e cuide de você 🤍"
+},
+posts:[
+  {sem:1,tipo:"reels",titulo:"Uma mensagem para todas as mães — da Dra. Mila",copy:"Ser mãe é se entregar. É colocar alguém na frente. É esquecer de si.\n\nMas hoje eu quero te lembrar: você também merece cuidado.\n\nComo médica e como mãe, sei que quando a mulher cuida de si, tudo ao redor melhora.\n\nEsse mês é sobre isso: sobre lembrar que mãe também precisa de atenção.",cta:"Esse mês é sobre você, mãe. Agende sua consulta pelo link na bio.",video:"GRAVAR EM ABRIL. Dra. Mila falando direto para câmera com emoção genuína. Pode estar na clínica ou em casa. Momento pessoal. 45-60s. Esse vídeo abre a campanha — precisa ser forte e conectar."},
+  {sem:1,tipo:"carrossel",titulo:"5 cuidados que toda mãe esquece de ter consigo",copy:"Quando a maternidade chega, a mulher fica em segundo plano. Mas seu corpo continua precisando de atenção:\n\n1. Check-up ginecológico anual\n2. Avaliação hormonal\n3. Cuidado com o assoalho pélvico\n4. Atenção à saúde mental\n5. Retorno à ginecologista no pós-parto\n\nVocê cuida de todos. Quem cuida de você?",cta:"Agende sua consulta. Cuidar de si é cuidar da família."},
+  {sem:1,tipo:"reels",titulo:"Quando foi a última vez que você se cuidou, mãe?",copy:"Você lembra do último exame dos seus filhos. Da última vacina. Do último pedido da escola.\n\nMas quando foi seu último Papanicolau? Sua última consulta ginecológica?\n\nEsse é o convite: reserve um momento pra você. Agende. Cuide-se.\n\nPorque você também importa.",cta:"Sua saúde também é prioridade. Agende sua consulta.",video:"GRAVAR EM ABRIL. Tom emocional, identificação direta com mães. Formato que gera compartilhamento. 30-40s."},
+  {sem:2,tipo:"foto",titulo:"Feliz Dia das Mães 🤍",copy:"Para quem é mãe. Para quem cuida como se fosse. Para quem sonha em ser.\n\nHoje é dia de celebrar quem dá tanto de si — e lembrar que vocês merecem receber cuidado também.\n\nDa Dra. Mila, que em breve será mãe novamente, para todas vocês:\n\nFeliz Dia das Mães.\nQue vocês se sintam cuidadas. Sempre.",cta:"Marque uma mãe que merece esse carinho 🤍"},
+  {sem:2,tipo:"reels",titulo:"O que a maternidade me ensinou como médica",copy:"Ser mãe me fez entender na pele o que minhas pacientes vivem.\n\nO cansaço. A culpa. A vontade de ser perfeita.\n\nE também a força que nasce quando você decide cuidar de si — para poder continuar cuidando de quem ama.\n\nMinha missão é cuidar de mulheres. A maternidade só fortaleceu isso.",cta:"Esse é meu compromisso: cuidar de você com empatia e presença. Agende sua consulta.",video:"GRAVAR EM ABRIL. Pessoal e profissional ao mesmo tempo. Pode mostrar clínica + momento pessoal. 50-60s."},
+  {sem:2,tipo:"carrossel",titulo:"Pós-parto: o que ninguém te avisa (mas sua ginecologista sim)",copy:"Depois que o bebê nasce, toda atenção vai para ele. Mas e a mãe?\n\n→ Dor na relação pode acontecer e tem tratamento\n→ Incontinência urinária é comum, mas não é pra aceitar\n→ Hormônios ficam desregulados\n→ O corpo muda — e precisa de tempo e cuidado\n→ Saúde mental importa tanto quanto saúde física\n\nNada disso é frescura. Tudo isso tem acompanhamento.",cta:"Pós-parto merece cuidado completo. Agende sua consulta."},
+  {sem:3,tipo:"reels",titulo:"Hormônios no pós-parto: por que tudo muda?",copy:"Depois do parto, os hormônios despencam. E o corpo sente.\n\nQueda de cabelo, alteração de humor, cansaço extremo, baixa libido — não é 'frescura de mãe'. É biologia.\n\nO acompanhamento hormonal no pós-parto pode fazer toda a diferença na sua recuperação.\n\nVocê não precisa passar por isso sozinha.",cta:"Seu pós-parto merece acompanhamento. Agende sua consulta.",video:"GRAVAR EM ABRIL. Educativo com tom acolhedor. Texto na tela com sintomas. 40-50s."},
+  {sem:3,tipo:"foto",titulo:"Laser íntimo no pós-parto: quando e por que considerar",copy:"Depois da gestação, a mucosa vaginal pode perder elasticidade e lubrificação.\n\nO Laser CO2 íntimo é uma opção segura para restaurar a saúde íntima no pós-parto:\n→ Melhora a lubrificação\n→ Recupera a elasticidade\n→ Trata desconforto na relação\n→ Ajuda na incontinência leve\n\nA indicação é feita após avaliação individual. Cada corpo tem seu tempo.",cta:"Quer saber se o laser é indicado pra você? Agende sua avaliação."},
+  {sem:3,tipo:"carrossel",titulo:"28 de maio: Dia da Saúde da Mulher e Redução da Mortalidade Materna",copy:"Hoje não é só uma data. É um lembrete de que a saúde feminina ainda precisa de mais atenção no mundo inteiro.\n\n28 de maio:\n→ Dia Internacional de Luta pela Saúde da Mulher\n→ Dia Nacional de Redução da Mortalidade Materna\n\nCada consulta, cada exame, cada acompanhamento — é um passo para mudar essa realidade.\n\nSua saúde importa. Sua voz importa. Seu corpo importa.",cta:"Prevenção salva vidas. Agende sua consulta ginecológica."},
+  {sem:4,tipo:"reels",titulo:"Uma carta para a Nina — antes de você chegar",copy:"Ainda não te conheço, mas já te amo.\n\nEssa carta é pra você, Nina. E pra todas as mulheres que um dia vão cuidar de si pra poder cuidar de alguém.\n\nSer sua mãe é o meu maior presente. E cuidar de mulheres, minha maior missão.\n\nEm breve, nos encontramos.",cta:"Me acompanhe nessa jornada. Em breve, novidades lindas por aqui 🤍",video:"GRAVAR EM ABRIL. Conteúdo mais emocional da campanha. Dra. Mila pode ler a carta ou falar olhando pra câmera. Pode ter imagens da barriga, da clínica. 50-70s. Esse vídeo tem potencial viral."},
+  {sem:4,tipo:"foto",titulo:"Gratidão: uma pausa para agradecer",copy:"Nos próximos dias, estarei vivendo um dos momentos mais especiais da minha vida.\n\nAntes de fazer essa pausa, quero agradecer: a cada paciente que confiou em mim, a cada mulher que se permitiu ser cuidada.\n\nA clínica continua funcionando durante meu afastamento. E eu volto em breve — mais completa, mais presente, mais preparada.\n\nObrigada por serem parte dessa história. 🤍",cta:"Acompanhe as novidades por aqui. A clínica está de portas abertas."},
+  {sem:4,tipo:"carrossel",titulo:"O que muda durante meu afastamento — e o que continua",copy:"Nas próximas semanas, estarei me dedicando à chegada da minha filha.\n\nO que continua:\n→ A clínica segue atendendo\n→ Agendamentos pelo WhatsApp\n→ Conteúdos preparados com carinho\n\nO que vem no retorno:\n→ Novos protocolos\n→ Agenda renovada\n→ Ainda mais vontade de cuidar\n\nNos vemos em breve.",cta:"A clínica está aberta. Agende pelo WhatsApp."}
+],
+stories_semana:[
+  {dia:"Seg",tipo:"Bastidor",texto:"A clínica está funcionando normalmente! A equipe segue aqui cuidando de cada paciente com o mesmo carinho 🤍",formato:"Vídeo da equipe / recepção da clínica"},
+  {dia:"Ter",tipo:"Educativo",texto:"Mãe: quando foi sua última consulta ginecológica? Cuidar de si é o primeiro ato de amor pela família.",formato:"Card informativo com visual da marca"},
+  {dia:"Qua",tipo:"Rotina",texto:"Pré-gravado: 'Os bastidores de preparar tudo antes da licença — cada detalhe pensado pra vocês' ✨",formato:"Vídeo bastidor pré-gravado"},
+  {dia:"Qui",tipo:"Interação",texto:"Enquete: Qual cuidado você mais adia? ( ) Consulta ginecológica ( ) Exames de rotina ( ) Cuidado hormonal ( ) Cuidado íntimo",formato:"Enquete no stories"},
+  {dia:"Sex",tipo:"Lembrete",texto:"28 de maio: Dia da Saúde da Mulher. Sua prevenção está em dia? Esse é o lembrete que você precisava.",formato:"Card com data comemorativa"},
+  {dia:"Sáb",tipo:"Pessoal",texto:"Contagem regressiva para a Nina 🤍 Aproveitando cada momento antes da chegada dela. Bom fim de semana!",formato:"Foto/vídeo pessoal"}
+],
+ctas_prontos:[
+  "Mãe também precisa de cuidado. Agende sua consulta 🤍",
+  "A clínica continua atendendo. Fale com a gente pelo WhatsApp.",
+  "Prevenção é o maior ato de amor por você e pela sua família.",
+  "Cuide de si para continuar cuidando de quem você ama. Agende."
+]
+},
+
+/* ── JUNHO 2026 ── */
+{
+mo:"Junho",moNum:5,yr:2026,cor:"#E74C6F",
+tema:"Amor e Intimidade",
+foco:"Saúde sexual feminina · Dia dos Namorados · Retorno da Dra. Mila",
+datas:[
+  {dia:"12/06",nome:"Dia dos Namorados"},
+  {dia:"24/06",nome:"São João / Forró Caju"},
+  {dia:"—",nome:"Retorno Dra. Mila (~final de junho)"}
+],
+campanha:{
+  nome:"O Melhor Presente é Se Sentir Bem",
+  desc:"Dia dos Namorados como gancho para falar de saúde sexual, autoestima íntima e laser. Retorno da Dra. Mila como evento.",
+  cta:"Reconecte-se com seu corpo. Agende sua avaliação."
+},
+posts:[
+  {sem:1,tipo:"reels",titulo:"Dor na relação NÃO é normal",copy:"Se você sente dor durante a relação, seu corpo está pedindo atenção.\n\nIsso tem nome, tem causa e tem tratamento.\n\nNão normalize. Não se acostume. Procure uma ginecologista que te escute.",cta:"Fale sobre isso numa consulta segura. Agende pelo WhatsApp."},
+  {sem:1,tipo:"carrossel",titulo:"Libido baixa? 5 causas que sua ginecologista investiga",copy:"A libido não some sem motivo. Existem causas reais:\n\n1. Desequilíbrio hormonal\n2. Estresse crônico\n3. Medicações (anticoncepcionais, antidepressivos)\n4. Disfunções do assoalho pélvico\n5. Questões emocionais e relacionais\n\nA boa notícia: investigar é o primeiro passo para resolver.",cta:"Vamos investigar juntas? Agende sua consulta."},
+  {sem:1,tipo:"reels",titulo:"Autoestima íntima: como se reconectar com seu corpo",copy:"Muitas mulheres vivem desconectadas da própria intimidade.\n\nE isso não é sobre vaidade — é sobre bem-estar, confiança e qualidade de vida.\n\nReconectar-se com seu corpo é um ato de coragem e de cuidado.",cta:"O primeiro passo é uma conversa. Agende sua consulta."},
+  {sem:2,tipo:"foto",titulo:"Dia dos Namorados: o melhor presente é se sentir bem",copy:"O melhor presente que você pode dar a si mesma nesse Dia dos Namorados é cuidar da sua saúde íntima.\n\nSentir-se bem consigo é o que transforma qualquer relação.\n\nPorque amor começa por dentro. 🤍",cta:"Cuide de você primeiro. Agende sua avaliação."},
+  {sem:2,tipo:"reels",titulo:"O que o Laser Íntimo faz e o que NÃO faz",copy:"O Laser CO2 íntimo:\n✓ Melhora a lubrificação\n✓ Trata a flacidez vaginal\n✓ Ajuda na incontinência leve\n✓ Melhora a sensibilidade\n\nNÃO é procedimento estético superficial. É tratamento médico com resultados reais.\n\nE sim, é rápido, ambulatorial e sem cortes.",cta:"Quer saber se o laser é indicado pra você? Agende sua avaliação."},
+  {sem:2,tipo:"carrossel",titulo:"Reposição hormonal e libido: a relação que ninguém explicou",copy:"Quando os hormônios caem — na menopausa ou antes dela — a libido é uma das primeiras a sentir.\n\nA reposição hormonal, quando bem indicada:\n→ Restaura a lubrificação natural\n→ Melhora a disposição\n→ Recupera a sensibilidade\n→ Devolve qualidade de vida\n\nNão é sobre voltar a ser quem era. É sobre ser a melhor versão de agora.",cta:"Converse comigo sobre reposição hormonal. Agende sua consulta."},
+  {sem:3,tipo:"reels",titulo:"Forró Caju: Aracaju sabe celebrar",copy:"É tempo de São João, de forró e de celebrar a cultura que é nossa.\n\nE enquanto a cidade dança, lembro que saúde é o que nos permite viver cada festa com inteireza.\n\nBom São João, Aracaju! 🤍",cta:"Cuide de você para aproveitar cada momento. Agende sua consulta."},
+  {sem:3,tipo:"foto",titulo:"Comunicado: estou de volta",copy:"Voltei. 🤍\n\nMais mãe, mais completa, mais preparada.\n\nOs últimos meses foram de transformação — e agora estou pronta para retomar o que mais amo: cuidar de vocês.\n\nA agenda está aberta. Nos vemos na clínica.",cta:"Agenda aberta. Agende sua consulta pelo WhatsApp."},
+  {sem:3,tipo:"reels",titulo:"O que mudou em mim depois da Nina",copy:"A maternidade pela segunda vez me ensinou que cada fase da vida pede um cuidado diferente.\n\nVoltei com mais empatia, mais presença e mais vontade de cuidar de cada mulher que entra na minha clínica.\n\nEstou aqui. Vamos juntas.",cta:"Estou de volta. Agende sua consulta."},
+  {sem:4,tipo:"carrossel",titulo:"Novidades do retorno: o que preparamos para vocês",copy:"Voltei com novidades:\n\n→ Novos protocolos de Laser CO2\n→ Acompanhamento hormonal ampliado\n→ Experiência da clínica ainda mais acolhedora\n\nCada detalhe foi pensado durante a pausa.\n\nAgora é hora de colocar em prática — com vocês.",cta:"Descubra as novidades na sua próxima consulta. Agende agora."},
+  {sem:4,tipo:"reels",titulo:"Meu primeiro dia de volta na clínica",copy:"O cheiro da clínica, a equipe, as pacientes.\n\nTudo que eu amo estava aqui me esperando.\n\nPrimeiro dia de volta e o coração já está transbordando. Obrigada por esperarem por mim.",cta:"Estou aqui. Vamos cuidar de você. Agende pelo WhatsApp."},
+  {sem:4,tipo:"foto",titulo:"Agenda de julho: vagas abertas",copy:"Julho está chegando e as vagas estão abrindo.\n\nSe você estava na lista de espera, agora é o momento.\nSe vinha adiando, esse é o convite.\n\nVamos juntas cuidar do que importa.",cta:"Vagas limitadas. Agende agora pelo WhatsApp."}
+],
+stories_semana:[
+  {dia:"Seg",tipo:"Bastidor",texto:"Voltando à rotina da clínica! Hoje é dia de consultas e eu não podia estar mais feliz 🤍",formato:"Vídeo rápido da clínica"},
+  {dia:"Ter",tipo:"Lembrete",texto:"Dor na relação tem tratamento. Não normalize o que te incomoda. Procure sua ginecologista.",formato:"Card com fundo da marca"},
+  {dia:"Qua",tipo:"Rotina",texto:"Hoje foi dia de laser íntimo. Procedimento rápido, sem cortes e com resultados que mudam a qualidade de vida ✨",formato:"Vídeo bastidor (sem identificar paciente)"},
+  {dia:"Qui",tipo:"Interação",texto:"Enquete: Você sabe o que o laser íntimo trata? ( ) Sim ( ) Mais ou menos ( ) Quero saber mais",formato:"Enquete"},
+  {dia:"Sex",tipo:"Educativo",texto:"Libido baixa pode ser sinal de desequilíbrio hormonal. Investigar é cuidar de você.",formato:"Card educativo"},
+  {dia:"Sáb",tipo:"Pessoal",texto:"Sábado em família. Aprendendo a ser mãe de dois e amando cada segundo 🤍",formato:"Foto pessoal"}
+],
+ctas_prontos:[
+  "Estou de volta. Agenda aberta → WhatsApp no link da bio.",
+  "Reconecte-se com seu corpo. Agende sua avaliação.",
+  "Laser íntimo: saiba se é pra você. Agende uma consulta.",
+  "Vagas de julho abrindo. Garanta a sua agora."
+]
+},
+
+/* ── JULHO 2026 ── */
+{
+mo:"Julho",moNum:6,yr:2026,cor:"#7BA7BC",
+tema:"Autocuidado no Meio do Ano",
+foco:"Férias e procedimentos · Pacotes de autocuidado · Escalar laser e implante",
+datas:[
+  {dia:"26/07",nome:"Dia dos Avós"}
+],
+campanha:{
+  nome:"Pausa Para Você",
+  desc:"Férias como momento de cuidar de si. Pacotes especiais de autocuidado (laser + consulta). Foco em procedimentos de maior ticket.",
+  cta:"Férias são o momento perfeito para cuidar de você. Agende."
+},
+posts:[
+  {sem:1,tipo:"reels",titulo:"Checklist de saúde que toda mulher deveria fazer",copy:"Parou para pensar quando foi a última vez que você cuidou de si?\n\n☐ Consulta ginecológica\n☐ Exames de rotina\n☐ Avaliação hormonal\n☐ Check-up das mamas\n\nSe faltou marcar algum, é hora de agendar.",cta:"Comece seu segundo semestre cuidando de você. Agende sua consulta."},
+  {sem:1,tipo:"carrossel",titulo:"Autocuidado não é luxo: 5 procedimentos que mudam sua qualidade de vida",copy:"Autocuidado não é estética. É saúde. É bem-estar. É qualidade de vida.\n\n1. Laser CO2 íntimo — lubrificação e firmeza\n2. Implante hormonal — equilíbrio e disposição\n3. Avaliação do assoalho pélvico — controle e segurança\n4. Reposição hormonal — bem-estar e libido\n5. Check-up ginecológico — prevenção\n\nQual desses seu corpo está pedindo?",cta:"Descubra o que seu corpo precisa. Agende sua avaliação."},
+  {sem:1,tipo:"reels",titulo:"Férias por VOCÊ, não só pelas crianças",copy:"Nas férias a gente planeja viagem, atividade pros filhos, programa em família.\n\nMas e você?\n\nFérias são o momento perfeito para aquela consulta que você adia, aquele procedimento que você pesquisa há meses.\n\nSe cuide também.",cta:"Aproveite as férias para cuidar de você. Agende agora."},
+  {sem:2,tipo:"foto",titulo:"Pacotes de autocuidado: cuidar de si nunca foi tão acessível",copy:"Criamos pacotes especiais para você aproveitar esse momento:\n\nConsulta + avaliação + protocolo personalizado.\n\nTudo pensado para ser prático, eficiente e transformador.\n\nPorque você merece um cuidado sob medida.",cta:"Conheça os pacotes. Fale com a gente pelo WhatsApp."},
+  {sem:2,tipo:"reels",titulo:"Cirurgia íntima: tudo que você tem medo de perguntar",copy:"O que é? Dói? Quanto tempo de recuperação? Fica cicatriz?\n\nTodas as dúvidas que você tem — e nunca perguntou — sobre ninfoplastia.\n\nÉ um procedimento seguro, ambulatorial, com anestesia local e resultado natural.\n\nO mais importante: é sobre como você se sente.",cta:"Suas dúvidas merecem respostas. Agende uma consulta de avaliação."},
+  {sem:2,tipo:"carrossel",titulo:"Implante hormonal: como funciona e para quem é indicado",copy:"O implante hormonal é uma opção para mulheres que buscam:\n\n→ Equilíbrio hormonal contínuo\n→ Controle de sintomas (TPM, irregularidade, fogachos)\n→ Praticidade (troca a cada 6-12 meses)\n→ Melhora da disposição e humor\n\nA indicação é individual e precisa de avaliação completa.",cta:"Quer saber se o implante é pra você? Agende sua consulta."},
+  {sem:3,tipo:"reels",titulo:"O que acontece no seu corpo quando os hormônios desregulam",copy:"Cansaço extremo. Irritabilidade. Insônia. Ganho de peso sem motivo. Libido no chão.\n\nEsses sintomas não são 'coisa da sua cabeça'. São sinais de que seus hormônios precisam de atenção.\n\nInvestigar é o primeiro passo.",cta:"Vamos investigar juntas. Agende sua consulta."},
+  {sem:3,tipo:"foto",titulo:"Dia dos Avós: cuidar é herança de família",copy:"As avós nos ensinaram que cuidar é o maior ato de amor.\n\nHoje celebramos quem nos ensinou que saúde, carinho e presença são os bens mais valiosos.\n\nFeliz Dia dos Avós 🤍",cta:"Cuide de quem cuida de você. Agende uma consulta."},
+  {sem:3,tipo:"reels",titulo:"Laser íntimo: antes e depois em qualidade de vida",copy:"O laser CO2 íntimo não muda aparência. Muda como você se sente.\n\nPacientes relatam: mais lubrificação, menos desconforto, mais confiança.\n\nÉ rápido, sem cortes e o resultado é progressivo.\n\nSeu corpo merece essa atenção.",cta:"Agende sua avaliação para laser íntimo."},
+  {sem:4,tipo:"carrossel",titulo:"Tirzepatida: o que você precisa saber",copy:"A tirzepatida é uma das inovações mais comentadas na medicina.\n\nNa nossa clínica, o acompanhamento é individualizado:\n→ Avaliação completa antes\n→ Protocolo personalizado\n→ Acompanhamento contínuo\n→ Foco em saúde, não em estética\n\nNão é mágica. É ciência com responsabilidade.",cta:"Converse comigo sobre tirzepatida. Agende sua consulta."},
+  {sem:4,tipo:"reels",titulo:"Por que tantas mulheres adiam o cuidado com a saúde",copy:"Porque acham que não é urgente. Porque priorizam os outros. Porque têm medo do que vão descobrir.\n\nMas o melhor momento para cuidar de si é antes de precisar.\n\nPrevenção é o ato mais inteligente de amor-próprio.",cta:"Não adie mais. Agende sua consulta."},
+  {sem:4,tipo:"foto",titulo:"Agosto chegando: Agosto Lilás e novidades",copy:"Julho está acabando e agosto vem com força.\n\nAgosto Lilás: mês de conscientização e combate à violência contra a mulher.\n\nPreparem-se. Temos muito por vir.",cta:"Fique ligada nos próximos conteúdos. Me siga pra não perder nada."}
+],
+stories_semana:[
+  {dia:"Seg",tipo:"Bastidor",texto:"Começando julho com agenda cheia! Férias são tempo de cuidar de si 🤍",formato:"Foto da clínica"},
+  {dia:"Ter",tipo:"Lembrete",texto:"Menopausa precoce existe e pode começar antes dos 40. Fique atenta aos sinais.",formato:"Card informativo"},
+  {dia:"Qua",tipo:"Rotina",texto:"Hoje foi dia de implante hormonal. Procedimento rápido e resultado que muda a qualidade de vida ✨",formato:"Vídeo bastidor"},
+  {dia:"Qui",tipo:"Interação",texto:"Enquete: Qual procedimento você tem mais curiosidade? ( ) Laser íntimo ( ) Implante hormonal ( ) Tirzepatida ( ) Cirurgia íntima",formato:"Enquete"},
+  {dia:"Sex",tipo:"Educativo",texto:"Sabia que o laser íntimo tem indicação médica? Não é estética — é saúde e qualidade de vida.",formato:"Card educativo"},
+  {dia:"Sáb",tipo:"Pessoal",texto:"Férias com as crianças e momento de recarregar. Bom fim de semana! 🤍",formato:"Foto pessoal"}
+],
+ctas_prontos:[
+  "Férias são pra cuidar de você. Agende sua consulta.",
+  "Pacotes de autocuidado disponíveis. Fale conosco no WhatsApp.",
+  "Laser, implante ou consulta? Descubra o ideal pra você.",
+  "Agosto vem aí. Garante sua vaga agora."
+]
+}
 ];
 
-/* Growth Tab */
+/* ═══════════════════════════════════
+   COMPONENTE: PLANEJAMENTO MENSAL
+   ═══════════════════════════════════ */
+function PlanTab(){
+  const now=new Date();
+  const curIdx=PLAN_DATA.findIndex(p=>p.moNum===now.getMonth()&&p.yr===now.getFullYear());
+  const[sel,setSel]=useState(curIdx>=0?curIdx:0);
+  const[section,setSection]=useState("posts");
+  const[copiedId,setCopied]=useState(null);
+  const m=PLAN_DATA[sel];
+
+  const copyText=(text,id)=>{
+    navigator.clipboard.writeText(text);
+    setCopied(id);
+    setTimeout(()=>setCopied(null),2000);
+  };
+
+  const sectionBtns=[
+    {id:"posts",label:"12 Posts do Mês",icon:"▣"},
+    {id:"stories",label:"Stories da Semana",icon:"◉"},
+    {id:"ctas",label:"CTAs Prontos",icon:"→"},
+  ];
+
+  return(<div className="fade-in">
+    {/* HEADER */}
+    <div style={{textAlign:"center",marginBottom:20}}>
+      <h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:28,color:C.brown,margin:"0 0 4px"}}>Planejamento Mensal</h2>
+      <p style={{color:C.muted,fontSize:13}}>Roteiros prontos · Campanhas · Templates</p>
+    </div>
+
+    {/* MONTH SELECTOR */}
+    <div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:8,marginBottom:16,WebkitOverflowScrolling:"touch"}}>
+      {PLAN_DATA.map((p,i)=>{
+        const active=sel===i;
+        return(<button key={i} onClick={()=>{setSel(i);setSection("posts")}} style={{
+          padding:"8px 16px",borderRadius:10,
+          border:"1.5px solid "+(active?p.cor:C.gb),
+          background:active?p.cor+"14":"transparent",
+          cursor:"pointer",whiteSpace:"nowrap",fontSize:12,
+          fontWeight:active?600:400,color:active?p.cor:C.muted,flexShrink:0,
+          transition:"all .2s"
+        }}>{p.mo} {p.yr!==2026?"'"+String(p.yr).slice(2):""}</button>)
+      })}
+    </div>
+
+    {/* MONTH HEADER CARD */}
+    <div style={{background:C.white,borderRadius:14,border:"1px solid "+C.gb,padding:22,marginBottom:12}}>
+      <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
+        <div style={{width:4,height:36,borderRadius:2,background:m.cor}}/>
+        <div>
+          <h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,color:C.brown,margin:0}}>{m.mo} — {m.tema}</h3>
+          <p style={{fontSize:12,color:C.muted,margin:"2px 0 0"}}>{m.foco}</p>
+        </div>
+      </div>
+
+      {/* DATAS IMPORTANTES */}
+      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:16}}>
+        {m.datas.map((d,i)=>(
+          <span key={i} style={{
+            display:"inline-flex",alignItems:"center",gap:6,
+            padding:"5px 12px",borderRadius:8,fontSize:11,
+            background:m.cor+"0C",color:m.cor,fontWeight:500,
+            border:"1px solid "+m.cor+"20"
+          }}>
+            <span style={{fontWeight:700}}>{d.dia}</span> {d.nome}
+          </span>
+        ))}
+      </div>
+
+      {/* CAMPANHA DO MÊS */}
+      <div style={{background:m.cor+"08",borderRadius:10,padding:16,borderLeft:"3px solid "+m.cor}}>
+        <p style={{fontSize:10,textTransform:"uppercase",letterSpacing:1.5,color:m.cor,fontWeight:600,marginBottom:4}}>Campanha do Mês</p>
+        <p style={{fontSize:16,fontWeight:600,color:C.brown,fontFamily:"'Cormorant Garamond',Georgia,serif",marginBottom:6}}>{m.campanha.nome}</p>
+        <p style={{fontSize:13,lineHeight:1.6,color:C.brown,marginBottom:10}}>{m.campanha.desc}</p>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <span style={{fontSize:11,color:m.cor,fontWeight:600}}>CTA principal:</span>
+          <span style={{fontSize:12,color:C.brown,fontStyle:"italic",flex:1}}>{m.campanha.cta}</span>
+          <button onClick={()=>copyText(m.campanha.cta,"camp-cta")} style={{...bs,fontSize:10,padding:"4px 10px"}}>{copiedId==="camp-cta"?"Copiado ✓":"Copiar"}</button>
+        </div>
+      </div>
+    </div>
+
+    {/* SECTION TABS */}
+    <div style={{display:"flex",gap:4,marginBottom:14}}>
+      {sectionBtns.map(s=>(
+        <button key={s.id} onClick={()=>setSection(s.id)} style={{
+          flex:1,padding:"10px 8px",borderRadius:10,border:"1.5px solid "+(section===s.id?m.cor:C.gb),
+          background:section===s.id?m.cor+"10":C.white,cursor:"pointer",
+          fontSize:12,fontWeight:section===s.id?600:400,
+          color:section===s.id?m.cor:C.muted,transition:"all .2s"
+        }}><span style={{marginRight:4}}>{s.icon}</span> {s.label}</button>
+      ))}
+    </div>
+
+    {/* ── SEÇÃO: 12 POSTS DO MÊS ── */}
+    {section==="posts"&&(
+      <div className="fade-in">
+        {[...new Set(m.posts.map(p=>p.sem))].sort().map(sem=>{
+          const weekPosts=m.posts.filter(p=>p.sem===sem);
+          return(<div key={sem} style={{marginBottom:16}}>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+              <span style={{fontSize:11,fontWeight:600,color:m.cor,textTransform:"uppercase",letterSpacing:1}}>Semana {sem}</span>
+              <div style={{flex:1,height:1,background:C.gb}}/>
+              <span style={{fontSize:10,color:C.muted}}>{weekPosts.length} posts</span>
+            </div>
+            {weekPosts.map((post,j)=>{
+              const tp=TYPES.find(t=>t.id===post.tipo)||TYPES[0];
+              const pid=sel+"-"+sem+"-"+j;
+              return(<div key={j} style={{
+                background:C.white,borderRadius:12,border:"1px solid "+C.gb,
+                marginBottom:8,overflow:"hidden",transition:"all .2s"
+              }}>
+                <PostCard post={post} tp={tp} pid={pid} cor={m.cor} copyText={copyText} copiedId={copiedId}/>
+              </div>)
+            })}
+          </div>)
+        })}
+      </div>
+    )}
+
+    {/* ── SEÇÃO: STORIES DA SEMANA ── */}
+    {section==="stories"&&(
+      <div className="fade-in">
+        <div style={{background:C.white,borderRadius:12,border:"1px solid "+C.gb,padding:18,marginBottom:12}}>
+          <p style={{fontSize:13,color:C.muted,lineHeight:1.6,marginBottom:4}}>
+            Template semanal de stories — repetir cada semana adaptando o conteúdo ao momento. Mínimo 6 stories/semana.
+          </p>
+        </div>
+        {m.stories_semana.map((s,i)=>{
+          const sid="story-"+sel+"-"+i;
+          const cores={Bastidor:"#2980B9",Lembrete:"#E67E22",Rotina:"#9B59B6",Interação:"#E91E8B",Educativo:"#27ae60",Pessoal:C.gold};
+          const cor=cores[s.tipo]||C.gold;
+          return(<div key={i} style={{
+            background:C.white,borderRadius:12,border:"1px solid "+C.gb,padding:16,marginBottom:8
+          }}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                <span style={{
+                  width:36,height:36,borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",
+                  background:cor+"12",color:cor,fontSize:12,fontWeight:700
+                }}>{s.dia}</span>
+                <span style={{
+                  padding:"3px 10px",borderRadius:6,fontSize:10,fontWeight:600,
+                  background:cor+"12",color:cor
+                }}>{s.tipo}</span>
+              </div>
+              <button onClick={()=>copyText(s.texto,sid)} style={{...bs,fontSize:10,padding:"4px 10px"}}>{copiedId===sid?"✓":"Copiar"}</button>
+            </div>
+            <p style={{fontSize:13,lineHeight:1.6,color:C.brown,marginBottom:6}}>{s.texto}</p>
+            <p style={{fontSize:11,color:C.muted,fontStyle:"italic"}}>{s.formato}</p>
+          </div>)
+        })}
+      </div>
+    )}
+
+    {/* ── SEÇÃO: CTAs PRONTOS ── */}
+    {section==="ctas"&&(
+      <div className="fade-in">
+        <div style={{background:C.white,borderRadius:12,border:"1px solid "+C.gb,padding:18,marginBottom:12}}>
+          <p style={{fontSize:13,color:C.muted,lineHeight:1.6}}>
+            CTAs prontos para usar em posts, stories e bio. Copie e cole diretamente.
+          </p>
+        </div>
+        {m.ctas_prontos.map((cta,i)=>{
+          const cid="cta-"+sel+"-"+i;
+          return(<div key={i} style={{
+            background:C.white,borderRadius:10,border:"1px solid "+C.gb,padding:14,marginBottom:6,
+            display:"flex",alignItems:"center",justifyContent:"space-between",gap:12
+          }}>
+            <p style={{fontSize:14,color:C.brown,flex:1,lineHeight:1.5}}>{cta}</p>
+            <button onClick={()=>copyText(cta,cid)} style={{
+              ...bs,fontSize:10,padding:"6px 12px",flexShrink:0,
+              background:copiedId===cid?m.cor+"15":C.white,
+              color:copiedId===cid?m.cor:C.brown,
+              border:"1px solid "+(copiedId===cid?m.cor:C.gb)
+            }}>{copiedId===cid?"Copiado ✓":"Copiar"}</button>
+          </div>)
+        })}
+
+        {/* MENSAGENS WHATSAPP */}
+        <div style={{marginTop:16}}>
+          <p style={{fontSize:11,fontWeight:600,color:m.cor,textTransform:"uppercase",letterSpacing:1.5,marginBottom:8}}>Mensagem pronta para WhatsApp</p>
+          {[
+            "Olá! 🤍 Vi que você se interessou pelo nosso conteúdo. Posso te ajudar a agendar uma consulta com a Dra. Mila?",
+            "Oi! Que bom ter você aqui. A Dra. Mila está com vagas abertas para este mês. Gostaria de agendar?",
+            "Olá! Vi seu interesse. Na consulta, a Dra. Mila avalia seu caso com calma e indica o melhor caminho. Posso agendar pra você?"
+          ].map((msg,i)=>{
+            const wid="wa-"+sel+"-"+i;
+            return(<div key={i} style={{
+              background:"#dcf8c6",borderRadius:10,padding:14,marginBottom:6,
+              display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:12,
+              border:"1px solid #c6eaac"
+            }}>
+              <p style={{fontSize:13,color:"#1a3a1a",flex:1,lineHeight:1.5}}>{msg}</p>
+              <button onClick={()=>copyText(msg,wid)} style={{...bs,fontSize:10,padding:"4px 10px",flexShrink:0,background:"#fff"}}>{copiedId===wid?"✓":"Copiar"}</button>
+            </div>)
+          })}
+        </div>
+      </div>
+    )}
+  </div>);
+}
+
+/* Post Card com expand */
+function PostCard({post,tp,pid,cor,copyText,copiedId}){
+  const[open,setOpen]=useState(false);
+  const fullText=post.copy+"\n\n"+post.cta;
+  return(<div>
+    <button onClick={()=>setOpen(!open)} style={{
+      width:"100%",display:"flex",alignItems:"center",gap:10,padding:"12px 16px",
+      background:"none",border:"none",cursor:"pointer",textAlign:"left"
+    }}>
+      <span style={{
+        width:8,height:8,borderRadius:2,background:tp.color,flexShrink:0
+      }}/>
+      <span style={{flex:1,fontSize:13,fontWeight:500,color:C.brown}}>{post.titulo}</span>
+      <span style={{
+        padding:"2px 8px",borderRadius:5,fontSize:9,fontWeight:600,
+        background:tp.color+"12",color:tp.color
+      }}>{tp.label}</span>
+      <span style={{color:C.muted,fontSize:14,transition:"transform .2s",transform:open?"rotate(180deg)":"rotate(0)"}}>{open?"−":"+"}</span>
+    </button>
+    {open&&(
+      <div style={{padding:"0 16px 16px",animation:"fadeIn .2s ease"}}>
+        <div style={{background:C.bg,borderRadius:10,padding:16,marginBottom:10}}>
+          <p style={{fontSize:13,lineHeight:1.75,color:C.brown,whiteSpace:"pre-wrap"}}>{post.copy}</p>
+        </div>
+        <div style={{background:cor+"08",borderRadius:8,padding:12,marginBottom:10,borderLeft:"3px solid "+cor}}>
+          <p style={{fontSize:10,textTransform:"uppercase",letterSpacing:1,color:cor,fontWeight:600,marginBottom:4}}>Call to Action</p>
+          <p style={{fontSize:13,color:C.brown,lineHeight:1.5}}>{post.cta}</p>
+        </div>
+        {post.video&&<div style={{background:"#f0eae0",borderRadius:8,padding:12,marginBottom:10,borderLeft:"3px solid #8B6F8B"}}>
+          <p style={{fontSize:10,textTransform:"uppercase",letterSpacing:1,color:"#8B6F8B",fontWeight:600,marginBottom:4}}>Direção de Vídeo</p>
+          <p style={{fontSize:12,color:C.brown,lineHeight:1.6}}>{post.video}</p>
+        </div>}
+        <div style={{display:"flex",gap:6}}>
+          <button onClick={()=>copyText(fullText,pid+"-full")} style={{
+            ...bp,flex:1,fontSize:12,padding:"8px 12px",background:cor
+          }}>{copiedId===pid+"-full"?"Copiado ✓":"Copiar legenda completa"}</button>
+          <button onClick={()=>copyText(post.cta,pid+"-cta")} style={{
+            ...bs,fontSize:11,padding:"8px 12px"
+          }}>{copiedId===pid+"-cta"?"✓":"Copiar CTA"}</button>
+        </div>
+      </div>
+    )}
+  </div>);
+}
+
+
+/* ═══════════════════════════════════
+   ABAS ORIGINAIS (mantidas com ajustes)
+   ═══════════════════════════════════ */
+
+/* Growth Tab (sem mudanças estruturais) */
 function GrowthTab(){
 const[op,setOp]=useState({road:true});const tog=s=>setOp(p=>({...p,[s]:!p[s]}));
 const Sec=({id,title,children})=>{const o=op[id]||false;return(<div style={{background:C.white,borderRadius:12,border:"1px solid "+C.gb,marginBottom:12,overflow:"hidden"}}><button onClick={()=>tog(id)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"16px 20px",background:"none",border:"none",cursor:"pointer"}}><span style={{fontSize:15,fontWeight:500,color:C.brown}}>{title}</span><span style={{color:C.gold,fontSize:16}}>{o?"−":"+"}</span></button>{o&&<div style={{padding:"0 20px 20px",fontSize:14,lineHeight:1.7,color:C.brown}}>{children}</div>}</div>)};
 return(<div>
 <div style={{textAlign:"center",marginBottom:24}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:26,color:C.brown,margin:"0 0 6px"}}>Direcionamento Estratégico</h2><p style={{color:C.gold,fontSize:13}}>Roadmap de crescimento</p></div>
 <div style={{background:"linear-gradient(135deg,"+C.brown+",#3d3222)",borderRadius:16,padding:28,marginBottom:20,color:C.white}}><div style={{display:"flex",justifyContent:"space-around",alignItems:"center",flexWrap:"wrap",gap:16}}><div style={{textAlign:"center"}}><p style={{fontSize:11,color:C.gold,margin:"0 0 4px",textTransform:"uppercase"}}>Baseline</p><p style={{fontSize:30,fontWeight:600,margin:0,fontFamily:"'Cormorant Garamond',Georgia,serif"}}>R$ 52.5k</p></div><div style={{fontSize:24,color:C.gold}}>→</div><div style={{textAlign:"center"}}><p style={{fontSize:11,color:C.gold,margin:"0 0 4px",textTransform:"uppercase"}}>Meta</p><p style={{fontSize:30,fontWeight:600,margin:0,fontFamily:"'Cormorant Garamond',Georgia,serif",color:C.gold}}>R$ 100k</p></div></div></div>
-<Sec id="lines" title="Linhas de Receita">{[{n:"Cirurgia Íntima",p:18,c:"#E91E8B"},{n:"Laser CO2",p:25,c:"#9B59B6"},{n:"Implante Hormonal",p:12,c:"#E67E22"},{n:"Tirzepatida",p:20,c:"#2980B9"},{n:"DIU + Imuno",p:8,c:"#A8B5A2"},{n:"Consultas",p:12,c:C.gold},{n:"Locações",p:5,c:"#8B6F8B"}].map((s,i)=>(<div key={i} style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:4}}><span>{s.n}</span><span style={{fontWeight:600,color:s.c}}>{s.p}%</span></div><div style={{background:C.bg,borderRadius:4,height:5,overflow:"hidden"}}><div style={{height:"100%",width:s.p+"%",background:s.c,borderRadius:4}}/></div></div>))}<p style={{fontSize:12,color:"#999",marginTop:12,fontStyle:"italic"}}>Detalhamento sob consultoria.</p></Sec>
+<Sec id="lines" title="Linhas de Receita">{[{n:"Cirurgia Íntima",p:18,c:"#E91E8B"},{n:"Laser CO2",p:25,c:"#9B59B6"},{n:"Implante Hormonal",p:12,c:"#E67E22"},{n:"Tirzepatida",p:20,c:"#2980B9"},{n:"DIU + Imuno",p:8,c:"#A8B5A2"},{n:"Consultas",p:12,c:C.gold},{n:"Locações",p:5,c:"#8B6F8B"}].map((s,i)=>(<div key={i} style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:4}}><span>{s.n}</span><span style={{fontWeight:600,color:s.c}}>{s.p}%</span></div><div style={{background:C.bg,borderRadius:4,height:5,overflow:"hidden"}}><div style={{height:"100%",width:s.p+"%",background:s.c,borderRadius:4}}/></div></div>))}</Sec>
 <Sec id="road" title="Roadmap">{[{p:"Fase 1 — Pré-licença",t:"Mar–Abr",g:"Consolidar",c:"#E8967D",it:["Agenda 5 dias/semana","Pacotes por serviço","Base recorrente","Urgência pré-afastamento","Lista espera"]},{p:"Fase 2 — Afastamento",t:"Mai–Jun",g:"Manutenção",c:"#F8C8DC",it:["Serviços independentes","Locações","Conteúdo programado","Pré-venda retorno"]},{p:"Fase 3 — Retorno",t:"Jul–Ago",g:"Escalar",c:"#7BA7BC",it:["Conversão demanda","Campanhas sazonais","Escalada procedimentos","Base recorrente"]},{p:"Fase 4 — Meta",t:"Set–Dez",g:"Consolidar R$ 100k",c:"#E91E8B",it:["Mix equilibrado","Campanhas alto impacto","Novas receitas","Planejamento 2027"]}].map((r,i)=>(<div key={i} style={{background:r.c+"08",borderRadius:12,border:"1px solid "+r.c+"30",padding:20,marginBottom:12}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10,flexWrap:"wrap",gap:8}}><div><p style={{fontWeight:600,margin:0,fontSize:15}}>{r.p}</p><p style={{fontSize:12,color:C.gold,margin:0}}>{r.t}</p></div><span style={{background:r.c+"20",color:r.c,padding:"4px 12px",borderRadius:20,fontSize:11,fontWeight:600}}>{r.g}</span></div>{r.it.map((it,j)=><div key={j} style={{display:"flex",gap:8,marginBottom:4,fontSize:13}}><span style={{color:r.c}}>—</span><span>{it}</span></div>)}</div>))}</Sec>
 </div>)}
 
-/* Plan Tab */
-function PlanTab(){
-const[sel,setSel]=useState(0);const[exp,setExp]=useState({crono:true});const m=PD[sel];const tog=s=>setExp(p=>({...p,[s]:!p[s]}));
-const Sec=({id,title,children})=>{const o=exp[id]||false;return(<div style={{background:C.white,borderRadius:12,border:"1px solid "+C.gb,marginBottom:12,overflow:"hidden"}}><button onClick={()=>tog(id)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 18px",background:"none",border:"none",cursor:"pointer"}}><span style={{fontSize:14,fontWeight:500,color:C.brown}}>{title}</span><span style={{color:C.gold}}>{o?"−":"+"}</span></button>{o&&<div style={{padding:"0 18px 18px",fontSize:13,lineHeight:1.7,color:C.brown}}>{children}</div>}</div>)};
-return(<div>
-<div style={{textAlign:"center",marginBottom:20}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:26,color:C.brown,margin:"0 0 6px"}}>Planejamento Mensal</h2><p style={{color:C.gold,fontSize:12}}>Março 2026 – Fevereiro 2027</p></div>
-<div style={{display:"flex",gap:5,overflowX:"auto",paddingBottom:8,marginBottom:16}}>{PD.map((p,i)=><button key={i} onClick={()=>{setSel(i);setExp({crono:true})}} style={{padding:"7px 12px",borderRadius:10,border:"1.5px solid "+(sel===i?p.col:C.gb),background:sel===i?p.col+"18":"transparent",cursor:"pointer",whiteSpace:"nowrap",fontSize:11,fontWeight:sel===i?600:400,color:sel===i?p.col:C.brown,flexShrink:0}}>{p.mo}</button>)}</div>
-<div style={{background:"linear-gradient(135deg,"+m.col+"12,"+m.col+"06)",borderRadius:14,border:"1px solid "+m.col+"30",padding:22,marginBottom:16}}><p style={{fontSize:11,color:m.col,letterSpacing:2,textTransform:"uppercase",marginBottom:4}}>{m.tp}</p><h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,color:C.brown,margin:"0 0 8px"}}>{m.cn}</h3><p style={{fontSize:13,lineHeight:1.6}}>{m.cc}</p></div>
-<Sec id="obj" title="Objetivo e indicadores"><p style={{marginBottom:10}}><strong>Objetivo:</strong> {m.obj}</p>{m.kp.map((k,i)=><div key={i} style={{display:"flex",gap:8,marginBottom:4}}><span style={{color:m.col}}>—</span><span>{k}</span></div>)}<p style={{marginTop:10}}><strong>Público:</strong> {m.aud}</p></Sec>
-{m.dates&&<Sec id="dates" title="Datas importantes"><div style={{background:C.gl,borderRadius:10,padding:14}}><p style={{fontSize:13,lineHeight:1.8}}>{m.dates}</p></div><p style={{marginTop:10,fontSize:12,color:C.gold,fontStyle:"italic"}}>Gravar conteúdo do mês seguinte com antecedência.</p></Sec>}
-{m.reels&&<Sec id="reels" title="5 Reels — Ideias para gravar">{m.reels.map((r,i)=><div key={i} style={{background:i%2===0?C.gl:"transparent",borderRadius:10,padding:14,marginBottom:6}}><p style={{fontSize:13}}><strong style={{color:m.col}}>Reel {i+1}:</strong> {r}</p></div>)}</Sec>}
-{m.campaign&&<Sec id="camp" title="Campanha do mês"><div style={{background:m.col+"08",borderRadius:10,padding:16,borderLeft:"3px solid "+m.col}}><p style={{fontSize:13,lineHeight:1.7}}>{m.campaign}</p></div></Sec>}
-<Sec id="act" title="Ações e entregas">{m.act.map((a,i)=><div key={i} style={{display:"flex",gap:8,marginBottom:4}}><span style={{color:m.col}}>—</span><span>{a}</span></div>)}</Sec>
-<Sec id="crono" title="Cronograma">{m.wk.map((w,i)=><div key={i} style={{background:i%2===0?C.gl:"transparent",borderRadius:10,padding:14,marginBottom:6}}><p style={{fontWeight:600,color:m.col,fontSize:12,marginBottom:4}}>{w.w}</p><p style={{marginBottom:2}}>{w.c}</p><p style={{fontSize:11,color:C.gold}}>Formato: {w.f}</p></div>)}</Sec>
-</div>)}
-
-/* Agenda Tab with Firebase */
+/* Agenda Tab (Firebase - mantida) */
 function AgendaTab({isCon}){
 const{entries,loading,addEntry,updateEntry,deleteEntry}=useAgenda();
 const[view,setView]=useState("month");
 const[mo,setMo]=useState(new Date().getMonth());
 const[yr,setYr]=useState(new Date().getFullYear());
-const[modal,setModal]=useState(null);// {key,entry} or {key,entry:null} for new
+const[modal,setModal]=useState(null);
 
 const fd=new Date(yr,mo,1).getDay(),dm=new Date(yr,mo+1,0).getDate();
 const calDays=[];for(let i=0;i<fd;i++)calDays.push(null);for(let j=1;j<=dm;j++)calDays.push(j);
 const fmtKey=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-
 const getWeek=()=>{const t=new Date();const dow=t.getDay();const s=new Date(t);s.setDate(t.getDate()-dow);const d=[];for(let i=0;i<7;i++){const x=new Date(s);x.setDate(s.getDate()+i);d.push(x)}return d};
 const week=getWeek();
 
 if(loading)return <p style={{textAlign:"center",color:C.gold,padding:40}}>Carregando agenda...</p>;
 
 return(<div>
-<div style={{textAlign:"center",marginBottom:20}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,color:C.brown}}>Agenda Editorial</h2><p style={{color:C.gold,fontSize:12}}>Roteiros e calendário de conteúdo</p></div>
+<div style={{textAlign:"center",marginBottom:20}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,color:C.brown}}>Agenda Editorial</h2><p style={{color:C.muted,fontSize:12}}>Roteiros e calendário de conteúdo</p></div>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16,flexWrap:"wrap",gap:8}}>
 <div style={{display:"flex",gap:4,background:C.bg,borderRadius:8,padding:2}}><button onClick={()=>setView("month")} style={{padding:"6px 14px",borderRadius:6,border:"none",cursor:"pointer",fontSize:11,fontWeight:view==="month"?600:400,background:view==="month"?C.white:"transparent",color:view==="month"?C.brown:C.gold}}>Mês</button><button onClick={()=>setView("week")} style={{padding:"6px 14px",borderRadius:6,border:"none",cursor:"pointer",fontSize:11,fontWeight:view==="week"?600:400,background:view==="week"?C.white:"transparent",color:view==="week"?C.brown:C.gold}}>Semana</button></div>
 </div>
@@ -163,7 +567,7 @@ return(<div key={i} onClick={()=>{if(!day)return;if(items.length)setModal({key:k
 {view==="week"&&<div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:6}}>
 {week.map((d,i)=>{const k=fmtKey(d);const items=entries[k]||[];const td=d.toDateString()===new Date().toDateString();
 return(<div key={i} style={{background:C.white,borderRadius:10,border:td?"1.5px solid "+C.gold:"1px solid "+C.gb,padding:8,minHeight:180}}>
-<div style={{textAlign:"center",marginBottom:8}}><div style={{fontSize:10,color:C.gold,fontWeight:600}}>{WD[i]}</div><div style={{fontSize:15,fontWeight:td?700:400,color:C.brown}}>{d.getDate()}</div><div style={{fontSize:9,color:"#999"}}>{MO[d.getMonth()].slice(0,3)}</div></div>
+<div style={{textAlign:"center",marginBottom:8}}><div style={{fontSize:10,color:C.gold,fontWeight:600}}>{WD_FULL[i]}</div><div style={{fontSize:15,fontWeight:td?700:400,color:C.brown}}>{d.getDate()}</div><div style={{fontSize:9,color:"#999"}}>{MO[d.getMonth()].slice(0,3)}</div></div>
 {items.map((e,j)=>{const ty=TYPES.find(t=>t.id===e.type)||TYPES[0];const st=STS.find(s=>s.id===e.status)||STS[0];
 return(<div key={j} onClick={()=>setModal({key:k,entry:e})} style={{background:ty.color+"10",borderLeft:"3px solid "+ty.color,borderRadius:6,padding:6,marginBottom:4,cursor:"pointer"}}>
 <div style={{fontSize:10,fontWeight:600,color:C.brown,marginBottom:2,lineHeight:1.3}}>{e.title}</div>
@@ -176,6 +580,8 @@ return(<div key={j} onClick={()=>setModal({key:k,entry:e})} style={{background:t
 {modal&&<div style={{position:"fixed",inset:0,background:"rgba(44,36,22,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000,padding:16}} onClick={()=>setModal(null)}><CardEditor dk={modal.key} entry={modal.entry} isCon={isCon} onAdd={addEntry} onUpdate={updateEntry} onDelete={deleteEntry} onClose={()=>setModal(null)}/></div>}
 </div>)}
 
+const WD_FULL=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+
 function CardEditor({dk,entry,isCon,onAdd,onUpdate,onDelete,onClose}){
 const[t,sT]=useState(entry?.title||"");const[tp,sTp]=useState(entry?.type||"reels");const[rot,sRot]=useState(entry?.roteiro||"");
 const isNew=!entry;const p=dk.split("-");
@@ -183,7 +589,6 @@ return(<div style={{background:C.white,borderRadius:16,padding:28,maxWidth:560,w
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
 <h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:20,color:C.brown,margin:0}}>{p[2]}/{p[1]}/{p[0]}</h3>
 <button onClick={onClose} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",color:C.brown}}>×</button></div>
-
 {isCon?(<div>
 <label style={lb}>Título</label><input value={t} onChange={e=>sT(e.target.value)} placeholder="Ex: Reels sobre Laser CO2" style={ip}/>
 <label style={lb}>Tipo</label><div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:16}}>{TYPES.map(ty=><button key={ty.id} onClick={()=>sTp(ty.id)} style={{padding:"6px 14px",borderRadius:20,fontSize:11,border:"1.5px solid "+(tp===ty.id?ty.color:C.gb),background:tp===ty.id?ty.color+"15":"transparent",color:tp===ty.id?ty.color:C.brown,cursor:"pointer",fontWeight:tp===ty.id?600:400}}>{ty.label}</button>)}</div>
@@ -203,42 +608,72 @@ return(<div style={{background:C.white,borderRadius:16,padding:28,maxWidth:560,w
 </div>)}
 </div>)}
 
-/* Login */
-function Login({onOk}){const[pw,sP]=useState("");const[er,sE]=useState(false);const go=()=>{if(pw===PW)onOk();else{sE(true);setTimeout(()=>sE(false),2000)}};return(<div style={{minHeight:"100vh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}><div style={{background:C.white,borderRadius:20,padding:"44px 32px",maxWidth:360,width:"100%",textAlign:"center",boxShadow:"0 20px 60px rgba(44,36,22,0.1)"}}><h1 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:34,fontWeight:600,color:C.brown,margin:"0 0 4px"}}>M<span style={{color:C.gold}}>|</span>C</h1><p style={{fontSize:10,color:C.gold,letterSpacing:3,textTransform:"uppercase",marginBottom:28}}>Painel Estratégico</p><input type="password" value={pw} onChange={e=>sP(e.target.value)} onKeyDown={e=>e.key==="Enter"&&go()} placeholder="Senha de acesso" style={{...ip,textAlign:"center",marginBottom:er?6:14}}/>{er&&<p style={{color:"#c44",fontSize:11,marginBottom:10}}>Acesso negado</p>}<button onClick={go} style={{...bp,width:"100%"}}>Acessar</button></div></div>)}
-
-/* Main App */
-function App(){
-const[logged,setL]=useState(false);const[tab,setTab]=useState("plan");
-const[stratOk,setStrat]=useState(false);const[sPw,setSPw]=useState("");const[sErr,setSErr]=useState(false);const[showSM,setShowSM]=useState(false);
+/* Gerador IA */
+function GenTab(){
 const[ct,sCt]=useState("stories");const[topic,sTo]=useState(TOPS[0]);const[cTo,sCTo]=useState("");const[extra,sEx]=useState("");
 const[result,sR]=useState("");const[ld,sLd]=useState(false);const[cp,sCp]=useState(false);
-const[saved,sSv]=useState(()=>sL("sv",[]));const[sn,sSN]=useState("");
 const gen=async()=>{sLd(true);sR("");sCp(false);const c=CTS.find(x=>x.id===ct);const t=cTo.trim()||topic;let msg=c.pr+" sobre: \""+t+"\".";if(ct==="stories")msg+="\nSequência de telas com texto, formato e orientação.";if(ct==="legenda")msg+="\nTexto completo, CTA e 15-20 hashtags.";if(ct==="temas")msg+="\n5 temas com título, relevância e formato.";if(extra.trim())msg+="\n\n"+extra;try{const r=await fetch("/api/generate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:sysPr,messages:[{role:"user",content:msg}]})});const d=await r.json();sR(d.content?.map(b=>b.text||"").join("\n")||"Erro.")}catch{sR("Erro de conexão.")}sLd(false)};
-const handleTab=id=>{if(id==="growth"&&!stratOk){setShowSM(true);return}setTab(id)};
-const tryStrat=()=>{if(sPw===STRATPW){setStrat(true);setShowSM(false);setTab("growth");setSPw("")}else{setSErr(true);setTimeout(()=>setSErr(false),2000)}};
-if(!logged)return <Login onOk={()=>setL(true)}/>;
-const tabs=[{id:"growth",l:"Estratégia",lk:true},{id:"plan",l:"Planejamento"},{id:"gen",l:"Conteúdo"},{id:"sv",l:"Salvos"},{id:"cal",l:"Agenda"}];
-return(<div style={{minHeight:"100vh",background:C.bg,fontFamily:"'Jost',sans-serif"}}>
-<div style={{background:C.white,borderBottom:"1px solid "+C.gb,padding:"14px 16px"}}><div style={{maxWidth:840,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}><div><h1 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,fontWeight:600,color:C.brown,margin:0}}>M<span style={{color:C.gold}}>|</span>C</h1><p style={{fontSize:9,color:C.gold,margin:0,letterSpacing:2,textTransform:"uppercase"}}>Painel Estratégico</p></div><div style={{display:"flex",gap:2,background:C.bg,borderRadius:9,padding:2,flexWrap:"wrap"}}>{tabs.map(t=><button key={t.id} onClick={()=>handleTab(t.id)} style={{padding:"6px 11px",borderRadius:7,border:"none",cursor:"pointer",fontSize:11,fontWeight:tab===t.id?600:400,background:tab===t.id?C.white:"transparent",color:tab===t.id?C.brown:C.gold}}>{t.l}{t.lk&&!stratOk?" ◆":""}</button>)}</div></div></div>
-<div style={{maxWidth:840,margin:"0 auto",padding:"18px 14px"}}>
-{tab==="growth"&&<GrowthTab/>}
-{tab==="plan"&&<PlanTab/>}
-{tab==="gen"&&(<div>
+return(<div>
 <div style={{textAlign:"center",marginBottom:20}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,color:C.brown}}>Gerador de Conteúdo</h2></div>
 <label style={lb}>Formato</label><div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}}>{CTS.map(c=><button key={c.id} onClick={()=>sCt(c.id)} style={{padding:"12px 6px",borderRadius:10,border:"1.5px solid "+(ct===c.id?C.gold:C.gb),background:ct===c.id?C.gl:C.white,cursor:"pointer",textAlign:"center"}}><div style={{fontSize:11,fontWeight:500,color:C.brown}}>{c.label}</div></button>)}</div>
 <label style={lb}>Tema</label><div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:8}}>{TOPS.map(t=><button key={t} onClick={()=>{sTo(t);sCTo("")}} style={{padding:"4px 10px",borderRadius:16,fontSize:10,border:"1px solid "+(topic===t&&!cTo?C.gold:C.gb),background:topic===t&&!cTo?C.gl:C.white,color:C.brown,cursor:"pointer"}}>{t}</button>)}</div>
 <input value={cTo} onChange={e=>sCTo(e.target.value)} placeholder="Tema específico..." style={ip}/>
 <label style={lb}>Orientações</label><textarea value={extra} onChange={e=>sEx(e.target.value)} rows={2} style={{...ip,resize:"vertical"}}/>
 <button onClick={gen} disabled={ld} style={{...bp,width:"100%",opacity:ld?.7:1}}>{ld?"Gerando...":"Gerar conteúdo"}</button>
-{result&&<div style={{marginTop:16,background:C.white,borderRadius:12,border:"1px solid "+C.gb,padding:18}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}><span style={{fontWeight:500,fontSize:13}}>Resultado</span><div style={{display:"flex",gap:4}}><button onClick={()=>{const c=CTS.find(x=>x.id===ct);const u=[{id:Date.now(),tl:c.label,tp:cTo.trim()||topic,tx:result,dt:new Date().toLocaleDateString("pt-BR")},...saved].slice(0,50);sSv(u);sS("sv",u);sSN("Salvo");setTimeout(()=>sSN(""),2000)}} style={bs}>{sn||"Salvar"}</button><button onClick={()=>{navigator.clipboard.writeText(result);sCp(true);setTimeout(()=>sCp(false),2000)}} style={bs}>{cp?"Copiado":"Copiar"}</button></div></div><div style={{whiteSpace:"pre-wrap",fontSize:13,lineHeight:1.7}}>{result}</div></div>}
+{result&&<div style={{marginTop:16,background:C.white,borderRadius:12,border:"1px solid "+C.gb,padding:18}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}><span style={{fontWeight:500,fontSize:13}}>Resultado</span><button onClick={()=>{navigator.clipboard.writeText(result);sCp(true);setTimeout(()=>sCp(false),2000)}} style={bs}>{cp?"Copiado ✓":"Copiar"}</button></div><div style={{whiteSpace:"pre-wrap",fontSize:13,lineHeight:1.7}}>{result}</div></div>}
 </div>)}
-{tab==="sv"&&(<div>
-<div style={{textAlign:"center",marginBottom:20}}><h2 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,color:C.brown}}>Conteúdos Salvos</h2></div>
-{saved.length===0?<p style={{textAlign:"center",color:C.gold}}>Nenhum conteúdo salvo.</p>:saved.map(it=><div key={it.id} style={{background:C.white,borderRadius:10,border:"1px solid "+C.gb,padding:16,marginBottom:8}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:6,flexWrap:"wrap",gap:4}}><span style={{fontSize:12}}>{it.tl} · {it.tp} · {it.dt}</span><div style={{display:"flex",gap:4}}><button onClick={()=>navigator.clipboard.writeText(it.tx)} style={bs}>Copiar</button><button onClick={()=>{const u=saved.filter(c=>c.id!==it.id);sSv(u);sS("sv",u)}} style={{...bs,color:"#c44"}}>Remover</button></div></div><div style={{whiteSpace:"pre-wrap",fontSize:12,lineHeight:1.5,maxHeight:160,overflow:"auto"}}>{it.tx}</div></div>)}
-</div>)}
-{tab==="cal"&&<AgendaTab isCon={stratOk}/>}
+
+/* ═══ LOGIN ═══ */
+function Login({onOk}){const[pw,sP]=useState("");const[er,sE]=useState(false);const go=()=>{if(pw===PW)onOk();else{sE(true);setTimeout(()=>sE(false),2000)}};return(<div style={{minHeight:"100vh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}><div style={{background:C.white,borderRadius:20,padding:"44px 32px",maxWidth:360,width:"100%",textAlign:"center",boxShadow:"0 20px 60px rgba(44,36,22,0.1)"}}><h1 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:34,fontWeight:600,color:C.brown,margin:"0 0 4px"}}>M<span style={{color:C.gold}}>|</span>C</h1><p style={{fontSize:10,color:C.gold,letterSpacing:3,textTransform:"uppercase",marginBottom:28}}>Painel da Equipe</p><input type="password" value={pw} onChange={e=>sP(e.target.value)} onKeyDown={e=>e.key==="Enter"&&go()} placeholder="Senha de acesso" style={{...ip,textAlign:"center",marginBottom:er?6:14}}/>{er&&<p style={{color:"#c44",fontSize:11,marginBottom:10}}>Acesso negado</p>}<button onClick={go} style={{...bp,width:"100%"}}>Acessar</button></div></div>)}
+
+/* ═══ APP PRINCIPAL ═══ */
+function App(){
+const[logged,setL]=useState(false);
+const[tab,setTab]=useState("plan");
+const[stratOk,setStrat]=useState(false);
+const[sPw,setSPw]=useState("");
+const[sErr,setSErr]=useState(false);
+const[showSM,setShowSM]=useState(false);
+
+const handleTab=id=>{if(id==="growth"&&!stratOk){setShowSM(true);return}setTab(id)};
+const tryStrat=()=>{if(sPw===STRATPW){setStrat(true);setShowSM(false);setTab("growth");setSPw("")}else{setSErr(true);setTimeout(()=>setSErr(false),2000)}};
+
+if(!logged)return <Login onOk={()=>setL(true)}/>;
+
+const tabs=[
+  {id:"plan",l:"Planejamento"},
+  {id:"cal",l:"Agenda"},
+  {id:"gen",l:"Gerador"},
+  {id:"growth",l:"Estratégia",lk:true}
+];
+
+return(<div style={{minHeight:"100vh",background:C.bg}}>
+<div style={{background:C.white,borderBottom:"1px solid "+C.gb,padding:"12px 16px",position:"sticky",top:0,zIndex:100}}>
+  <div style={{maxWidth:840,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}>
+    <div>
+      <h1 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,fontWeight:600,color:C.brown,margin:0}}>M<span style={{color:C.gold}}>|</span>C</h1>
+      <p style={{fontSize:9,color:C.muted,margin:0,letterSpacing:2,textTransform:"uppercase"}}>Painel da Equipe</p>
+    </div>
+    <div style={{display:"flex",gap:2,background:C.bg,borderRadius:9,padding:2,flexWrap:"wrap"}}>
+      {tabs.map(t=><button key={t.id} onClick={()=>handleTab(t.id)} style={{
+        padding:"6px 12px",borderRadius:7,border:"none",cursor:"pointer",fontSize:11,
+        fontWeight:tab===t.id?600:400,
+        background:tab===t.id?C.white:"transparent",
+        color:tab===t.id?C.brown:C.muted
+      }}>{t.l}{t.lk&&!stratOk?" ◆":""}</button>)}
+    </div>
+  </div>
+</div>
+
+<div style={{maxWidth:840,margin:"0 auto",padding:"18px 14px"}}>
+  {tab==="plan"&&<PlanTab/>}
+  {tab==="cal"&&<AgendaTab isCon={stratOk}/>}
+  {tab==="gen"&&<GenTab/>}
+  {tab==="growth"&&<GrowthTab/>}
+</div>
+
 {showSM&&<div style={{position:"fixed",inset:0,background:"rgba(44,36,22,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000,padding:16}}><div style={{background:C.white,borderRadius:16,padding:"36px 28px",maxWidth:360,width:"100%",textAlign:"center"}}><h3 style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,color:C.brown,margin:"0 0 6px"}}>Área restrita</h3><p style={{fontSize:13,color:C.gold,marginBottom:20}}>Acesso exclusivo da consultoria</p><input type="password" value={sPw} onChange={e=>setSPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&tryStrat()} placeholder="Senha" style={{...ip,textAlign:"center",marginBottom:sErr?6:14}}/>{sErr&&<p style={{color:"#c44",fontSize:11,marginBottom:10}}>Acesso negado</p>}<div style={{display:"flex",gap:8}}><button onClick={()=>{setShowSM(false);setSPw("")}} style={{...bs,flex:1}}>Cancelar</button><button onClick={tryStrat} style={{...bp,flex:1}}>Acessar</button></div></div></div>}
-</div></div>)}
+</div>)}
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
