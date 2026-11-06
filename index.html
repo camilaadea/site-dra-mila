@@ -110,7 +110,7 @@
   .frase cite { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); font-style: normal; }
   .cta-section { background: var(--beige); padding: 120px 64px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
   .cta-img-single { position: relative; }
-  .cta-img-single img { width: 100%; aspect-ratio: 3/4; object-fit: cover; object-position: center top; display: block; }
+  .cta-img-single img { width: 100%; aspect-ratio: 3/4; object-fit: cover; object-position: center top; display: block; position: relative; z-index: 1; }
   .cta-img-single::after {
     content: ''; position: absolute; bottom: -12px; left: -12px;
     width: 60%; height: 60%; border: 1px solid var(--gold-light); z-index: 0; pointer-events: none;
